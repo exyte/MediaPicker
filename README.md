@@ -23,59 +23,37 @@ ___
 
 # Usage
 1. Add a binding bool to control popup presentation state
-1. Add `.popup` modifier to your view
-```swift
-struct ContentView: View {
+2. Add medias array to save selection (`[Media]`)
+3. Add modifier to your view
+    ```swift
+        .mediaPicker(isPresented: $<showPicker>, onChange: { <mediasArray> = $0 })
+    ```
+    or
+    ```swift
+        .sheet(isPresented: $<showPicker>) {
+            MediaPicker(isPresented: $<showPicker>, onChange: { medias = $0 })
+        }
+    ```
 
-    @State var isPresented = false
-
-    var body: some View {
-        MediaPicker(isPresented: $isPresented)
-            .selectionStyle(.count)
-            .selectionLimit(3)
-            .onChangeSelection { medias in
-                <...>
-            }
-    }
-}
-```
-
-### Required parameters 
+### Init required parameters
 `isPresented` - binding to determine if the picker should be seen on screen or hidden   
-`onChangeSelection` - closure returning picked media every time selection changes   
-`onFinishSelection` - closure returning picked media once the screen is closed  
+`onChange` - closure returning picked media every time selection changes
 
-### Available customizations - optional parameters     
-`selectionStyle` - a way to display selected/unselected media state: either a counter or just a checkmark  
-`selectionLimit` - max allowed media quantity to select     
+### Init optional parameters
+`limit` - max allowed media quantity to select   
+`leadingNavigation` and `trailingNavigation` - ViewBuilder for leading and trailing navigation items respectively   
+
+### Available customizations - modifiers
+`selectionStyle` - a way to display selected/unselected media state: either a counter or just a checkmark   
 
 ## Examples
 
 To try MediaPicker examples:
 - Clone the repo `https://github.com/exyte/MediaPicker.git`
-- Open terminal and run `cd <MediaPickerRepo>/Example/`
-- Run `pod install` to install all dependencies
-- Run open `MediaPickerExample.xcworkspace/` to open project in the Xcode
+- Open `Example/MediaPickerExample.xcworkspace` in the Xcode
 - Try it!
 
 ## Installation
-
-### [CocoaPods](http://cocoapods.org)
-
-To install `MediaPicker`, simply add the following line to your Podfile:
-
-```ruby
-pod 'ExyteMediaPicker'
-```
-
-### [Carthage](http://github.com/Carthage/Carthage)
-
-To integrate `MediaPicker` into your Xcode project using Carthage, specify it in your `Cartfile`
-
-```ogdl
-github "Exyte/MediaPicker"
-```
-
 ### [Swift Package Manager](https://swift.org/package-manager/)
 
 ```swift
@@ -84,11 +62,7 @@ dependencies: [
 ]
 ```
 
-### Manually
-
-Drop [MediaPicker.swift](https://github.com/exyte/MediaPicker/blob/master/Source/MediaPicker.swift) in your project.
-
 ## Requirements
 
-* iOS 16+
-* Xcode 14+ 
+* iOS 15+
+* Xcode 13+ 
