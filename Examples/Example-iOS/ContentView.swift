@@ -46,7 +46,7 @@ struct ContentView: View {
                 },
                 trailingNavigation: {
                     Button("Send") {
-                        print("Sended:", medias)
+                        print("Sent:", medias)
                     }
                 },
                 onChange: { medias = $0 }

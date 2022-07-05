@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct CameraStubView: View {
-    @Binding var isShow: Bool
+    @Binding var isPresented: Bool
     
     var body: some View {
         ZStack {
@@ -21,7 +21,7 @@ struct CameraStubView: View {
                     .font(.title3)
                     .multilineTextAlignment(.center)
                 Button {
-                    isShow = false
+                    isPresented = false
                 } label: {
                     Text("Close")
                 }
@@ -33,7 +33,7 @@ struct CameraStubView: View {
 
 struct CameraStubView_Preview: PreviewProvider {
     static var previews: some View {
-        CameraStubView(isShow: .constant(true))
+        CameraStubView(isPresented: .constant(true))
     }
 }
 

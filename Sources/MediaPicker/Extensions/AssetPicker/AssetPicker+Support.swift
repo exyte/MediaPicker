@@ -6,15 +6,15 @@ import Foundation
 import SwiftUI
 
 extension View {
-    func cameraSheet(isShow: Binding<Bool>, image: Binding<URL?>) -> some View {
+    func cameraSheet(isPresented: Binding<Bool>, image: Binding<URL?>) -> some View {
 
 #if targetEnvironment(simulator)
-        self.fullScreenCover(isPresented: isShow) {
-            CameraStubView(isShow: isShow)
+        self.fullScreenCover(isPresented: isPresented) {
+            CameraStubView(isPresented: isPresented)
         }
 #elseif os(iOS)
-        self.fullScreenCover(isPresented: isShow) {
-            CameraView(url: image, isShown: isShow)
+        self.fullScreenCover(isPresented: isPresented) {
+            CameraView(url: image, isPresented: isPresented)
         }
 #endif
     }

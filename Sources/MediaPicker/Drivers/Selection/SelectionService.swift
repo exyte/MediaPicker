@@ -7,7 +7,7 @@ import SwiftUI
 
 final class SelectionService: ObservableObject {
     var mediaSelectionLimit: Int?
-    var onChangeClosure: MediaPickerCompletionClosure? = nil
+    var onChange: MediaPickerCompletionClosure? = nil
 
     @Published private(set) var selected: [MediaModel] = []
 
@@ -27,7 +27,7 @@ final class SelectionService: ObservableObject {
                 selected.append(media)
             }
         }
-        onChangeClosure?(mapToMedia())
+        onChange?(mapToMedia())
     }
 
     func index(of media: MediaModel) -> Int? {

@@ -12,7 +12,7 @@ public struct MediaPicker<L: View, R: View>: View {
     @StateObject private var permissionService = PermissionsService()
 
     private let mediaSelectionLimit: Int
-    private let mediaPickerOnChange: MediaPickerCompletionClosure?
+    private let onChange: MediaPickerCompletionClosure?
 
     var leadingNavigation: (() -> L)? = nil
     var trailingNavigation: (() -> R)? = nil
@@ -25,7 +25,7 @@ public struct MediaPicker<L: View, R: View>: View {
                 onChange: @escaping MediaPickerCompletionClosure) {
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
-        self.mediaPickerOnChange = onChange
+        self.onChange = onChange
 
         self.leadingNavigation = leadingNavigation
         self.trailingNavigation = trailingNavigation
@@ -39,7 +39,7 @@ public struct MediaPicker<L: View, R: View>: View {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
-        self.mediaPickerOnChange = onChange
+        self.onChange = onChange
 
         self.leadingNavigation = { EmptyView() }
         self.trailingNavigation = trailingNavigation
@@ -53,7 +53,7 @@ public struct MediaPicker<L: View, R: View>: View {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
-        self.mediaPickerOnChange = onChange
+        self.onChange = onChange
 
         self.leadingNavigation = leadingNavigation
         self.trailingNavigation = { EmptyView() }
@@ -66,7 +66,7 @@ public struct MediaPicker<L: View, R: View>: View {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
-        self.mediaPickerOnChange = onChange
+        self.onChange = onChange
 
         self.leadingNavigation = { EmptyView() }
         self.trailingNavigation = { EmptyView() }
@@ -111,15 +111,15 @@ public struct MediaPicker<L: View, R: View>: View {
         .environmentObject(permissionService)
         .onAppear {
             selectionService.mediaSelectionLimit = mediaSelectionLimit
-            selectionService.onChangeClosure = mediaPickerOnChange
+            selectionService.onChange = onChange
         }
-        .cameraSheet(isShow: $viewModel.showCamera, image: $viewModel.cameraImage)
+        .cameraSheet(isPresented: $viewModel.showCamera, image: $viewModel.cameraImage)
 #if os(iOS)
         .onChange(of: viewModel.cameraImage) { newValue in
             guard let url = newValue
             else { return }
             isPresented = false
-            mediaPickerOnChange?([Media(source: .url(url), type: .image)])
+            onChange?([Media(source: .url(url), type: .image)])
         }
 #endif
     }

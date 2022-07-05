@@ -6,7 +6,7 @@ import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
     @Binding var url: URL?
-    @Binding var isShown: Bool
+    @Binding var isPresented: Bool
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
@@ -16,7 +16,7 @@ struct CameraView: UIViewControllerRepresentable {
     }
     
     func makeCoordinator() -> CameraCoordinatorProtocol {
-        CameraCoordinator(url: $url, isShown: $isShown)
+        CameraCoordinator(url: $url, isPresented: $isPresented)
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
@@ -28,17 +28,17 @@ protocol CameraCoordinatorProtocol: UINavigationControllerDelegate, UIImagePicke
 
 private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
     @Binding var url: URL?
-    @Binding var isShown: Bool
+    @Binding var isPresented: Bool
 
-    init(url: Binding<URL?>, isShown: Binding<Bool>) {
+    init(url: Binding<URL?>, isPresented: Binding<Bool>) {
         _url = url
-        _isShown = isShown
+        _isPresented = isPresented
     }
     
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         defer {
-            isShown = false
+            isPresented = false
         }
         
         if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
@@ -56,6 +56,6 @@ private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        isShown = false
+        isPresented = false
     }
 }
