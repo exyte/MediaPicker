@@ -1,0 +1,89 @@
+//
+//  Created by Alex.M on 27.05.2022.
+//
+
+import SwiftUI
+
+struct AlbumView: View {
+    var shouldShowCamera: Bool
+    @Binding var isShowCamera: Bool
+    @StateObject var viewModel: AlbumViewModel
+
+    @State private var fullscreenItem: MediaModel?
+    
+    @EnvironmentObject private var selectionService: SelectionService
+    @EnvironmentObject private var permissionsService: PermissionsService
+    
+    var body: some View {
+        if let title = viewModel.title {
+            content.navigationTitle(title)
+        } else {
+            content
+        }
+    }
+}
+
+private extension AlbumView {
+    var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 100), spacing: 0)]
+    }
+    
+    @ViewBuilder
+    var content: some View {
+        ScrollView {
+            VStack {
+                if let action = permissionsService.photoLibraryAction {
+                    PermissionsActionView(action: .library(action))
+                }
+                if shouldShowCamera, let action = permissionsService.cameraAction {
+                    PermissionsActionView(action: .camera(action))
+                }
+                if viewModel.isLoading {
+                    ProgressView()
+                } else if viewModel.medias.isEmpty {
+                    Text("Empty data")
+                        .font(.title3)
+                } else {
+                    MediasGrid(viewModel.medias) {
+                        if shouldShowCamera && permissionsService.cameraAction == nil {
+                            CameraCell {
+                                isShowCamera = true
+                            }
+                        } else {
+                            EmptyView()
+                        }
+                    } content: { media in
+                        let index = selectionService.index(of: media)
+                        SelectableView(selected: index) {
+                            selectionService.onSelect(media: media)
+                        } content: {
+                            Button {
+                                withAnimation {
+                                    fullscreenItem = media
+                                }
+                            } label: {
+                                MediaCell(viewModel: MediaViewModel(media: media))
+                            }
+                            .buttonStyle(MediaButtonStyle())
+                        }
+                        .disabled(!selectionService.canSelect(media: media))
+                    }
+                }
+                
+                Spacer()
+            }
+        }
+        .sheet(item: $fullscreenItem) { item in
+            FullscreenContainer(
+                medias: viewModel.medias,
+                index: viewModel.medias.firstIndex(of: item) ?? 0
+            )
+        }
+        .onAppear {
+            viewModel.onStart()
+        }
+        .onDisappear {
+            viewModel.onStop()
+        }
+    }
+}
