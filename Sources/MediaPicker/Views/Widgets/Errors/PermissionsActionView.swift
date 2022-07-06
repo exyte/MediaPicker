@@ -32,15 +32,15 @@ private extension PermissionsActionView {
     func buildLibraryAction(_ action: PermissionsService.PhotoLibraryAction) -> some View {
         switch action {
         case .selectMore:
-            PermissionsErrorView(text: "Button 'select more assets'") {
+            PermissionsErrorView(text: "Setup Photos access to see more photos here") {
                 showSheet = true
             }
         case .authorize:
-            goToSettingsButton(text: "Enable photo access in settings")
+            goToSettingsButton(text: "Allow Photos access in settings to see photos here")
         case .unavailable:
-            PermissionsErrorView(text: "Text about you can't grant access to Photos", action: nil)
+            PermissionsErrorView(text: "Sorry, Photos are not available.", action: nil)
         case .unknown:
-            PermissionsErrorView(text: "Note about some changes in iOS SDK", action: nil)
+            fatalError("Unknown permission status.")
         }
     }
     
@@ -48,11 +48,11 @@ private extension PermissionsActionView {
     func buildCameraAction(_ action: PermissionsService.CameraAction) -> some View {
         switch action {
         case .authorize:
-            goToSettingsButton(text: "Enable camera access in settings")
+            goToSettingsButton(text: "Allow Camera access in settings to see live preview")
         case .unavailable:
-            PermissionsErrorView(text: "Text about you can't grant access to Camera", action: nil)
+            PermissionsErrorView(text: "Sorry, Camera are not available.", action: nil)
         case .unknown:
-            PermissionsErrorView(text: "Note about some changes in iOS SDK", action: nil)
+            fatalError("Unknown permission status.")
         }
     }
     

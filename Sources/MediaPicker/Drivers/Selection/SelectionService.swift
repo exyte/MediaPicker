@@ -35,7 +35,9 @@ final class SelectionService: ObservableObject {
     func onSelect(assetIdentifier identifier: String) {
         Task {
             if let asset = await findAsset(identifier: identifier).value {
-                onSelect(media: MediaModel(source: asset))
+                await MainActor.run { [asset] in
+                    onSelect(media: MediaModel(source: asset))
+                }
             }
         }
     }
