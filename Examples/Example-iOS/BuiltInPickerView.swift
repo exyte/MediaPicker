@@ -11,7 +11,9 @@ struct BuiltInPickerView: View {
     @State private var medias: [Media] = []
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            Text("Title/Text/Info")
+
             MediaPicker(
                 isPresented: $isPresented,
                 trailingNavigation: {
@@ -35,9 +37,9 @@ struct BuiltInPickerView: View {
             )
             .selectionStyle(.count)
 
-            Text("Custom text with section count = \(medias.count)")
+            Text("Custom text with selection count = \(medias.count)")
                 .padding(.bottom)
         }
-        .padding(.top)
+        .padding(.vertical, 10)
     }
 }
