@@ -15,7 +15,7 @@ struct FullscreenContainer: View {
         TabView(selection: $index) {
             ForEach(medias.enumerated().map({ $0 }), id: \.offset) { (index, media) in
                 let index = selectionService.index(of: media)
-                SelectableView(selected: index) {
+                SelectableView(selected: index, paddings: 20) {
                     selectionService.onSelect(media: media)
                 } content: {
                     FullscreenCell(viewModel: FullscreenCellViewModel(media: media))

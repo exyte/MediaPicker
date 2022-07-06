@@ -6,10 +6,18 @@ import SwiftUI
 
 struct SelectableView<Content>: View where Content: View {
     let selected: Int?
+    let paddings: CGFloat
     let onSelect: () -> Void
     @ViewBuilder let content: () -> Content
     
     @Environment(\.mediaSelectionStyle) private var mediaSelectionStyle
+
+    init(selected: Int?, paddings: CGFloat = 2, onSelect: @escaping () -> Void, content: @escaping () -> Content) {
+        self.selected = selected
+        self.paddings = paddings
+        self.onSelect = onSelect
+        self.content = content
+    }
     
     var body: some View {
         ZStack(alignment: selectionAlignment) {
@@ -20,7 +28,7 @@ struct SelectableView<Content>: View where Content: View {
             } label: {
                 SelectIndicatorView(index: selected)
             }
-            .padding(4)
+            .padding(paddings)
         }
     }
 }

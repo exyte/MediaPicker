@@ -10,7 +10,7 @@ final class MediaPickerViewModel: ObservableObject {
     @Published var mode: MediaPickerMode = .photos
 #if os(iOS)
     @Published var showCamera = false
-    @Published var cameraAsset: String?
+    @Published var pickedAssetId: String?
 #endif
 
     private let watcher = PhotoLibraryChangePermissionWatcher()

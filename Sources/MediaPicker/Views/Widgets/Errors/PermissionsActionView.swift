@@ -50,7 +50,7 @@ private extension PermissionsActionView {
         case .authorize:
             goToSettingsButton(text: "Allow Camera access in settings to see live preview")
         case .unavailable:
-            PermissionsErrorView(text: "Sorry, Camera are not available.", action: nil)
+            PermissionsErrorView(text: "Sorry, Camera is not available.", action: nil)
         case .unknown:
             fatalError("Unknown permission status.")
         }

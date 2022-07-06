@@ -6,7 +6,7 @@ import Foundation
 import SwiftUI
 
 extension View {
-    func cameraSheet(isPresented: Binding<Bool>, identifier: Binding<String?>) -> some View {
+    func cameraSheet(isPresented: Binding<Bool>, pickedAssetId: Binding<String?>) -> some View {
 
 #if targetEnvironment(simulator)
         self.fullScreenCover(isPresented: isPresented) {
@@ -14,7 +14,7 @@ extension View {
         }
 #elseif os(iOS)
         self.fullScreenCover(isPresented: isPresented) {
-            CameraView(identifier: identifier, isPresented: isPresented)
+            CameraView(pickedAssetId: pickedAssetId, isPresented: isPresented)
                 .background(Color.black)
         }
 #endif

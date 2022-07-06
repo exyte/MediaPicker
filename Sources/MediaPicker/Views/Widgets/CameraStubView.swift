@@ -20,10 +20,8 @@ struct CameraStubView: View {
                 Text("Unavailable on simulator. Use device for testing")
                     .font(.title3)
                     .multilineTextAlignment(.center)
-                Button {
+                Button("Close") {
                     isPresented = false
-                } label: {
-                    Text("Close")
                 }
                 .padding()
             }

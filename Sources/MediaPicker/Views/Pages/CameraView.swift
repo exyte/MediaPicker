@@ -6,7 +6,7 @@ import SwiftUI
 import Photos
 
 struct CameraView: UIViewControllerRepresentable {
-    @Binding var identifier: String?
+    @Binding var pickedAssetId: String?
     @Binding var isPresented: Bool
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
@@ -18,7 +18,7 @@ struct CameraView: UIViewControllerRepresentable {
     }
     
     func makeCoordinator() -> CameraCoordinatorProtocol {
-        CameraCoordinator(identifier: $identifier, isPresented: $isPresented)
+        CameraCoordinator(pickedAssetId: $pickedAssetId, isPresented: $isPresented)
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
@@ -29,11 +29,11 @@ struct CameraView: UIViewControllerRepresentable {
 protocol CameraCoordinatorProtocol: UINavigationControllerDelegate, UIImagePickerControllerDelegate {}
 
 private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
-    @Binding var identifier: String?
+    @Binding var pickedAssetId: String?
     @Binding var isPresented: Bool
 
-    init(identifier: Binding<String?>, isPresented: Binding<Bool>) {
-        _identifier = identifier
+    init(pickedAssetId: Binding<String?>, isPresented: Binding<Bool>) {
+        _pickedAssetId = pickedAssetId
         _isPresented = isPresented
     }
     
@@ -52,7 +52,7 @@ private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
                 do {
                     try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
                         let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: sourceUrl)
-                        self?.identifier = request?.placeholderForCreatedAsset?.localIdentifier
+                        self?.pickedAssetId = request?.placeholderForCreatedAsset?.localIdentifier
                     }
                 } catch {
                     print(error)
@@ -63,7 +63,7 @@ private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
                 do {
                     try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
                         let request = PHAssetChangeRequest.creationRequestForAsset(from: uiImage)
-                        self?.identifier = request.placeholderForCreatedAsset?.localIdentifier
+                        self?.pickedAssetId = request.placeholderForCreatedAsset?.localIdentifier
                     }
                 } catch {
                     print(error)
