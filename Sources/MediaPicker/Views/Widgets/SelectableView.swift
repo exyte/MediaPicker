@@ -12,17 +12,16 @@ struct SelectableView<Content>: View where Content: View {
     @Environment(\.mediaSelectionStyle) private var mediaSelectionStyle
     
     var body: some View {
-        content()
-            .overlay(
-                Button {
-                    onSelect()
-                }
-                label: {
-                    SelectIndicatorView(index: selected)
-                        .padding(2)
-                },
-                alignment: selectionAlignment
-            )
+        ZStack(alignment: selectionAlignment) {
+            content()
+
+            Button {
+                onSelect()
+            } label: {
+                SelectIndicatorView(index: selected)
+            }
+            .padding(4)
+        }
     }
 }
 

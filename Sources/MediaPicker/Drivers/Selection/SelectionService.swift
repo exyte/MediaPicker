@@ -4,6 +4,8 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import Photos
 
 final class SelectionService: ObservableObject {
     var mediaSelectionLimit: Int?
@@ -30,6 +32,14 @@ final class SelectionService: ObservableObject {
         onChange?(mapToMedia())
     }
 
+    func onSelect(assetIdentifier identifier: String) {
+        Task {
+            if let asset = await findAsset(identifier: identifier).value {
+                onSelect(media: MediaModel(source: asset))
+            }
+        }
+    }
+
     func index(of media: MediaModel) -> Int? {
         selected.firstIndex(of: media)
     }
@@ -48,5 +58,22 @@ final class SelectionService: ObservableObject {
 private extension SelectionService {
     var selectionLimit: Int {
         mediaSelectionLimit ?? 0
+    }
+
+    func findAsset(identifier: String) -> Future<PHAsset?, Never> {
+        Future { promise in
+            let options = PHFetchOptions()
+            let photos = PHAsset.fetchAssets(with: options)
+
+            var result: PHAsset?
+
+            photos.enumerateObjects { (asset, _, stop) in
+                if asset.localIdentifier == identifier {
+                    result = asset
+                    stop.pointee = true
+                }
+            }
+            promise(.success(result))
+        }
     }
 }

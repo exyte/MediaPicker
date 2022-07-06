@@ -13,11 +13,6 @@ public extension View {
             MediaPicker(
                 isPresented: isPresented,
                 limit: limit,
-                leadingNavigation: {
-                    Button("Cancel") {
-                        isPresented.wrappedValue.toggle()
-                    }
-                },
                 onChange: onChange
             )
         }
@@ -32,11 +27,6 @@ public extension View {
             MediaPicker(
                 isPresented: isPresented,
                 limit: limit,
-                leadingNavigation: {
-                    Button("Cancel") {
-                        isPresented.wrappedValue.toggle()
-                    }
-                },
                 trailingNavigation: trailingNavigation,
                 onChange: onChange
             )

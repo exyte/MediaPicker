@@ -14,12 +14,29 @@ struct BuiltInPickerView: View {
         VStack {
             MediaPicker(
                 isPresented: $isPresented,
+                trailingNavigation: {
+                    HStack {
+                        Button {
+                            isPresented = false
+                        } label: {
+                            Image(systemName: "xmark.square.fill")
+                        }
+                        .tint(.red)
+
+                        Button() {
+                            print("Sent:", medias)
+                        } label: {
+                            Image(systemName: "checkmark.square.fill")
+                        }
+                        .tint(.green)
+                    }
+                },
                 onChange: { medias = $0 }
             )
             .selectionStyle(.count)
-            Button("Show selected (\(medias.count))") {
-                print("\"Show selected\" action")
-            }
+
+            Text("Custom text with section count = \(medias.count)")
+                .padding(.bottom)
         }
         .padding(.top)
     }

@@ -3,20 +3,22 @@
 //
 
 import SwiftUI
+import Photos
 
 struct CameraView: UIViewControllerRepresentable {
-    @Binding var url: URL?
+    @Binding var identifier: String?
     @Binding var isPresented: Bool
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
+        imagePicker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .camera) ?? ["public.image", "public.movie"]
         imagePicker.sourceType = .camera
         imagePicker.delegate = context.coordinator
         return imagePicker
     }
     
     func makeCoordinator() -> CameraCoordinatorProtocol {
-        CameraCoordinator(url: $url, isPresented: $isPresented)
+        CameraCoordinator(identifier: $identifier, isPresented: $isPresented)
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
@@ -27,11 +29,11 @@ struct CameraView: UIViewControllerRepresentable {
 protocol CameraCoordinatorProtocol: UINavigationControllerDelegate, UIImagePickerControllerDelegate {}
 
 private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
-    @Binding var url: URL?
+    @Binding var identifier: String?
     @Binding var isPresented: Bool
 
-    init(url: Binding<URL?>, isPresented: Binding<Bool>) {
-        _url = url
+    init(identifier: Binding<String?>, isPresented: Binding<Bool>) {
+        _identifier = identifier
         _isPresented = isPresented
     }
     
@@ -40,18 +42,35 @@ private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
         defer {
             isPresented = false
         }
-        
-        if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
-           let data = uiImage.jpegData(compressionQuality: 0) {
-            
-            let directory = FileManager.default.temporaryDirectory.appendingPathComponent("")
-            let fileUrl = directory.appendingPathComponent("camera.image.0000").appendingPathExtension(for: .image)
-            do {
-                try data.write(to: fileUrl)
-                self.url = fileUrl
-            } catch let exception {
-                debugPrint(exception)
+
+        guard let type = info[UIImagePickerController.InfoKey.mediaType] as? String
+        else { return } // TODO: Create error
+
+        switch type {
+        case "public.movie":
+            if let sourceUrl = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
+                do {
+                    try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
+                        let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: sourceUrl)
+                        self?.identifier = request?.placeholderForCreatedAsset?.localIdentifier
+                    }
+                } catch {
+                    print(error)
+                }
             }
+        case "public.image":
+            if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                do {
+                    try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
+                        let request = PHAssetChangeRequest.creationRequestForAsset(from: uiImage)
+                        self?.identifier = request.placeholderForCreatedAsset?.localIdentifier
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+        default:
+            fatalError("Unknown media type")
         }
     }
     

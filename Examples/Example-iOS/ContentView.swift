@@ -10,8 +10,7 @@ import MediaPicker
 
 struct ContentView: View {
     @State private var showDefaultMediaPicker = false
-    @State private var showConfiguredMediaPicker = false
-    @State private var showBuiltInMediaPicker = false
+    @State private var showCustomizedMediaPicker = false
     @State private var medias: [Media] = []
     
     var body: some View {
@@ -21,42 +20,32 @@ struct ContentView: View {
                     .onTapGesture {
                         showDefaultMediaPicker = true
                     }
-                Text("Configured")
+                Text("Customized")
                     .onTapGesture {
-                        showConfiguredMediaPicker = true
-                    }
-                Text("Built-in")
-                    .onTapGesture {
-                        showBuiltInMediaPicker = true
+                        showCustomizedMediaPicker = true
                     }
             }
             .navigationTitle("Examples")
         }
         // MARK: - Default media picker
-        .mediaPicker(isPresented: $showDefaultMediaPicker, onChange: { medias = $0 })
-
-        // MARK: - Configured media picker
-        .sheet(isPresented: $showConfiguredMediaPicker) {
-            MediaPicker(
-                isPresented: $showConfiguredMediaPicker,
-                leadingNavigation: {
-                    Button("Cancel") {
-                        showConfiguredMediaPicker = false
-                    }
-                },
-                trailingNavigation: {
-                    Button("Send") {
-                        print("Sent:", medias)
-                    }
-                },
-                onChange: { medias = $0 }
-            )
-            .selectionStyle(.count)
-        }
+        .mediaPicker(
+            isPresented: $showDefaultMediaPicker,
+            leadingNavigation: {
+                Button("Cancel") {
+                    showDefaultMediaPicker = false
+                }
+            },
+            trailingNavigation: {
+                Button("Send") {
+                    print("Sent:", medias)
+                }
+            },
+            onChange: { medias = $0 }
+        )
 
         // MARK: - Built-in media picker
-        .sheet(isPresented: $showBuiltInMediaPicker) {
-            BuiltInPickerView(isPresented: $showBuiltInMediaPicker)
+        .sheet(isPresented: $showCustomizedMediaPicker) {
+            BuiltInPickerView(isPresented: $showCustomizedMediaPicker)
         }
     }
 }

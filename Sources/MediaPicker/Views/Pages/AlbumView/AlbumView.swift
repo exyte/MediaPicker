@@ -54,19 +54,19 @@ private extension AlbumView {
                         }
                     } content: { media in
                         let index = selectionService.index(of: media)
-                        Button {
-                            withAnimation {
-                                fullscreenItem = media
-                            }
-                        } label: {
-                            SelectableView(selected: index) {
-                                selectionService.onSelect(media: media)
-                            } content: {
+                        SelectableView(selected: index) {
+                            selectionService.onSelect(media: media)
+                        } content: {
+                            Button {
+                                withAnimation {
+                                    fullscreenItem = media
+                                }
+                            } label: {
                                 MediaCell(viewModel: MediaViewModel(media: media))
                             }
-                            .disabled(!selectionService.canSelect(media: media))
+                            .buttonStyle(MediaButtonStyle())
                         }
-                        .padding(2)
+                        .disabled(!selectionService.canSelect(media: media))
                     }
                 }
                 

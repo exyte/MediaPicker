@@ -11,7 +11,7 @@ public struct MediasGrid<Data, Camera, Content>: View where Data: RandomAccessCo
     public let content: (Data.Element) -> Content
     
     private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: 100), spacing: 0, alignment: .top)]
+        [GridItem(.adaptive(minimum: 100), spacing: 1, alignment: .top)]
     }
     
     public init(_ data: Data, @ViewBuilder camera: @escaping () -> Camera, @ViewBuilder content: @escaping (Data.Element) -> Content) {
@@ -21,7 +21,7 @@ public struct MediasGrid<Data, Camera, Content>: View where Data: RandomAccessCo
     }
 
     public var body: some View {
-        LazyVGrid(columns: columns, spacing: 0) {
+        LazyVGrid(columns: columns, spacing: 1) {
             camera()
             ForEach(data) { item in
                 content(item)

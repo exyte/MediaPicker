@@ -113,13 +113,14 @@ public struct MediaPicker<L: View, R: View>: View {
             selectionService.mediaSelectionLimit = mediaSelectionLimit
             selectionService.onChange = onChange
         }
-        .cameraSheet(isPresented: $viewModel.showCamera, image: $viewModel.cameraImage)
+        .cameraSheet(isPresented: $viewModel.showCamera, identifier: $viewModel.cameraAsset)
 #if os(iOS)
-        .onChange(of: viewModel.cameraImage) { newValue in
-            guard let url = newValue
+        .onChange(of: viewModel.cameraAsset) { newValue in
+            guard let identifier = newValue
             else { return }
-            isPresented = false
-            onChange?([Media(source: .url(url), type: .image)])
+
+            selectionService.onSelect(assetIdentifier: identifier)
+            viewModel.cameraAsset = nil
         }
 #endif
     }
