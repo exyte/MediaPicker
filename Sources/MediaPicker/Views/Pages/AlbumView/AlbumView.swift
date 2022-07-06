@@ -67,7 +67,7 @@ private extension AlbumView {
                                 MediaCell(viewModel: MediaViewModel(media: media))
                             }
                             .buttonStyle(MediaButtonStyle())
-                            .contentShape(Rectangle(), eoFill: true)
+                            .contentShape(Rectangle())
                         }
                         .disabled(!selectionService.canSelect(media: media))
                     }
