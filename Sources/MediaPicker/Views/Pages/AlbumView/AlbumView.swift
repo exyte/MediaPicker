@@ -58,13 +58,16 @@ private extension AlbumView {
                             selectionService.onSelect(media: media)
                         } content: {
                             Button {
-                                withAnimation {
-                                    fullscreenItem = media
+                                if fullscreenItem == nil {
+                                    withAnimation {
+                                        fullscreenItem = media
+                                    }
                                 }
                             } label: {
                                 MediaCell(viewModel: MediaViewModel(media: media))
                             }
                             .buttonStyle(MediaButtonStyle())
+                            .contentShape(Rectangle())
                         }
                         .disabled(!selectionService.canSelect(media: media))
                     }

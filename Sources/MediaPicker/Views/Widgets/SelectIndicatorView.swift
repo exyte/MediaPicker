@@ -26,19 +26,18 @@ private extension SelectIndicatorView {
     var checkView: some View {
         Group {
             if index != nil {
-                ZStack {
-                    Circle()
-                        .fill(.white)
-                    Circle()
-                        .fill(.blue)
-                        .padding(2)
-                    Image(systemName: "checkmark")
-                        .resizable()
-                        .foregroundColor(.white)
-                        .padding(6)
-                }
+                Circle()
+                    .fill(Color.white)
+                    .overlay {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .foregroundColor(.blue)
+                            .padding(2)
+                    }
             } else {
-                EmptyView()
+                Image(systemName: "circle")
+                    .resizable()
+                    .foregroundColor(.white)
             }
         }
     }

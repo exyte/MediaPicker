@@ -94,9 +94,7 @@ public struct MediaPicker<L: View, R: View>: View {
                     )
                 }
             }
-            .mediaPickerNavigationBar(mode: $viewModel.mode) {
-                isPresented = false
-            }
+            .mediaPickerNavigationBar(mode: $viewModel.mode)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     leadingNavigation?()
@@ -110,6 +108,8 @@ public struct MediaPicker<L: View, R: View>: View {
         .environmentObject(selectionService)
         .environmentObject(permissionService)
         .onAppear {
+            setupNavigationBarAppearance()
+
             selectionService.mediaSelectionLimit = mediaSelectionLimit
             selectionService.onChange = onChange
         }

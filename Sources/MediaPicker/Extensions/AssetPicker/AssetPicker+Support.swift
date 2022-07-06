@@ -35,7 +35,7 @@ extension View {
         }
     }
 
-    func mediaPickerNavigationBar(mode: Binding<MediaPickerMode>, close: @escaping () -> Void) -> some View {
+    func mediaPickerNavigationBar(mode: Binding<MediaPickerMode>) -> some View {
         self
             .mediaPickerToolbar(mode: mode)
             .navigationBarTitleDisplayMode(.inline)

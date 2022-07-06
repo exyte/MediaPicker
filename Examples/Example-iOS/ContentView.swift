@@ -16,15 +16,15 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                Text("Default")
-                    .onTapGesture {
-                        showDefaultMediaPicker = true
-                    }
-                Text("Customized")
-                    .onTapGesture {
-                        showCustomizedMediaPicker = true
-                    }
+                Button("Default") {
+                    showDefaultMediaPicker = true
+                }
+
+                Button("Customized") {
+                    showCustomizedMediaPicker = true
+                }
             }
+            .tint(.black)
             .navigationTitle("Examples")
         }
         // MARK: - Default media picker
@@ -36,8 +36,8 @@ struct ContentView: View {
                 }
             },
             trailingNavigation: {
-                Button("Send") {
-                    print("Sent:", medias)
+                Button("Done") {
+                    print("Selected:", medias)
                 }
             },
             onChange: { medias = $0 }
