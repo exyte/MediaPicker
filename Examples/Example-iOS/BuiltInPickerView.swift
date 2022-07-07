@@ -36,6 +36,14 @@ struct BuiltInPickerView: View {
                 onChange: { medias = $0 }
             )
             .selectionStyle(.count)
+            .mediaPickerTheme(
+                MediaPickerTheme(
+                    selection: .init(
+                        emptyTint: .purple,
+                        selectedTint: .purple
+                    )
+                )
+            )
 
             Text("Custom text with selection count = \(medias.count)")
                 .padding(.bottom)

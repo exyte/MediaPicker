@@ -9,6 +9,8 @@ struct FullscreenContainer: View {
     var medias: [MediaModel]
     @State var index: Int
 
+    @Environment(\.mediaPickerTheme) private var theme
+
     @EnvironmentObject private var selectionService: SelectionService
     
     var body: some View {
@@ -26,6 +28,6 @@ struct FullscreenContainer: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .background(Color.black)
+        .background(theme.main.fullscreenBackground)
     }
 }

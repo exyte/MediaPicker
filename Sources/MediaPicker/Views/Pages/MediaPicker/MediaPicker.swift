@@ -17,6 +17,8 @@ public struct MediaPicker<L: View, R: View>: View {
     var leadingNavigation: (() -> L)? = nil
     var trailingNavigation: (() -> R)? = nil
 
+    @Environment(\.mediaPickerTheme) private var theme
+
     // MARK: - Object life cycle
     public init(isPresented: Binding<Bool>,
                 limit: Int = 10,
@@ -94,6 +96,7 @@ public struct MediaPicker<L: View, R: View>: View {
                     )
                 }
             }
+            .background(theme.main.background)
             .mediaPickerNavigationBar(mode: $viewModel.mode)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
