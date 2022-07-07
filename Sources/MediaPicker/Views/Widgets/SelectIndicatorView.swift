@@ -8,7 +8,8 @@ struct SelectIndicatorView: View {
     let index: Int?
     
     @Environment(\.mediaSelectionStyle) var mediaSelectionStyle
-    
+    @Environment(\.mediaPickerTheme) private var theme
+
     var body: some View {
         Group {
             switch mediaSelectionStyle {
@@ -26,18 +27,22 @@ private extension SelectIndicatorView {
     var checkView: some View {
         Group {
             if index != nil {
-                Circle()
-                    .fill(Color.white)
-                    .overlay {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .foregroundColor(.blue)
-                            .padding(2)
+                Image(systemName: "checkmark.circle.fill")
+                    .resizable()
+                    .foregroundColor(theme.selection.selectedTint)
+                    .padding(2)
+                    .background {
+                        Circle()
+                            .fill(theme.selection.selectedBackground)
                     }
             } else {
                 Image(systemName: "circle")
                     .resizable()
-                    .foregroundColor(.white)
+                    .foregroundColor(theme.selection.emptyTint)
+                    .background {
+                        Circle()
+                            .fill(theme.selection.emptyBackground)
+                    }
             }
         }
     }
@@ -47,14 +52,21 @@ private extension SelectIndicatorView {
             if let index = index {
                 Image(systemName: "\(index + 1).circle.fill")
                     .resizable()
+                    .foregroundColor(theme.selection.selectedTint)
+                    .background {
+                        Circle()
+                            .fill(theme.selection.selectedBackground)
+                    }
             } else {
                 Image(systemName: "circle")
                     .resizable()
+                    .foregroundColor(theme.selection.emptyTint)
+                    .background {
+                        Circle()
+                            .fill(theme.selection.emptyBackground)
+                    }
             }
         }
-        .foregroundColor(.blue)
-        .background(Color.white)
-        .cornerRadius(12)
     }
 }
 

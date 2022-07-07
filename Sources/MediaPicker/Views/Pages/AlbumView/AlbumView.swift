@@ -11,9 +11,11 @@ struct AlbumView: View {
 
     @State private var fullscreenItem: MediaModel?
     
+    @Environment(\.mediaPickerTheme) private var theme
+
     @EnvironmentObject private var selectionService: SelectionService
     @EnvironmentObject private var permissionsService: PermissionsService
-    
+
     var body: some View {
         if let title = viewModel.title {
             content.navigationTitle(title)
@@ -76,6 +78,7 @@ private extension AlbumView {
                 Spacer()
             }
         }
+        .background(theme.main.background)
         .sheet(item: $fullscreenItem) { item in
             FullscreenContainer(
                 medias: viewModel.medias,

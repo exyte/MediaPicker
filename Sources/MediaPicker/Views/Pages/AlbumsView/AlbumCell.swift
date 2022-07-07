@@ -6,6 +6,8 @@ import SwiftUI
 
 struct AlbumCell: View {
     @StateObject var viewModel: AlbumCellViewModel
+
+    @Environment(\.mediaPickerTheme) private var theme
     
     var body: some View {
         VStack {
@@ -15,6 +17,7 @@ struct AlbumCell: View {
                 Text(title)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
+                    .foregroundColor(theme.main.text)
             }
         }
         .onAppear {

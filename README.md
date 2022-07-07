@@ -44,7 +44,8 @@ ___
 `leadingNavigation` and `trailingNavigation` - ViewBuilder for leading and trailing navigation items respectively   
 
 ### Available customizations - modifiers
-`selectionStyle` - a way to display selected/unselected media state: either a counter or just a checkmark   
+`selectionStyle` - a way to display selected/unselected media state: either a counter or just a checkmark
+`theme` - Color setting. See `MediaPickerTheme` for details.   
 
 ## Examples
 
