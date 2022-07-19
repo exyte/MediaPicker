@@ -7,10 +7,14 @@ import SwiftUI
 
 @MainActor
 final class MediaPickerViewModel: ObservableObject {
+
     @Published var mode: MediaPickerMode = .photos
+
 #if os(iOS)
-    @Published var showCamera = false
-    @Published var pickedAssetId: String?
+    @Published var showingCamera = false
+    @Published var showingCameraSelection = false
+    @Published var showingExitCameraConfirmation = false
+    @Published var pickedMediaUrl: URL?
 #endif
 
     private let watcher = PhotoLibraryChangePermissionWatcher()
@@ -18,6 +22,6 @@ final class MediaPickerViewModel: ObservableObject {
     // MARK: Calculated property
 
     func openCamera() {
-        self.showCamera = true
+        self.showingCamera = true
     }
 }

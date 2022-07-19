@@ -5,7 +5,8 @@
 import Foundation
 import SwiftUI
 
-struct CameraCell: View {
+struct LiveCameraCell: View {
+
     let action: () -> Void
     
     @StateObject private var liveCameraViewModel = LiveCameraViewModel()

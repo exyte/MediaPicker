@@ -5,10 +5,12 @@
 import SwiftUI
 
 public struct MediaPicker<L: View, R: View>: View {
+
     @Binding public var isPresented: Bool
 
     @StateObject private var viewModel = MediaPickerViewModel()
     @StateObject private var selectionService = SelectionService()
+    @StateObject private var cameraSelectionService = CameraSelectionService()
     @StateObject private var permissionService = PermissionsService()
 
     private let mediaSelectionLimit: Int
@@ -82,19 +84,44 @@ public struct MediaPicker<L: View, R: View>: View {
                 case .photos:
                     AlbumView(
                         shouldShowCamera: true,
-                        isShowCamera: $viewModel.showCamera,
+                        showingCamera: $viewModel.showingCamera,
                         viewModel: AlbumViewModel(
                             mediasProvider: AllPhotosProvider()
                         )
                     )
                 case .albums:
                     AlbumsView(
-                        isShowCamera: $viewModel.showCamera,
+                        showingCamera: $viewModel.showingCamera,
                         viewModel: AlbumsViewModel(
                             albumsProvider: DefaultAlbumsProvider()
                         )
                     )
                 }
+
+                Color.clear.frame(width: 1, height: 1)
+                    .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
+                        CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
+                            .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                                deleteAllButton()
+                            }
+                    }
+
+                Color.clear.frame(width: 1, height: 1)
+                    .fullScreenCover(isPresented: $viewModel.showingCamera) {
+                        cameraSheet() {
+                            // did take picture
+                            if !cameraSelectionService.hasSelected {
+                                viewModel.showingCameraSelection = true
+                                viewModel.showingCamera = false
+                            }
+                            guard let url = viewModel.pickedMediaUrl else { return }
+                            cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                            viewModel.pickedMediaUrl = nil
+                        }
+                        .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                            deleteAllButton()
+                        }
+                    }
             }
             .background(theme.main.background)
             .mediaPickerNavigationBar(mode: $viewModel.mode)
@@ -109,22 +136,34 @@ public struct MediaPicker<L: View, R: View>: View {
         }
         .navigationViewStyle(.stack)
         .environmentObject(selectionService)
+        .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
         .onAppear {
             setupNavigationBarAppearance()
 
             selectionService.mediaSelectionLimit = mediaSelectionLimit
             selectionService.onChange = onChange
-        }
-        .cameraSheet(isPresented: $viewModel.showCamera, pickedAssetId: $viewModel.pickedAssetId)
-#if os(iOS)
-        .onChange(of: viewModel.pickedAssetId) { newValue in
-            guard let identifier = newValue
-            else { return }
 
-            selectionService.onSelect(assetIdentifier: identifier)
-            viewModel.pickedAssetId = nil
+            cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
+            cameraSelectionService.onChange = onChange
         }
+    }
+
+    func deleteAllButton() -> some View {
+        Button("Delete All") {
+            cameraSelectionService.removeAll()
+            viewModel.showingCamera = false
+            viewModel.showingCameraSelection = false
+        }
+    }
+
+    func cameraSheet(didTakePicture: @escaping ()->()) -> some View {
+#if targetEnvironment(simulator)
+        CameraStubView(isPresented: $viewModel.showingCamera)
+#elseif os(iOS)
+        CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
+            .background(Color.black)
+            .ignoresSafeArea()
 #endif
     }
 }

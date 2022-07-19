@@ -6,19 +6,6 @@ import Foundation
 import SwiftUI
 
 extension View {
-    func cameraSheet(isPresented: Binding<Bool>, pickedAssetId: Binding<String?>) -> some View {
-
-#if targetEnvironment(simulator)
-        self.fullScreenCover(isPresented: isPresented) {
-            CameraStubView(isPresented: isPresented)
-        }
-#elseif os(iOS)
-        self.fullScreenCover(isPresented: isPresented) {
-            CameraView(pickedAssetId: pickedAssetId, isPresented: isPresented)
-                .background(Color.black)
-        }
-#endif
-    }
 
     func mediaPickerToolbar(mode: Binding<MediaPickerMode>) -> some View {
         self.toolbar {

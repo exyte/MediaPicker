@@ -8,6 +8,7 @@ import Combine
 import Photos
 
 final class SelectionService: ObservableObject {
+
     var mediaSelectionLimit: Int?
     var onChange: MediaPickerCompletionClosure? = nil
 
@@ -32,15 +33,15 @@ final class SelectionService: ObservableObject {
         onChange?(mapToMedia())
     }
 
-    func onSelect(assetIdentifier identifier: String) {
-        Task {
-            if let asset = await findAsset(identifier: identifier).value {
-                await MainActor.run { [asset] in
-                    onSelect(media: MediaModel(source: asset))
-                }
-            }
-        }
-    }
+//    func onSelect(assetIdentifier identifier: String) {
+//        Task {
+//            if let asset = await findAsset(identifier: identifier).value {
+//                await MainActor.run { [asset] in
+//                    onSelect(media: MediaModel(source: asset))
+//                }
+//            }
+//        }
+//    }
 
     func index(of media: MediaModel) -> Int? {
         selected.firstIndex(of: media)
@@ -58,6 +59,7 @@ final class SelectionService: ObservableObject {
 }
 
 private extension SelectionService {
+    
     var selectionLimit: Int {
         mediaSelectionLimit ?? 0
     }
