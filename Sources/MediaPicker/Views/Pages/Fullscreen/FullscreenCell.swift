@@ -12,12 +12,16 @@ struct FullscreenCell: View {
     var body: some View {
         VStack {
             if let preview = viewModel.preview {
-                Image(uiImage: preview)
-                    .resizable()
-                    .scaledToFit()
+                ZoomableScrollView {
+                    Image(uiImage: preview)
+                        .resizable()
+                        .scaledToFit()
+                }
             } else if let player = viewModel.player {
-                VideoPlayer(player: player)
-                    .padding()
+                ZoomableScrollView {
+                    VideoPlayer(player: player)
+                        .padding()
+                }
             } else {
                 Spacer()
                 ProgressView()
