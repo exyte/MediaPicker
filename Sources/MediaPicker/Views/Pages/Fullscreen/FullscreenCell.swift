@@ -12,9 +12,11 @@ struct FullscreenCell: View {
     var body: some View {
         VStack {
             if let preview = viewModel.preview {
+                ZoomableScrollView {
                 Image(uiImage: preview)
                     .resizable()
                     .scaledToFit()
+                }
             } else if let player = viewModel.player {
                 VideoPlayer(player: player)
                     .padding()
