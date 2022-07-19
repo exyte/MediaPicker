@@ -6,7 +6,8 @@ import SwiftUI
 import Combine
 
 struct AlbumsView: View {
-    @Binding var isShowCamera: Bool
+
+    @Binding var showingCamera: Bool
     @StateObject var viewModel: AlbumsViewModel
 
     @EnvironmentObject private var selectionService: SelectionService
@@ -37,7 +38,7 @@ struct AlbumsView: View {
                             NavigationLink {
                                 AlbumView(
                                     shouldShowCamera: false,
-                                    isShowCamera: $isShowCamera,
+                                    showingCamera: $showingCamera,
                                     viewModel: AlbumViewModel(
                                         mediasProvider: AlbumMediasProvider(
                                             album: album

@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct MediaCell: View {
+
     @StateObject var viewModel: MediaViewModel
     
     var body: some View {

@@ -8,6 +8,7 @@ import AVKit
 import UIKit.UIImage
 
 final class FullscreenCellViewModel: ObservableObject {
+    
     let media: MediaModel
     
     @Published var preview: UIImage? = nil

@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct SelectIndicatorView: View {
+
     let index: Int?
     
     @Environment(\.mediaSelectionStyle) var mediaSelectionStyle

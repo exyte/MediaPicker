@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct ThumbnailView: View {
+
 #if os(iOS)
     let preview: UIImage?
 #else

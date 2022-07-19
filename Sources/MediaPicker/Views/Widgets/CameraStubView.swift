@@ -6,6 +6,7 @@
 import SwiftUI
 
 struct CameraStubView: View {
+
     @Binding var isPresented: Bool
     
     var body: some View {

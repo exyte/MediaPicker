@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 struct FullscreenContainer: View {
+
     var medias: [MediaModel]
     @State var index: Int
 

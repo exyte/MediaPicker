@@ -50,12 +50,12 @@ public extension Media {
     func getUrl() -> Future<URL?, Never> {
         return Future { promise in
             switch source {
-            case .url(let url):
-                promise(.success(url))
             case .media(let media):
                 media.source.getURL { url in
                     promise(.success(url))
                 }
+            case .url(let url):
+                promise(.success(url))
             }
         }
     }
@@ -65,10 +65,10 @@ public extension Media {
 extension Media: Identifiable {
     public var id: String {
         switch source {
-        case .url(let url):
-            return url.absoluteString
         case .media(let media):
             return media.id
+        case .url(let url):
+            return url.absoluteString
         }
     }
 }

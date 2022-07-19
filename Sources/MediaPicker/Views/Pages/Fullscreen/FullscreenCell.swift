@@ -7,6 +7,7 @@ import SwiftUI
 import AVKit
 
 struct FullscreenCell: View {
+
     @StateObject var viewModel: FullscreenCellViewModel
     
     var body: some View {

@@ -5,8 +5,9 @@
 import SwiftUI
 
 struct AlbumView: View {
+
     var shouldShowCamera: Bool
-    @Binding var isShowCamera: Bool
+    @Binding var showingCamera: Bool
     @StateObject var viewModel: AlbumViewModel
 
     @State private var fullscreenItem: MediaModel?
@@ -48,8 +49,8 @@ private extension AlbumView {
                 } else {
                     MediasGrid(viewModel.medias) {
                         if shouldShowCamera && permissionsService.cameraAction == nil {
-                            CameraCell {
-                                isShowCamera = true
+                            LiveCameraCell {
+                                showingCamera = true
                             }
                         } else {
                             EmptyView()

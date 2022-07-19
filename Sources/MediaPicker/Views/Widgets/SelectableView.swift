@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct SelectableView<Content>: View where Content: View {
+
     let selected: Int?
     let paddings: CGFloat
     let onSelect: () -> Void

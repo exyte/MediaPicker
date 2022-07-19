@@ -9,6 +9,7 @@ import SwiftUI
 import MediaPicker
 
 struct ContentView: View {
+
     @State private var showDefaultMediaPicker = false
     @State private var showCustomizedMediaPicker = false
     @State private var medias: [Media] = []
@@ -37,13 +38,14 @@ struct ContentView: View {
             },
             trailingNavigation: {
                 Button("Done") {
+                    showDefaultMediaPicker = false
                     print("Selected:", medias)
                 }
             },
             onChange: { medias = $0 }
         )
 
-        // MARK: - Built-in media picker
+        // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
             BuiltInPickerView(isPresented: $showCustomizedMediaPicker)
         }

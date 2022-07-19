@@ -7,6 +7,7 @@ import SwiftUI
 import MediaPicker
 
 struct BuiltInPickerView: View {
+
     @Binding var isPresented: Bool
     @State private var medias: [Media] = []
 

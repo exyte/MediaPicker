@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct AlbumCell: View {
+
     @StateObject var viewModel: AlbumCellViewModel
 
     @Environment(\.mediaPickerTheme) private var theme

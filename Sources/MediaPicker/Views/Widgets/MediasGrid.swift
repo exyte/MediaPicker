@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 public struct MediasGrid<Data, Camera, Content>: View where Data: RandomAccessCollection, Data.Element: Identifiable, Camera: View, Content: View {
+
     public let data: Data
     public let camera: () -> Camera
     public let content: (Data.Element) -> Content

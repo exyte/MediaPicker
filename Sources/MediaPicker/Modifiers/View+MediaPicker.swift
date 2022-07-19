@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 public extension View {
+    
     func mediaPicker(isPresented: Binding<Bool>,
                      limit: Int = 10,
                      onChange: @escaping MediaPickerCompletionClosure) -> some View {

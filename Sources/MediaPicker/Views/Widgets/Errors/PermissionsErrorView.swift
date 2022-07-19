@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 struct PermissionsErrorView: View {
+
     let text: String
     let action: (() -> Void)?
 

@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 struct PermissionsActionView: View {
+
     let action: Action
     
     @State private var showSheet = false
@@ -28,6 +29,7 @@ struct PermissionsActionView: View {
 }
 
 private extension PermissionsActionView {
+    
     @ViewBuilder
     func buildLibraryAction(_ action: PermissionsService.PhotoLibraryAction) -> some View {
         switch action {
