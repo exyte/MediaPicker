@@ -45,7 +45,6 @@ public struct MediaPicker<L: View, R: View>: View {
         self.mediaSelectionLimit = limit
         self.onChange = onChange
 
-        self.leadingNavigation = { EmptyView() }
         self.trailingNavigation = trailingNavigation
     }
 
@@ -60,7 +59,6 @@ public struct MediaPicker<L: View, R: View>: View {
         self.onChange = onChange
 
         self.leadingNavigation = leadingNavigation
-        self.trailingNavigation = { EmptyView() }
     }
 
     public init(isPresented: Binding<Bool>,
@@ -79,73 +77,88 @@ public struct MediaPicker<L: View, R: View>: View {
     // MARK: - SwiftUI View implementation
     public var body: some View {
         NavigationView {
-            VStack {
-                switch viewModel.mode {
-                case .photos:
-                    AlbumView(
-                        shouldShowCamera: true,
-                        showingCamera: $viewModel.showingCamera,
-                        viewModel: AlbumViewModel(
-                            mediasProvider: AllPhotosProvider()
+            VStack(spacing: 0) {
+                Group {
+                    switch viewModel.mode {
+                    case .photos:
+                        AlbumView(
+                            shouldShowCamera: true,
+                            showingCamera: $viewModel.showingCamera,
+                            viewModel: AlbumViewModel(
+                                mediasProvider: AllPhotosProvider()
+                            )
                         )
-                    )
-                case .albums:
-                    AlbumsView(
-                        showingCamera: $viewModel.showingCamera,
-                        viewModel: AlbumsViewModel(
-                            albumsProvider: DefaultAlbumsProvider()
+                    case .albums:
+                        AlbumsView(
+                            showingCamera: $viewModel.showingCamera,
+                            viewModel: AlbumsViewModel(
+                                albumsProvider: DefaultAlbumsProvider()
+                            )
                         )
-                    )
-                }
-
-                Color.clear.frame(width: 1, height: 1)
-                    .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
-                        CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
-                            .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
-                                deleteAllButton()
-                            }
                     }
-
-                Color.clear.frame(width: 1, height: 1)
-                    .fullScreenCover(isPresented: $viewModel.showingCamera) {
-                        cameraSheet() {
-                            // did take picture
-                            if !cameraSelectionService.hasSelected {
-                                viewModel.showingCameraSelection = true
-                                viewModel.showingCamera = false
-                            }
-                            guard let url = viewModel.pickedMediaUrl else { return }
-                            cameraSelectionService.onSelect(media: URLMediaModel(url: url))
-                            viewModel.pickedMediaUrl = nil
-                        }
+                }
+                .safeAreaInset(edge: .top, spacing: 0, content: {
+                    headerView()
+                        .padding(.vertical, 12)
+                        .background(Material.regular)
+                })
+                .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
+                    CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
                         .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
                             deleteAllButton()
                         }
-                    }
-            }
-            .background(theme.main.background)
-            .mediaPickerNavigationBar(mode: $viewModel.mode)
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
-                    leadingNavigation?()
                 }
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    trailingNavigation?()
+                .fullScreenCover(isPresented: $viewModel.showingCamera) {
+                    cameraSheet() {
+                        // did take picture
+                        if !cameraSelectionService.hasSelected {
+                            viewModel.showingCameraSelection = true
+                            viewModel.showingCamera = false
+                        }
+                        guard let url = viewModel.pickedMediaUrl else { return }
+                        cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                        viewModel.pickedMediaUrl = nil
+                    }
+                    .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                        deleteAllButton()
+                    }
                 }
             }
         }
-        .navigationViewStyle(.stack)
+        .background(theme.main.background.ignoresSafeArea())
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
         .onAppear {
-            setupNavigationBarAppearance()
-
             selectionService.mediaSelectionLimit = mediaSelectionLimit
             selectionService.onChange = onChange
-
+            
             cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
+        }
+    }
+    
+    private func headerView() -> some View {
+        HStack {
+            if let leadingNavigation = leadingNavigation?() {
+                leadingNavigation
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Color.clear
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            mediaPickerToolbar(mode: $viewModel.mode)
+
+            if let trailingNavigation = trailingNavigation?() {
+                trailingNavigation
+                    .padding(.trailing)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            } else {
+                Color.clear
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 
