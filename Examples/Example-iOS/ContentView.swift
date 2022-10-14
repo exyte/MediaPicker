@@ -58,7 +58,7 @@ struct ContentView: View {
 
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
-            BuiltInPickerView(isPresented: $showCustomizedMediaPicker)
+            BuiltInPickerView(isPresented: $showCustomizedMediaPicker, medias: $medias)
         }
     }
 }

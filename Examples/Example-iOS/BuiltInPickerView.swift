@@ -7,48 +7,67 @@ import SwiftUI
 import MediaPicker
 
 struct BuiltInPickerView: View {
-
     @Binding var isPresented: Bool
-    @State private var medias: [Media] = []
+    @Binding var medias: [Media]
+    @State private var selectedMedia: [Media] = []
+    let maxCount: Int = 5
 
     var body: some View {
-        VStack(spacing: 0) {
-            Text("Title/Text/Info")
-
+        VStack {
             MediaPicker(
                 isPresented: $isPresented,
+                limit: maxCount,
                 trailingNavigation: {
-                    HStack {
-                        Button {
-                            isPresented = false
-                        } label: {
-                            Image(systemName: "xmark.square.fill")
-                        }
-                        .tint(.red)
-
-                        Button() {
-                            print("Sent:", medias)
-                        } label: {
-                            Image(systemName: "checkmark.square.fill")
-                        }
-                        .tint(.green)
-                    }
+                    Text("\(selectedMedia.count) / \(maxCount) selected")
+                        .font(.footnote)
                 },
-                onChange: { medias = $0 }
+                onChange: { selectedMedia = $0 }
             )
             .selectionStyle(.count)
             .mediaPickerTheme(
                 MediaPickerTheme(
                     selection: .init(
-                        emptyTint: .purple,
+                        emptyTint: .white,
+                        emptyBackground: .black.opacity(0.25),
                         selectedTint: .purple
                     )
                 )
             )
+            
+            HStack {
+                Button {
+                    isPresented = false
+                } label: {
+                    Text("Cancel")
+                        .foregroundColor(.black)
+                }
 
-            Text("Custom text with selection count = \(medias.count)")
-                .padding(.bottom)
+                Spacer(minLength: 70)
+
+                Button {
+                    medias = selectedMedia
+                    isPresented = false
+                } label: {
+                    HStack {
+                        Text("Add")
+
+                        Text("\(selectedMedia.count)")
+                            .padding(6)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                    }
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.horizontal)
+                    .padding(.vertical, 15)
+                    .frame(maxWidth: .infinity)
+                }
+                .background {
+                    Color(hue: 0.2, saturation: 1, brightness: 0.9)
+                        .cornerRadius(16)
+                }
+            }
+            .padding(.horizontal)
         }
-        .padding(.vertical, 10)
     }
 }
