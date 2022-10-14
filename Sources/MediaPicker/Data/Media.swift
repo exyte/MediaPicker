@@ -10,24 +10,17 @@ public enum MediaType {
     case video
 }
 
-public struct Media {
-    internal let source: Source
+public struct Media: Identifiable {
+    public var id = UUID()
     public let type: MediaType
+    internal let source: Source
 }
 
-// MARK: - Public methods for get data from MediaItem
+// MARK: - Public methods to get data from MediaItem
 public extension Media {
 
-#if DEBUG
-    static var random: Media {
-        let randomMediaType = [MediaType.video, .image].randomElement() ?? .image
-        let randomSize = (300...600).randomElement() ?? 300
-        return Media(source: .url(URL(string: "https://picsum.photos/\(randomSize)")!), type: randomMediaType)
-    }
-#endif
-
     func getData() -> Future<Data?, Never> {
-        return Future { promise in
+        Future { promise in
             switch source {
             case .media(let media):
                 Task {
@@ -48,7 +41,7 @@ public extension Media {
     }
 
     func getUrl() -> Future<URL?, Never> {
-        return Future { promise in
+        Future { promise in
             switch source {
             case .media(let media):
                 media.source.getURL { url in
@@ -62,22 +55,22 @@ public extension Media {
 }
 
 // MARK: - Media+Identifiable
-extension Media: Identifiable {
-    public var id: String {
-        switch source {
-        case .media(let media):
-            return media.id
-        case .url(let url):
-            return url.absoluteString
-        }
-    }
-}
-
-extension Media: Equatable {
-    public static func == (lhs: Media, rhs: Media) -> Bool {
-        lhs.id == rhs.id
-    }
-}
+//extension Media: Identifiable {
+//    public var id: String {
+//        switch source {
+//        case .media(let media):
+//            return media.id
+//        case .url(let url):
+//            return url.absoluteString
+//        }
+//    }
+//}
+//
+//extension Media: Equatable {
+//    public static func == (lhs: Media, rhs: Media) -> Bool {
+//        lhs.id == rhs.id
+//    }
+//}
 
 // MARK: - Inner types
 extension Media {

@@ -21,7 +21,7 @@ struct SelectableView<Content>: View where Content: View {
     }
     
     var body: some View {
-        ZStack(alignment: selectionAlignment) {
+        ZStack(alignment: .topTrailing) {
             content()
 
             Button {
@@ -30,17 +30,6 @@ struct SelectableView<Content>: View where Content: View {
                 SelectIndicatorView(index: selected)
             }
             .padding(paddings)
-        }
-    }
-}
-
-private extension SelectableView {
-    var selectionAlignment: Alignment {
-        switch mediaSelectionStyle {
-        case .checkmark:
-            return .bottomTrailing
-        case .count:
-            return .topTrailing
         }
     }
 }

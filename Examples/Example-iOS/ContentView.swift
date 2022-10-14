@@ -7,12 +7,15 @@
 
 import SwiftUI
 import MediaPicker
+import Combine
 
 struct ContentView: View {
 
     @State private var showDefaultMediaPicker = false
     @State private var showCustomizedMediaPicker = false
     @State private var medias: [Media] = []
+
+    let columns = [GridItem(.adaptive(minimum: 100), spacing: 1, alignment: .top)]
     
     var body: some View {
         NavigationView {
@@ -24,6 +27,14 @@ struct ContentView: View {
                 Button("Customized") {
                     showCustomizedMediaPicker = true
                 }
+
+                
+                //LazyVGrid(columns: columns, spacing: 1) {
+                    ForEach(medias) { media in
+                        MediaCell1(media: media)
+                    }
+                //}
+                .padding(.horizontal)
             }
             .tint(.black)
             .navigationTitle("Examples")
@@ -48,6 +59,29 @@ struct ContentView: View {
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
             BuiltInPickerView(isPresented: $showCustomizedMediaPicker)
+        }
+    }
+}
+
+struct MediaCell1: View {
+
+    var media: Media
+    @State var url: URL?
+
+    @State private var subscriptions = Set<AnyCancellable>()
+
+    var body: some View {
+        ZStack {
+            if let url = url {
+                AsyncImage(url: url)
+                    .frame(width: 100, height: 100)
+            }
+        }
+        .task {
+            media.getUrl().sink {
+                url = $0
+            }
+            .store(in: &subscriptions)
         }
     }
 }

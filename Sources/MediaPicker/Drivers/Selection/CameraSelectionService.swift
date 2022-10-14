@@ -47,7 +47,7 @@ final class CameraSelectionService: ObservableObject {
                 guard let type = $0.mediaType else {
                     return nil
                 }
-                return Media(source: .url($0.url), type: type)
+                return Media(type: type, source: .url($0.url))
             }
     }
 

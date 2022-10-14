@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct URLMediaModel {
     let url: URL
@@ -38,3 +39,8 @@ extension URLMediaModel: Equatable {
     }
 }
 
+extension URL {
+    var isImageFile: Bool {
+        UTType(filenameExtension: pathExtension)?.conforms(to: .image) ?? false
+    }
+}

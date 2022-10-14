@@ -53,7 +53,7 @@ final class SelectionService: ObservableObject {
                 guard let type = $0.mediaType else {
                     return nil
                 }
-                return Media(source: .media($0), type: type)
+                return Media(type: type, source: .media($0))
             }
     }
 }
