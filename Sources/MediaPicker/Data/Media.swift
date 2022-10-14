@@ -54,28 +54,10 @@ public extension Media {
     }
 }
 
-// MARK: - Media+Identifiable
-//extension Media: Identifiable {
-//    public var id: String {
-//        switch source {
-//        case .media(let media):
-//            return media.id
-//        case .url(let url):
-//            return url.absoluteString
-//        }
-//    }
-//}
-//
-//extension Media: Equatable {
-//    public static func == (lhs: Media, rhs: Media) -> Bool {
-//        lhs.id == rhs.id
-//    }
-//}
-
 // MARK: - Inner types
 extension Media {
     enum Source {
-        case media(MediaModel)
+        case media(AssetMediaModel)
         case url(URL)
     }
 }

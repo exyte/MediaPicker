@@ -15,15 +15,11 @@ struct URLMediaModel {
 extension URLMediaModel {
 
     var mediaType: MediaType? {
-//        switch source.mediaType {
-//        case .image:
-//            return .image
-//        case .video:
-//            return .video
-//        default:
-//            return nil
-//        }
-        return .image
+        if url.isImageFile {
+            return .image
+        } else {
+            return .video
+        }
     }
 }
 

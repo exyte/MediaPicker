@@ -8,12 +8,12 @@ import Photos
 
 final class AlbumMediasProvider: MediasProviderProtocol {
     
-    private var subject = CurrentValueSubject<[MediaModel], Never>([])
+    private var subject = CurrentValueSubject<[AssetMediaModel], Never>([])
     private var subscriptions = Set<AnyCancellable>()
 
     let album: AlbumModel
 
-    var medias: AnyPublisher<[MediaModel], Never> {
+    var medias: AnyPublisher<[AssetMediaModel], Never> {
         subject.eraseToAnyPublisher()
     }
 
@@ -31,7 +31,7 @@ final class AlbumMediasProvider: MediasProviderProtocol {
         if fetchResult.count == 0 {
             subject.send([])
         }
-        let assets = map(fetchResult: fetchResult)
+        let assets = MediasProvider.map(fetchResult: fetchResult)
         subject.send(assets)
     }
 }

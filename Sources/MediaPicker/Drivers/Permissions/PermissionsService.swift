@@ -73,7 +73,7 @@ private extension PermissionsService {
                 self?.handle(photoLibrary: status)
             }
         case .restricted:
-            // TODO: Make sure what access can't change when status == .restricted
+            // TODO: Make sure that access can't change when status == .restricted
             result = .unavailable
         case .denied:
             result = .authorize

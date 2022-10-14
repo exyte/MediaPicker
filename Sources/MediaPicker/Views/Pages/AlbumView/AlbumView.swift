@@ -10,7 +10,7 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @StateObject var viewModel: AlbumViewModel
 
-    @State private var fullscreenItem: MediaModel?
+    @State private var fullscreenItem: AssetMediaModel?
     
     @Environment(\.mediaPickerTheme) private var theme
 

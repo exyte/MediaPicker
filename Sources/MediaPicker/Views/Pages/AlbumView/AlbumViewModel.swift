@@ -9,7 +9,7 @@ final class AlbumViewModel: ObservableObject {
     // MARK: - Values
     // MARK: Public
     @Published var title: String? = nil
-    @Published var medias: [MediaModel] = []
+    @Published var medias: [AssetMediaModel] = []
     @Published var isLoading: Bool = false
     
     let mediasProvider: MediasProviderProtocol

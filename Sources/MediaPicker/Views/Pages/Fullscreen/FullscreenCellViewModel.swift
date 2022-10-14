@@ -9,13 +9,13 @@ import UIKit.UIImage
 
 final class FullscreenCellViewModel: ObservableObject {
     
-    let media: MediaModel
+    let media: AssetMediaModel
     
     @Published var preview: UIImage? = nil
     @Published var player: AVPlayer? = nil
     var subscriptions = Set<AnyCancellable>()
     
-    init(media: MediaModel) {
+    init(media: AssetMediaModel) {
         self.media = media
     }
     

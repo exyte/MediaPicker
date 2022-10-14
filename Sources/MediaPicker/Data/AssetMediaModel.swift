@@ -5,11 +5,11 @@
 import Foundation
 import Photos
 
-struct MediaModel {
+struct AssetMediaModel {
     let source: PHAsset
 }
 
-extension MediaModel {
+extension AssetMediaModel {
 
     var mediaType: MediaType? {
         switch source.mediaType {
@@ -23,14 +23,14 @@ extension MediaModel {
     }
 }
 
-extension MediaModel: Identifiable {
+extension AssetMediaModel: Identifiable {
     var id: String {
         source.localIdentifier
     }
 }
 
-extension MediaModel: Equatable {
-    static func ==(lhs: MediaModel, rhs: MediaModel) -> Bool {
+extension AssetMediaModel: Equatable {
+    static func ==(lhs: AssetMediaModel, rhs: AssetMediaModel) -> Bool {
         lhs.id == rhs.id
     }
 }

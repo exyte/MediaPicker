@@ -7,7 +7,7 @@ import SwiftUI
 
 struct FullscreenContainer: View {
 
-    var medias: [MediaModel]
+    var medias: [AssetMediaModel]
     @State var index: Int
 
     @Environment(\.mediaPickerTheme) private var theme

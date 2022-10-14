@@ -25,6 +25,7 @@ struct LimitedLibraryPickerProxyView: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(isPresented: $isPresented)
     }
+    
     class Coordinator: NSObject {
         private var isPresented: Binding<Bool>
         

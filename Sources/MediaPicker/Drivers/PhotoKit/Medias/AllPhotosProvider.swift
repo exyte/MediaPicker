@@ -10,10 +10,10 @@ import Combine
 
 final class AllPhotosProvider: MediasProviderProtocol {
     
-    private var subject = CurrentValueSubject<[MediaModel], Never>([])
+    private var subject = CurrentValueSubject<[AssetMediaModel], Never>([])
     private var subscriptions = Set<AnyCancellable>()
 
-    var medias: AnyPublisher<[MediaModel], Never> {
+    var medias: AnyPublisher<[AssetMediaModel], Never> {
         subject.eraseToAnyPublisher()
     }
 
@@ -31,7 +31,7 @@ final class AllPhotosProvider: MediasProviderProtocol {
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
         let allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
-        let assets = map(fetchResult: allPhotos)
+        let assets = MediasProvider.map(fetchResult: allPhotos)
 
         DispatchQueue.main.async { [weak self] in
             self?.subject.send(assets)

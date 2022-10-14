@@ -9,21 +9,21 @@ import SwiftUI
 
 extension FileManager {
 
-    static var documentsPath: URL! {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    static var tempPath: URL {
+        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
 
-    static func storeToFile(url: URL) -> URL {
+    static func storeToTempDir(url: URL) -> URL {
         let id = UUID().uuidString
-        let path = FileManager.documentsPath.appendingPathComponent(id)
+        let path = FileManager.tempPath.appendingPathComponent(id)
 
         try? FileManager.default.copyItem(at: url, to: path)
         return path
     }
 
-    static func storeToFile(data: Data) -> URL {
+    static func storeToTempDir(data: Data) -> URL {
         let id = UUID().uuidString
-        let path = FileManager.documentsPath.appendingPathComponent(id)
+        let path = FileManager.tempPath.appendingPathComponent(id)
 
         try? data.write(to: path)
         return path

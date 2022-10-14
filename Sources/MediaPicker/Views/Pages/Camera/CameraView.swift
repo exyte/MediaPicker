@@ -68,31 +68,15 @@ private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
         switch type {
         case "public.movie":
             if let sourceUrl = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-                do {
-                    pickedMediaUrl = FileManager.storeToFile(url: sourceUrl)
-                    didTakePicture()
-//                    try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
-//                        let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: sourceUrl)
-//                        self?.pickedAssetId = request?.placeholderForCreatedAsset?.localIdentifier
-//                    }
-                } catch {
-                    print(error)
-                }
+                pickedMediaUrl = FileManager.storeToTempDir(url: sourceUrl)
+                didTakePicture()
             }
         case "public.image":
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                 if let data = image.jpegData(compressionQuality: 0.8) {
-                    pickedMediaUrl = FileManager.storeToFile(data: data)
+                    pickedMediaUrl = FileManager.storeToTempDir(data: data)
                     didTakePicture()
                 }
-//                do {
-//                    try PHPhotoLibrary.shared().performChangesAndWait { [weak self] in
-//                        let request = PHAssetChangeRequest.creationRequestForAsset(from: uiImage)
-//                        self?.pickedAssetId = request.placeholderForCreatedAsset?.localIdentifier
-//                    }
-//                } catch {
-//                    print(error)
-//                }
             }
         default:
             fatalError("Unknown media type")

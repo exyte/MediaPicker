@@ -8,11 +8,11 @@ import UIKit.UIImage
 #endif
 
 class MediaViewModel: ObservableObject {
-    let media: MediaModel
+    let media: AssetMediaModel
     
     private var subscriptions = Set<AnyCancellable>()
     
-    init(media: MediaModel) {
+    init(media: AssetMediaModel) {
         self.media = media
     }
     

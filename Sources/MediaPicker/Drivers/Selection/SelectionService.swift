@@ -12,17 +12,17 @@ final class SelectionService: ObservableObject {
     var mediaSelectionLimit: Int?
     var onChange: MediaPickerCompletionClosure? = nil
 
-    @Published private(set) var selected: [MediaModel] = []
+    @Published private(set) var selected: [AssetMediaModel] = []
 
     var canSendSelected: Bool {
         !selected.isEmpty
     }
 
-    func canSelect(media: MediaModel) -> Bool {
+    func canSelect(media: AssetMediaModel) -> Bool {
         selected.count < selectionLimit || selected.contains(media)
     }
 
-    func onSelect(media: MediaModel) {
+    func onSelect(media: AssetMediaModel) {
         if let index = selected.firstIndex(of: media) {
             selected.remove(at: index)
         } else {
@@ -43,7 +43,7 @@ final class SelectionService: ObservableObject {
 //        }
 //    }
 
-    func index(of media: MediaModel) -> Int? {
+    func index(of media: AssetMediaModel) -> Int? {
         selected.firstIndex(of: media)
     }
 

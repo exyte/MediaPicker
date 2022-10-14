@@ -62,24 +62,10 @@ private extension DefaultAlbumsProvider {
             if fetchResult.count == 0 {
                 continue
             }
-            let preview = map(fetchResult: fetchResult).first
+            let preview = MediasProvider.map(fetchResult: fetchResult).first
             let album = AlbumModel(preview: preview, source: collection)
             albums.append(album)
         }
         return albums
-    }
-
-    func map(fetchResult: PHFetchResult<PHAsset>) -> [MediaModel] {
-        var medias: [MediaModel] = []
-
-        if fetchResult.count == 0 {
-            return medias
-        }
-
-        for index in 0...(fetchResult.count - 1) {
-            let asset = fetchResult[index]
-            medias.append(MediaModel(source: asset))
-        }
-        return medias
     }
 }
