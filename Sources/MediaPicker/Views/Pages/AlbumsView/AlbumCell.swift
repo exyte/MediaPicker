@@ -12,8 +12,11 @@ struct AlbumCell: View {
     
     var body: some View {
         VStack {
-            ThumbnailView(preview: viewModel.preview)
-                .aspectRatio(1, contentMode: .fill)
+            Rectangle()
+                .aspectRatio(1, contentMode: .fit)
+                .overlay { ThumbnailView(preview: viewModel.preview) }
+                .clipped()
+                
             if let title = viewModel.album.title {
                 Text(title)
                     .lineLimit(2)
