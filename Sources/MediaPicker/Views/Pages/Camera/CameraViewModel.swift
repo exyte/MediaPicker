@@ -9,11 +9,13 @@ import Foundation
 import AVFoundation
 import Combine
 import UIKit
+import SwiftUI
 
 final class CameraViewModel: NSObject, ObservableObject {
 
     @Published private(set) var deviceOrientation = UIDevice.current.orientation
     @Published private(set) var flashEnabled = false
+    @Published private(set) var snapOverlay = false
 
     let captureSession = AVCaptureSession()
     var capturedPhotoPublisher: AnyPublisher<URL, Never> { capturedPhotoSubject.eraseToAnyPublisher() }
@@ -51,6 +53,9 @@ final class CameraViewModel: NSObject, ObservableObject {
         let settings = AVCapturePhotoSettings()
         settings.flashMode = flashEnabled ? .on : .off
         photoOutput.capturePhoto(with: settings, delegate: self)
+
+        withAnimation(.linear(duration: 0.1)) { snapOverlay = true }
+        withAnimation(.linear(duration: 0.1).delay(0.1)) { snapOverlay = false }
     }
 
     func flipCamera() {

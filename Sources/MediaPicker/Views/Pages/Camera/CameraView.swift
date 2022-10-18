@@ -37,6 +37,11 @@ struct CameraView: View {
                 videoGravity: .resizeAspectFill,
                 orientation: cameraViewModel.deviceOrientation
             )
+            .overlay {
+                if cameraViewModel.snapOverlay {
+                    Rectangle()
+                }
+            }
 
             VStack(spacing: 0) {
                 if cameraSelectionService.hasSelected {
