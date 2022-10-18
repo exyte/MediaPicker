@@ -162,7 +162,6 @@ public struct MediaPicker<L: View, R: View>: View {
         CameraStubView(isPresented: $viewModel.showingCamera)
 #elseif os(iOS)
         CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
-            .background(Color.black)
             .ignoresSafeArea()
 #endif
     }

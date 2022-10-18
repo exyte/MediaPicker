@@ -13,6 +13,8 @@ extension FileManager {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
 
+    static var imageFileExtension: String { ".jpg" }
+
     static func storeToTempDir(url: URL) -> URL {
         let id = UUID().uuidString
         let path = FileManager.tempPath.appendingPathComponent(id)
@@ -23,7 +25,7 @@ extension FileManager {
 
     static func storeToTempDir(data: Data) -> URL {
         let id = UUID().uuidString
-        let path = FileManager.tempPath.appendingPathComponent(id)
+        let path = FileManager.tempPath.appendingPathComponent(id + Self.imageFileExtension)
 
         try? data.write(to: path)
         return path
