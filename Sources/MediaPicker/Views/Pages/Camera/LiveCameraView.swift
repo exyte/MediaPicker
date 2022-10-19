@@ -61,18 +61,7 @@ final class LiveVideoCaptureView: UIView {
 
     func updateOrientation(_ orientation: UIDeviceOrientation) {
         guard let connection = videoLayer.connection, connection.isVideoOrientationSupported else { return }
-        switch orientation {
-        case .portrait:
-            connection.videoOrientation = .portrait
-        case .portraitUpsideDown:
-            connection.videoOrientation = .portraitUpsideDown
-        case .landscapeLeft:
-            connection.videoOrientation = .landscapeRight
-        case .landscapeRight:
-            connection.videoOrientation = .landscapeLeft
-        default:
-            connection.videoOrientation = .portrait
-        }
+        connection.videoOrientation = AVCaptureVideoOrientation(orientation)
     }
 
 }

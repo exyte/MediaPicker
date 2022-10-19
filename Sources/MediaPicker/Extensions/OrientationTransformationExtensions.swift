@@ -1,11 +1,12 @@
 //
-//  UIImage+Orientation.swift
+//  OrientationTransformationExtensions.swift
 //  
 //
 //  Created by Alexandra Afonasova on 18.10.2022.
 //
 
 import UIKit
+import AVFoundation
 
 extension UIImage.Orientation {
 
@@ -31,4 +32,18 @@ extension UIImage.Orientation {
         }
         return orientation
     }
+}
+
+extension AVCaptureVideoOrientation {
+
+    init(_ orientation: UIDeviceOrientation) {
+        switch orientation {
+        case .portrait: self = .portrait
+        case .portraitUpsideDown: self = .portraitUpsideDown
+        case .landscapeLeft: self = .landscapeRight
+        case .landscapeRight: self = .landscapeLeft
+        default: self = .portrait
+        }
+    }
+
 }

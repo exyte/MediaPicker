@@ -13,6 +13,13 @@ import SwiftUI
 
 final class CameraViewModel: NSObject, ObservableObject {
 
+    struct CaptureDevice {
+        let device: AVCaptureDevice
+        let position: AVCaptureDevice.Position
+        let defaultZoom: CGFloat
+        let maxZoom: CGFloat
+    }
+
     @Published private(set) var deviceOrientation = UIDevice.current.orientation
     @Published private(set) var flashEnabled = false
     @Published private(set) var snapOverlay = false
@@ -23,7 +30,14 @@ final class CameraViewModel: NSObject, ObservableObject {
     private let photoOutput = AVCapturePhotoOutput()
     private let sessionQueue = DispatchQueue(label: "LiveCameraQueue")
     private let capturedPhotoSubject = PassthroughSubject<URL, Never>()
-    private var cameraPosition: AVCaptureDevice.Position = .back
+    private var captureDevice: CaptureDevice?
+
+    private let minScale: CGFloat = 1
+    private let singleCameraMaxScale: CGFloat = 5
+    private let dualCameraMaxScale: CGFloat = 8
+    private let tripleCameraMaxScale: CGFloat = 12
+    private var lastScale: CGFloat = 1
+    private var zoomAllowed: Bool { captureDevice?.position == .back }
 
     override init() {
         super.init()
@@ -64,7 +78,7 @@ final class CameraViewModel: NSObject, ObservableObject {
                 return
             }
 
-            let newPosition: AVCaptureDevice.Position = self?.cameraPosition == .back ? .front : .back
+            let newPosition: AVCaptureDevice.Position = self?.captureDevice?.position == .back ? .front : .back
 
             session.beginConfiguration()
             session.removeInput(input)
@@ -84,6 +98,32 @@ final class CameraViewModel: NSObject, ObservableObject {
         }
     }
 
+    func zoomChanged(_ scale: CGFloat) {
+        if !zoomAllowed { return }
+        zoomCamera(resolveScale(scale))
+    }
+
+    func zoomEnded(_ scale: CGFloat) {
+        if !zoomAllowed { return }
+
+        lastScale = resolveScale(scale)
+        zoomCamera(lastScale)
+    }
+
+    private func resolveScale(_ gestureScale: CGFloat) -> CGFloat {
+        let newScale = lastScale * gestureScale
+        let maxScale = captureDevice?.maxZoom ?? singleCameraMaxScale
+        return max(min(maxScale, newScale), minScale)
+    }
+
+    private func zoomCamera(_ scale: CGFloat) {
+        do {
+            try captureDevice?.device.lockForConfiguration()
+            captureDevice?.device.videoZoomFactor = scale
+            captureDevice?.device.unlockForConfiguration()
+        } catch {}
+    }
+
     private func configureSession() {
         captureSession.beginConfiguration()
         captureSession.sessionPreset = .photo
@@ -97,7 +137,29 @@ final class CameraViewModel: NSObject, ObservableObject {
         guard let captureDeviceInput = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         guard session.canAddInput(captureDeviceInput) else { return }
         session.addInput(captureDeviceInput)
-        cameraPosition = position
+
+        let defaultZoom = CGFloat(truncating: captureDevice.virtualDeviceSwitchOverVideoZoomFactors.first ?? minScale as NSNumber)
+
+        let maxZoom: CGFloat
+        let cameraCount = captureDevice.virtualDeviceSwitchOverVideoZoomFactors.count + 1
+        switch cameraCount {
+        case 1: maxZoom = singleCameraMaxScale
+        case 2: maxZoom = dualCameraMaxScale
+        default: maxZoom = tripleCameraMaxScale
+        }
+
+        let device = CaptureDevice(
+            device: captureDevice,
+            position: position,
+            defaultZoom: defaultZoom,
+            maxZoom: maxZoom
+        )
+        self.captureDevice = device
+
+        if position == .back {
+            captureDeviceInput.device.videoZoomFactor = device.defaultZoom
+            lastScale = device.defaultZoom
+        }
     }
 
     private func addOutput(to session: AVCaptureSession) {
@@ -109,18 +171,7 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     private func updateOutputOrientation() {
         guard let connection = photoOutput.connection(with: .video), connection.isVideoOrientationSupported else { return }
-        switch deviceOrientation {
-        case .portrait:
-            connection.videoOrientation = .portrait
-        case .portraitUpsideDown:
-            connection.videoOrientation = .portraitUpsideDown
-        case .landscapeLeft:
-            connection.videoOrientation = .landscapeRight
-        case .landscapeRight:
-            connection.videoOrientation = .landscapeLeft
-        default:
-            connection.videoOrientation = .portrait
-        }
+        connection.videoOrientation = AVCaptureVideoOrientation(deviceOrientation)
     }
 
     private func selectCaptureDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
@@ -136,7 +187,14 @@ final class CameraViewModel: NSObject, ObservableObject {
             ],
             mediaType: .video,
             position: position)
-        return session.devices.last
+
+        if let camera = session.devices.first(where: { $0.deviceType == .builtInTripleCamera }) {
+            return camera
+        } else if let camera = session.devices.first(where: { $0.deviceType == .builtInDualCamera }) {
+            return camera
+        } else {
+            return session.devices.first
+        }
     }
 
 }
