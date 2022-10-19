@@ -42,6 +42,11 @@ struct CameraView: View {
                     Rectangle()
                 }
             }
+            .gesture(
+                MagnificationGesture()
+                    .onChanged(cameraViewModel.zoomChanged(_:))
+                    .onEnded(cameraViewModel.zoomEnded(_:))
+            )
 
             VStack(spacing: 0) {
                 if cameraSelectionService.hasSelected {
