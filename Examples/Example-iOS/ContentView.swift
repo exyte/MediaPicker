@@ -78,10 +78,7 @@ struct MediaCell1: View {
             }
         }
         .task {
-            media.getUrl().sink {
-                url = $0
-            }
-            .store(in: &subscriptions)
+            url = await media.getUrl()
         }
     }
 }

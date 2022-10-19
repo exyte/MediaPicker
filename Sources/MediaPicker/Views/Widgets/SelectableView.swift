@@ -21,14 +21,14 @@ struct SelectableView<Content>: View where Content: View {
     }
     
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            content()
-
+        content().overlay {
             Button {
                 onSelect()
             } label: {
                 SelectIndicatorView(index: selected)
+                    .padding([.bottom, .leading], 10)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             .padding(paddings)
         }
     }

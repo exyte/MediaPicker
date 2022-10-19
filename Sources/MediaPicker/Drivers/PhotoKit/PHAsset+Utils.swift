@@ -12,36 +12,67 @@ import UIKit.UIScreen
 #endif
 
 extension PHAsset {
-
-    func getURL(completion: @escaping (URL?) -> Void) {
+    actor RequestStore {
+        var request: Request?
+        
+        func storeRequest(_ request: Request) {
+            self.request = request
+        }
+        
+        func cancel(asset: PHAsset) {
+            switch request {
+            case .contentEditing(let id):
+                asset.cancelContentEditingInputRequest(id)
+            case .imageRequest(let id):
+                PHImageManager.default().cancelImageRequest(id)
+            case .none:
+                break
+            }
+        }
+    }
+    
+    enum Request {
+        case contentEditing(PHContentEditingInputRequestID)
+        case imageRequest(PHImageRequestID)
+    }
+    
+    func getURL(completion: @escaping (URL?) -> Void) -> Request? {
+        var request: Request?
+        
         if mediaType == .image {
             let options = PHContentEditingInputRequestOptions()
             options.canHandleAdjustmentData = { _ -> Bool in
                 return true
             }
-            requestContentEditingInput(
-                with: options,
-                completionHandler: { (contentEditingInput, _) in
-                    completion(contentEditingInput?.fullSizeImageURL)
-                }
+            request = .contentEditing(
+                requestContentEditingInput(
+                    with: options,
+                    completionHandler: { (contentEditingInput, _) in
+                        completion(contentEditingInput?.fullSizeImageURL)
+                    }
+                )
             )
         } else if mediaType == .video {
             let options = PHVideoRequestOptions()
             options.version = .original
-            PHImageManager
-                .default()
-                .requestAVAsset(
-                    forVideo: self,
-                    options: options,
-                    resultHandler: { (asset, _, _) in
-                        if let urlAsset = asset as? AVURLAsset {
-                            completion(urlAsset.url)
-                        } else {
-                            completion(nil)
+            request = .imageRequest(
+                PHImageManager
+                    .default()
+                    .requestAVAsset(
+                        forVideo: self,
+                        options: options,
+                        resultHandler: { (asset, _, _) in
+                            if let urlAsset = asset as? AVURLAsset {
+                                completion(urlAsset.url)
+                            } else {
+                                completion(nil)
+                            }
                         }
-                    }
-                )
+                    )
+            )
         }
+        
+        return request
     }
 
     var formattedDuration: String? {
@@ -54,11 +85,25 @@ extension PHAsset {
 
 extension PHAsset {
     func getURL() async -> URL? {
-        return await withCheckedContinuation { continuation in
-            getURL { url in
-                continuation.resume(returning: url)
+        let requestStore = RequestStore()
+        
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                let request = getURL { url in
+                    continuation.resume(returning: url)
+                }
+                if let request = request {
+                    Task {
+                        await requestStore.storeRequest(request)
+                    }
+                }
+            }
+        } onCancel: {
+            Task {
+                await requestStore.cancel(asset: self)
             }
         }
+
     }
 }
 
@@ -68,31 +113,36 @@ extension PHAsset {
     func image(size: CGSize = CGSize(width: 100, height: 100)) -> AnyPublisher<UIImage?, Never> {
         let requestSize = CGSize(width: size.width * UIScreen.main.scale, height: size.height * UIScreen.main.scale)
         let passthroughSubject = PassthroughSubject<UIImage?, Never>()
-
-        Task { [passthroughSubject] in
-            let options = PHImageRequestOptions()
-            options.isNetworkAccessAllowed = true
-            options.deliveryMode = .opportunistic
-
-            // TODO: Cancel `requestImage` when returned Publisher is canceled
-            PHCachingImageManager.default().requestImage(
-                for: self,
-                targetSize: requestSize,
-                contentMode: .aspectFill,
-                options: options,
-                resultHandler: { [passthroughSubject] image, info in
-                    DispatchQueue.main.async { [image, info] in
+        var requestID: PHImageRequestID?
+        
+        let result = passthroughSubject
+            .handleEvents(receiveSubscription: { _ in
+                let options = PHImageRequestOptions()
+                options.isNetworkAccessAllowed = true
+                options.deliveryMode = .opportunistic
+                
+                requestID = PHCachingImageManager.default().requestImage(
+                    for: self,
+                    targetSize: requestSize,
+                    contentMode: .aspectFill,
+                    options: options,
+                    resultHandler: { image, info in
                         passthroughSubject.send(image)
                         if info?.keys.contains(PHImageResultIsDegradedKey) == false {
                             passthroughSubject.send(completion: .finished)
                         }
                     }
+                )
+            }, receiveCancel: {
+                if let requestID = requestID {
+                    PHCachingImageManager.default().cancelImageRequest(requestID)
                 }
-            )
-        }
-
-        return passthroughSubject
+            })
+            .subscribe(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+        
+        return result
     }
 
     func data() async -> Data? {

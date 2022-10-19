@@ -62,9 +62,7 @@ private extension AlbumView {
                         } content: {
                             Button {
                                 if fullscreenItem == nil {
-                                    withAnimation {
-                                        fullscreenItem = media
-                                    }
+                                    fullscreenItem = media
                                 }
                             } label: {
                                 MediaCell(viewModel: MediaViewModel(media: media))
@@ -83,7 +81,7 @@ private extension AlbumView {
         .sheet(item: $fullscreenItem) { item in
             FullscreenContainer(
                 medias: viewModel.medias,
-                index: viewModel.medias.firstIndex(of: item) ?? 0
+                selection: item.id
             )
         }
         .onAppear {
