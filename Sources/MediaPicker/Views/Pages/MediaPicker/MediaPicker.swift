@@ -73,6 +73,7 @@ public struct MediaPicker: View {
                             )
                         )
                     )
+                    .id(album.id)
                 }
             }
             .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {

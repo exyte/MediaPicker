@@ -8,7 +8,7 @@ struct AlbumView: View {
 
     var shouldShowCamera: Bool
     @Binding var showingCamera: Bool
-    var viewModel: AlbumViewModel
+    @StateObject var viewModel: AlbumViewModel
 
     @State private var fullscreenItem: AssetMediaModel?
     
