@@ -18,13 +18,10 @@ final class AlbumViewModel: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Object life cycle
-    init(title: String, mediasProvider: MediasProviderProtocol) {
-        self.title = title
-        self.mediasProvider = mediasProvider
-    }
     
     init(mediasProvider: MediasProviderProtocol) {
         self.mediasProvider = mediasProvider
+        onStart()
     }
     
     // MARK: - Public methods

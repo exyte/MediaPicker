@@ -5,17 +5,17 @@
 import Foundation
 import Photos
 
-struct AlbumModel {
+public struct AlbumModel {
     let preview: AssetMediaModel?
     let source: PHAssetCollection
 }
 
 extension AlbumModel: Identifiable {
-    var id: String {
+    public var id: String {
         source.localIdentifier
     }
 
-    var title: String? {
+    public var title: String? {
         source.localizedTitle
     }
 }

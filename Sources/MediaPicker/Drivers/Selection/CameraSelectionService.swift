@@ -9,12 +9,8 @@ import SwiftUI
 
 final class CameraSelectionService: ObservableObject {
 
-    var mediaSelectionLimit: Int?
+    var mediaSelectionLimit: Int? // if nill - unlimited
     var onChange: MediaPickerCompletionClosure? = nil
-
-    private var selectionLimit: Int {
-        mediaSelectionLimit ?? 0
-    }
 
     @Published private(set) var selected: [URLMediaModel] = []
 
@@ -22,15 +18,22 @@ final class CameraSelectionService: ObservableObject {
         !selected.isEmpty
     }
 
+    var fitsSelectionLimit: Bool {
+        if let selectionLimit = mediaSelectionLimit {
+            return selected.count < selectionLimit
+        }
+        return true
+    }
+
     func canSelect(media: URLMediaModel) -> Bool {
-        selected.count < selectionLimit || selected.contains(media)
+        fitsSelectionLimit || selected.contains(media)
     }
 
     func onSelect(media: URLMediaModel) {
         if let index = selected.firstIndex(of: media) {
             selected.remove(at: index)
         } else {
-            if selected.count < selectionLimit {
+            if fitsSelectionLimit {
                 selected.append(media)
             }
         }

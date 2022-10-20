@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		130FBF5528740D3E0086478A /* BuiltInPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130FBF5428740D3E0086478A /* BuiltInPickerView.swift */; };
+		130FBF5528740D3E0086478A /* CustomizedMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130FBF5428740D3E0086478A /* CustomizedMediaPicker.swift */; };
 		1384FF0B283F912E00C9AAC1 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1384FF0A283F912E00C9AAC1 /* Application.swift */; };
 		1384FF0D283F912E00C9AAC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1384FF0C283F912E00C9AAC1 /* ContentView.swift */; };
 		1384FF0F283F912F00C9AAC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF0E283F912F00C9AAC1 /* Assets.xcassets */; };
@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		130FBF5428740D3E0086478A /* BuiltInPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInPickerView.swift; sourceTree = "<group>"; };
+		130FBF5428740D3E0086478A /* CustomizedMediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedMediaPicker.swift; sourceTree = "<group>"; };
 		1384FF07283F912E00C9AAC1 /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1384FF0A283F912E00C9AAC1 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		1384FF0C283F912E00C9AAC1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 			children = (
 				130FBF5628740FB30086478A /* Support Files */,
 				1384FF0A283F912E00C9AAC1 /* Application.swift */,
-				130FBF5428740D3E0086478A /* BuiltInPickerView.swift */,
+				130FBF5428740D3E0086478A /* CustomizedMediaPicker.swift */,
 				1384FF0C283F912E00C9AAC1 /* ContentView.swift */,
 			);
 			path = "Example-iOS";
@@ -174,7 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1384FF0D283F912E00C9AAC1 /* ContentView.swift in Sources */,
-				130FBF5528740D3E0086478A /* BuiltInPickerView.swift in Sources */,
+				130FBF5528740D3E0086478A /* CustomizedMediaPicker.swift in Sources */,
 				1384FF0B283F912E00C9AAC1 /* Application.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,7 +233,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Example-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = FZXCM5CJ7P;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -317,7 +317,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Example-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = FZXCM5CJ7P;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

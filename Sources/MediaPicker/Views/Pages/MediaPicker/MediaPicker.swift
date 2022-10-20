@@ -3,125 +3,97 @@
 //
 
 import SwiftUI
+import Combine
 
-public struct MediaPicker<L: View, R: View>: View {
+public struct MediaPicker: View {
 
-    @Binding public var isPresented: Bool
+    // MARK: - Parameters
+
+    @Binding private var isPresented: Bool
+    @Binding private var pickerMode: MediaPickerMode
+    @Binding private var albums: [AlbumModel]
+
+    private let mediaSelectionLimit: Int?
+    private let onChange: MediaPickerCompletionClosure
+
+    // MARK: - Inner values
+
+    @Environment(\.mediaPickerTheme) private var theme
 
     @StateObject private var viewModel = MediaPickerViewModel()
     @StateObject private var selectionService = SelectionService()
     @StateObject private var cameraSelectionService = CameraSelectionService()
     @StateObject private var permissionService = PermissionsService()
 
-    private let mediaSelectionLimit: Int
-    private let onChange: MediaPickerCompletionClosure?
+    private let defaultAlbumsProvider = DefaultAlbumsProvider()
 
-    var leadingNavigation: (() -> L)? = nil
-    var trailingNavigation: (() -> R)? = nil
-
-    @Environment(\.mediaPickerTheme) private var theme
+    @State private var bag = Set<AnyCancellable>()
 
     // MARK: - Object life cycle
+
     public init(isPresented: Binding<Bool>,
-                limit: Int = 10,
-                leadingNavigation: @escaping () -> L,
-                trailingNavigation: @escaping () -> R,
+                pickerMode: Binding<MediaPickerMode>,
+                limit: Int? = nil,
                 onChange: @escaping MediaPickerCompletionClosure) {
-        self._isPresented = isPresented
-        self.mediaSelectionLimit = limit
-        self.onChange = onChange
-
-        self.leadingNavigation = leadingNavigation
-        self.trailingNavigation = trailingNavigation
-    }
-
-    public init(isPresented: Binding<Bool>,
-                limit: Int = 10,
-                trailingNavigation: @escaping () -> R,
-                onChange: @escaping MediaPickerCompletionClosure)
-    where L == EmptyView {
 
         self._isPresented = isPresented
+        self._pickerMode = pickerMode
+        self._albums = .constant([])
+
         self.mediaSelectionLimit = limit
         self.onChange = onChange
-
-        self.trailingNavigation = trailingNavigation
     }
 
-    public init(isPresented: Binding<Bool>,
-                limit: Int = 10,
-                leadingNavigation: @escaping () -> L,
-                onChange: @escaping MediaPickerCompletionClosure)
-    where R == EmptyView {
-
-        self._isPresented = isPresented
-        self.mediaSelectionLimit = limit
-        self.onChange = onChange
-
-        self.leadingNavigation = leadingNavigation
-    }
-
-    public init(isPresented: Binding<Bool>,
-                limit: Int = 10,
-                onChange: @escaping MediaPickerCompletionClosure)
-    where L == EmptyView, R == EmptyView {
-
-        self._isPresented = isPresented
-        self.mediaSelectionLimit = limit
-        self.onChange = onChange
-
-        self.leadingNavigation = { EmptyView() }
-        self.trailingNavigation = { EmptyView() }
-    }
-
-    // MARK: - SwiftUI View implementation
     public var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                Group {
-                    switch viewModel.mode {
-                    case .photos:
-                        AlbumView(
-                            shouldShowCamera: true,
-                            showingCamera: $viewModel.showingCamera,
-                            viewModel: AlbumViewModel(
-                                mediasProvider: AllPhotosProvider()
+                switch pickerMode {
+                case .photos:
+                    AlbumView(
+                        shouldShowCamera: true,
+                        showingCamera: $viewModel.showingCamera,
+                        viewModel: AlbumViewModel(
+                            mediasProvider: AllPhotosProvider()
+                        )
+                    )
+                case .albums:
+                    AlbumsView(
+                        showingCamera: $viewModel.showingCamera,
+                        viewModel: AlbumsViewModel(
+                            albumsProvider: defaultAlbumsProvider
+                        )
+                    )
+                case .album(let album):
+                    AlbumView(
+                        shouldShowCamera: false,
+                        showingCamera: $viewModel.showingCamera,
+                        viewModel: AlbumViewModel(
+                            mediasProvider: AlbumMediasProvider(
+                                album: album
                             )
                         )
-                    case .albums:
-                        AlbumsView(
-                            showingCamera: $viewModel.showingCamera,
-                            viewModel: AlbumsViewModel(
-                                albumsProvider: DefaultAlbumsProvider()
-                            )
-                        )
-                    }
+                    )
                 }
-                .safeAreaInset(edge: .top, spacing: 0, content: {
-                    headerView()
-                        .padding(.vertical, 12)
-                        .background(Material.regular)
-                })
-                .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
-                    CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
-                        .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
-                            deleteAllButton()
-                        }
-                }
-                .fullScreenCover(isPresented: $viewModel.showingCamera) {
-                    cameraSheet() {
-                        // did take picture
-                        if !cameraSelectionService.hasSelected {
-                            viewModel.showingCameraSelection = true
-                            viewModel.showingCamera = false
-                        }
-                        guard let url = viewModel.pickedMediaUrl else { return }
-                        cameraSelectionService.onSelect(media: URLMediaModel(url: url))
-                        viewModel.pickedMediaUrl = nil
-                    }
+            }
+            .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
+                CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
                     .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
                         deleteAllButton()
                     }
+            }
+            .fullScreenCover(isPresented: $viewModel.showingCamera) {
+                cameraSheet() {
+                    // did take picture
+                    if !cameraSelectionService.hasSelected {
+                        viewModel.showingCameraSelection = true
+                        viewModel.showingCamera = false
+                    }
+                    guard let url = viewModel.pickedMediaUrl else { return }
+                    cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                    viewModel.pickedMediaUrl = nil
+                }
+                .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                    deleteAllButton()
                 }
             }
         }
@@ -135,33 +107,15 @@ public struct MediaPicker<L: View, R: View>: View {
             
             cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
+
+            defaultAlbumsProvider.reload()
+            defaultAlbumsProvider.albums.sink { albums in
+                self.albums = albums//.map { Album(title: $0.title, preview: $0.preview) }
+            }
+            .store(in: &bag)
         }
     }
     
-    private func headerView() -> some View {
-        HStack {
-            if let leadingNavigation = leadingNavigation?() {
-                leadingNavigation
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                Color.clear
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            mediaPickerToolbar(mode: $viewModel.mode)
-
-            if let trailingNavigation = trailingNavigation?() {
-                trailingNavigation
-                    .padding(.trailing)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                Color.clear
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
     func deleteAllButton() -> some View {
         Button("Delete All") {
             cameraSelectionService.removeAll()
@@ -178,5 +132,20 @@ public struct MediaPicker<L: View, R: View>: View {
             .background(Color.black)
             .ignoresSafeArea()
 #endif
+    }
+}
+
+// TODO use this model for public stuff
+public struct Album {
+    let title: String?
+    let preview: AssetMediaModel?
+}
+
+extension MediaPicker {
+
+    public func albums(_ albums: Binding<[AlbumModel]>) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker._albums = albums
+        return mediaPicker
     }
 }

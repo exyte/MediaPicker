@@ -8,7 +8,7 @@ struct AlbumView: View {
 
     var shouldShowCamera: Bool
     @Binding var showingCamera: Bool
-    @StateObject var viewModel: AlbumViewModel
+    var viewModel: AlbumViewModel
 
     @State private var fullscreenItem: AssetMediaModel?
     
@@ -27,6 +27,7 @@ struct AlbumView: View {
 }
 
 private extension AlbumView {
+
     var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 100), spacing: 0)]
     }
@@ -52,8 +53,6 @@ private extension AlbumView {
                             LiveCameraCell {
                                 showingCamera = true
                             }
-                        } else {
-                            EmptyView()
                         }
                     } content: { media in
                         let index = selectionService.index(of: media)
@@ -83,12 +82,6 @@ private extension AlbumView {
                 medias: viewModel.medias,
                 selection: item.id
             )
-        }
-        .onAppear {
-            viewModel.onStart()
-        }
-        .onDisappear {
-            viewModel.onStop()
         }
     }
 }
