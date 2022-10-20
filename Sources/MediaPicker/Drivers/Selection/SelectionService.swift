@@ -18,15 +18,22 @@ final class SelectionService: ObservableObject {
         !selected.isEmpty
     }
 
+    var fitsSelectionLimit: Bool {
+        if let selectionLimit = mediaSelectionLimit {
+            return selected.count < selectionLimit
+        }
+        return true
+    }
+
     func canSelect(media: AssetMediaModel) -> Bool {
-        selected.count < selectionLimit || selected.contains(media)
+        fitsSelectionLimit || selected.contains(media)
     }
 
     func onSelect(media: AssetMediaModel) {
         if let index = selected.firstIndex(of: media) {
             selected.remove(at: index)
         } else {
-            if selected.count < selectionLimit {
+            if fitsSelectionLimit {
                 selected.append(media)
             }
         }
@@ -59,10 +66,6 @@ final class SelectionService: ObservableObject {
 }
 
 private extension SelectionService {
-    
-    var selectionLimit: Int {
-        mediaSelectionLimit ?? 0
-    }
 
     func findAsset(identifier: String) -> Future<PHAsset?, Never> {
         Future { promise in

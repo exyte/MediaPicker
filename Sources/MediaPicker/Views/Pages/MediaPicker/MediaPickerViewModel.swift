@@ -7,9 +7,7 @@ import SwiftUI
 
 @MainActor
 final class MediaPickerViewModel: ObservableObject {
-
-    @Published var mode: MediaPickerMode = .photos
-
+    
 #if os(iOS)
     @Published var showingCamera = false
     @Published var showingCameraSelection = false

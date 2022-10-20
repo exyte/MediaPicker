@@ -4,18 +4,8 @@
 
 import Foundation
 
-enum MediaPickerMode: Int, CaseIterable, Identifiable {
-    case photos = 1
-    case albums = 2
-    
-    var id: Int { self.rawValue }
-    
-    var name: String {
-        switch self {
-        case .photos:
-            return "Photos"
-        case .albums:
-            return "Albums"
-        }
-    }
+public enum MediaPickerMode {
+    case photos
+    case albums
+    case album(AlbumModel)
 }

@@ -12,7 +12,12 @@ import Combine
 struct ContentView: View {
 
     @State private var showDefaultMediaPicker = false
+    @State private var defaultMediaPickerMode = MediaPickerMode.photos
+    @State private var defaultMediaPickerModeSelection = 0
+
     @State private var showCustomizedMediaPicker = false
+    @State private var customizedMediaPickerMode = MediaPickerMode.photos
+
     @State private var medias: [Media] = []
 
     let columns = [GridItem(.adaptive(minimum: 100), spacing: 1, alignment: .top)]
@@ -28,10 +33,9 @@ struct ContentView: View {
                     showCustomizedMediaPicker = true
                 }
 
-                
                 //LazyVGrid(columns: columns, spacing: 1) {
                     ForEach(medias) { media in
-                        MediaCell1(media: media)
+                        MediaCell(media: media)
                     }
                 //}
                 .padding(.horizontal)
@@ -39,31 +43,57 @@ struct ContentView: View {
             .tint(.black)
             .navigationTitle("Examples")
         }
+
         // MARK: - Default media picker
-        .mediaPicker(
-            isPresented: $showDefaultMediaPicker,
-            leadingNavigation: {
-                Button("Cancel") {
-                    showDefaultMediaPicker = false
+        .sheet(isPresented: $showDefaultMediaPicker) {
+            VStack {
+                headerView
+                    .padding(12)
+                    .background(Material.regular)
+
+                MediaPicker(isPresented: $showDefaultMediaPicker, pickerMode: $defaultMediaPickerMode) {
+                    medias = $0
                 }
-            },
-            trailingNavigation: {
-                Button("Done") {
-                    showDefaultMediaPicker = false
-                    print("Selected:", medias)
-                }
-            },
-            onChange: { medias = $0 }
-        )
+            }
+        }
 
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
-            BuiltInPickerView(isPresented: $showCustomizedMediaPicker, medias: $medias)
+            CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, mediaPickerMode: $customizedMediaPickerMode, medias: $medias)
+        }
+    }
+
+    var headerView: some View {
+        HStack {
+            Button("Cancel") {
+                showDefaultMediaPicker = false
+            }
+
+            Spacer()
+
+            Picker("", selection: $defaultMediaPickerModeSelection) {
+                Text("Photos")
+                    .tag(0)
+                Text("Albums")
+                    .tag(1)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .frame(maxWidth: UIScreen.main.bounds.width / 2)
+            .onChange(of: defaultMediaPickerModeSelection) { newValue in
+                defaultMediaPickerMode = defaultMediaPickerModeSelection == 0 ? .photos : .albums
+            }
+
+            Spacer()
+
+            Button("Done") {
+                showDefaultMediaPicker = false
+                print("Selected:", medias)
+            }
         }
     }
 }
 
-struct MediaCell1: View {
+struct MediaCell: View {
 
     var media: Media
     @State var url: URL?
