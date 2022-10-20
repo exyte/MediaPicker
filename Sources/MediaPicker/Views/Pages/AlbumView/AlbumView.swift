@@ -75,6 +75,7 @@ private extension AlbumView {
                 
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
         }
         .background(theme.main.background)
         .sheet(item: $fullscreenItem) { item in

@@ -40,7 +40,7 @@ struct ContentView: View {
                 //}
                 .padding(.horizontal)
             }
-            .tint(.black)
+            .foregroundColor(Color(uiColor: .label))
             .navigationTitle("Examples")
         }
 
