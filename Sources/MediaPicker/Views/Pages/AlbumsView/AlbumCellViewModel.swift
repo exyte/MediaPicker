@@ -5,9 +5,11 @@
 #if os(iOS)
 import UIKit.UIImage
 #endif
+import Combine
 
 class AlbumCellViewModel: ObservableObject {
     let album: AlbumModel
+    private var previewCancellable: AnyCancellable?
     
     init(album: AlbumModel) {
         self.album = album
@@ -22,8 +24,10 @@ class AlbumCellViewModel: ObservableObject {
     func fetchPreview(size: CGSize) {
         guard preview == nil else { return }
         
-        album.preview?.source
+        previewCancellable = album.preview?.source
             .image(size: size)
-            .assign(to: &$preview)
+            .sink(receiveValue: { [weak self] in
+                self?.preview = $0
+            })
     }
 }

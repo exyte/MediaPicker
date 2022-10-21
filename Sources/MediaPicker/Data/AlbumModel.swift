@@ -19,3 +19,5 @@ extension AlbumModel: Identifiable {
         source.localizedTitle
     }
 }
+
+extension AlbumModel: Equatable {}

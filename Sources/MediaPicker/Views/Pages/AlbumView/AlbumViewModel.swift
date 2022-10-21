@@ -15,7 +15,7 @@ final class AlbumViewModel: ObservableObject {
     let mediasProvider: MediasProviderProtocol
 
     // MARK: Private
-    private var subscriptions = Set<AnyCancellable>()
+    private var mediaCancellable: AnyCancellable?
     
     // MARK: - Object life cycle
     
@@ -26,14 +26,15 @@ final class AlbumViewModel: ObservableObject {
     
     // MARK: - Public methods
     func onStart() {
-        mediasProvider.medias
-            .assign(to: \.medias, on: self)
-            .store(in: &subscriptions)
+        mediaCancellable = mediasProvider.medias
+            .sink(receiveValue: { [weak self] in
+                self?.medias = $0
+            })
         
         mediasProvider.reload()
     }
     
     func onStop() {
-        subscriptions.cancelAll()
+        mediaCancellable = nil
     }
 }

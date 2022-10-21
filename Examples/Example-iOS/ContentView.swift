@@ -98,8 +98,6 @@ struct MediaCell: View {
     var media: Media
     @State var url: URL?
 
-    @State private var subscriptions = Set<AnyCancellable>()
-
     var body: some View {
         ZStack {
             if let url = url {
