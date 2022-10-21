@@ -22,13 +22,14 @@ struct FullscreenContainer: View {
                     selectionService.onSelect(media: media)
                 } content: {
                     FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .padding(.vertical)
                 .tag(media.id)
             }
+            .ignoresSafeArea()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(theme.main.fullscreenBackground)
+        .ignoresSafeArea()
     }
 }
