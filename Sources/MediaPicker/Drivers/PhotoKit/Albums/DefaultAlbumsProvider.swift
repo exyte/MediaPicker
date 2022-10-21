@@ -56,6 +56,9 @@ private extension DefaultAlbumsProvider {
         for index in 0...(collections.count - 1) {
             let collection = collections[index]
             let options = PHFetchOptions()
+            options.sortDescriptors = [
+                NSSortDescriptor(key: "creationDate", ascending: false)
+            ]
             options.fetchLimit = 1
             let fetchResult = PHAsset.fetchAssets(in: collection, options: options)
             if fetchResult.count == 0 {
