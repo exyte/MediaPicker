@@ -110,7 +110,7 @@ extension PHAsset {
 #if os(iOS)
 extension PHAsset {
 
-    func image(size: CGSize = CGSize(width: 100, height: 100)) -> AnyPublisher<UIImage?, Never> {
+    func image(size: CGSize) -> AnyPublisher<UIImage?, Never> {
         let requestSize = CGSize(width: size.width * UIScreen.main.scale, height: size.height * UIScreen.main.scale)
         let passthroughSubject = PassthroughSubject<UIImage?, Never>()
         var requestID: PHImageRequestID?

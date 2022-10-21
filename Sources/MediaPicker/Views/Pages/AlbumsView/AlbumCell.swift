@@ -14,8 +14,16 @@ struct AlbumCell: View {
         VStack {
             Rectangle()
                 .aspectRatio(1, contentMode: .fit)
-                .overlay { ThumbnailView(preview: viewModel.preview) }
+                .overlay {
+                    GeometryReader { geometry in
+                        ThumbnailView(preview: viewModel.preview)
+                            .onAppear {
+                                viewModel.fetchPreview(size: geometry.size)
+                            }
+                    }
+                }
                 .clipped()
+                .foregroundColor(theme.main.background)
                 
             if let title = viewModel.album.title {
                 Text(title)
@@ -23,9 +31,6 @@ struct AlbumCell: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(theme.main.text)
             }
-        }
-        .onAppear {
-            viewModel.fetchPreview()
         }
     }
 }

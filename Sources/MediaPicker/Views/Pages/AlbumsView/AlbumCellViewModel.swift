@@ -19,11 +19,9 @@ class AlbumCellViewModel: ObservableObject {
     // FIXME: Create preview for image/video for other platforms
 #endif
     
-    func fetchPreview() {
-        guard preview == nil
-        else { return }
-        let side = 100.0 * UIScreen.main.scale * 2
-        let size = CGSize(width: side, height: side)
+    func fetchPreview(size: CGSize) {
+        guard preview == nil else { return }
+        
         album.preview?.source
             .image(size: size)
             .assign(to: &$preview)

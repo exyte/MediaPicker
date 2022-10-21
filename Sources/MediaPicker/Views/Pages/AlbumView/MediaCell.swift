@@ -10,10 +10,14 @@ struct MediaCell: View {
     
     var body: some View {
         ZStack {
-            Group {
+            GeometryReader { geometry in
                 ThumbnailView(preview: viewModel.preview)
-                    .aspectRatio(1, contentMode: .fill)
+                    .onAppear {
+                        viewModel.onStart(size: geometry.size)
+                    }
             }
+            .aspectRatio(1, contentMode: .fill)
+            
             if let duration = viewModel.media.source.formattedDuration {
                 VStack {
                     Spacer()
@@ -33,9 +37,7 @@ struct MediaCell: View {
                 }
             }
         }
-        .onAppear {
-            viewModel.onStart()
-        }
+
         .onDisappear {
             viewModel.onStop()
         }
