@@ -28,9 +28,11 @@ final class CameraViewModel: NSObject, ObservableObject {
     var capturedPhotoPublisher: AnyPublisher<URL, Never> { capturedPhotoSubject.eraseToAnyPublisher() }
 
     private let photoOutput = AVCapturePhotoOutput()
+    private let motionManager = MotionManager()
     private let sessionQueue = DispatchQueue(label: "LiveCameraQueue")
     private let capturedPhotoSubject = PassthroughSubject<URL, Never>()
     private var captureDevice: CaptureDevice?
+    private var lastPhotoActualOrientation: UIDeviceOrientation?
 
     private let minScale: CGFloat = 1
     private let singleCameraMaxScale: CGFloat = 5
@@ -67,6 +69,7 @@ final class CameraViewModel: NSObject, ObservableObject {
         let settings = AVCapturePhotoSettings()
         settings.flashMode = flashEnabled ? .on : .off
         photoOutput.capturePhoto(with: settings, delegate: self)
+        lastPhotoActualOrientation = motionManager.orientation
 
         withAnimation(.linear(duration: 0.1)) { snapOverlay = true }
         withAnimation(.linear(duration: 0.1).delay(0.1)) { snapOverlay = false }
@@ -206,14 +209,14 @@ extension CameraViewModel: AVCapturePhotoCaptureDelegate {
         error: Error?
     ) {
         guard let cgImage = photo.cgImageRepresentation() else { return }
-        
+
         let photoOrientation: UIImage.Orientation
-        if let rawOrientation = photo.metadata[String(kCGImagePropertyOrientation)] as? UInt32,
-           let orientation = UIImage.Orientation.orientation(fromCGOrientationRaw: rawOrientation) {
-            photoOrientation = orientation
+        if let orientation = lastPhotoActualOrientation {
+            photoOrientation = UIImage.Orientation(orientation)
         } else {
-            photoOrientation = .up
+            photoOrientation = UIImage.Orientation.default
         }
+
         guard let data = UIImage(
             cgImage: cgImage,
             scale: 1,
