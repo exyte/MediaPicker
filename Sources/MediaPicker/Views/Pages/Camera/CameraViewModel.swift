@@ -20,7 +20,6 @@ final class CameraViewModel: NSObject, ObservableObject {
         let maxZoom: CGFloat
     }
 
-    @Published private(set) var deviceOrientation = UIDevice.current.orientation
     @Published private(set) var flashEnabled = false
     @Published private(set) var snapOverlay = false
 
@@ -92,13 +91,6 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     func toggleFlash() {
         flashEnabled.toggle()
-    }
-
-    func orientationChanged(_ orientation: UIDeviceOrientation) {
-        deviceOrientation = orientation
-        sessionQueue.async { [weak self] in
-            self?.updateOutputOrientation()
-        }
     }
 
     func zoomChanged(_ scale: CGFloat) {
@@ -174,7 +166,7 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     private func updateOutputOrientation() {
         guard let connection = photoOutput.connection(with: .video), connection.isVideoOrientationSupported else { return }
-        connection.videoOrientation = AVCaptureVideoOrientation(deviceOrientation)
+        connection.videoOrientation = .portrait
     }
 
     private func selectCaptureDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {

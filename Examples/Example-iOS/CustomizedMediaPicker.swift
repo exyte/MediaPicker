@@ -8,6 +8,8 @@ import MediaPicker
 
 struct CustomizedMediaPicker: View {
 
+    @EnvironmentObject private var appDelegate: AppDelegate
+
     @Binding var isPresented: Bool
     @Binding var mediaPickerMode: MediaPickerMode
     @Binding var medias: [Media]
@@ -28,6 +30,13 @@ struct CustomizedMediaPicker: View {
                 isPresented: $isPresented,
                 pickerMode: $mediaPickerMode,
                 limit: maxCount,
+                orientationHandler: {
+                    if $0 {
+                        appDelegate.lockOrientationToPortrait()
+                    } else {
+                        appDelegate.unlockOrientation()
+                    }
+                },
                 onChange: { selectedMedia = $0 }
             )
             .albums($albums)

@@ -26,6 +26,7 @@ public struct MediaPicker: View {
     @StateObject private var permissionService = PermissionsService()
 
     private let defaultAlbumsProvider = DefaultAlbumsProvider()
+    private let orientationHandler: (Bool) -> Void
 
     @State private var bag = Set<AnyCancellable>()
 
@@ -34,6 +35,7 @@ public struct MediaPicker: View {
     public init(isPresented: Binding<Bool>,
                 pickerMode: Binding<MediaPickerMode>,
                 limit: Int? = nil,
+                orientationHandler: @escaping (Bool) -> Void,
                 onChange: @escaping MediaPickerCompletionClosure) {
 
         self._isPresented = isPresented
@@ -42,6 +44,7 @@ public struct MediaPicker: View {
 
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
     }
 
     public var body: some View {
@@ -114,6 +117,7 @@ public struct MediaPicker: View {
             }
             .store(in: &bag)
         }
+        .onReceive(viewModel.$showingCamera, perform: orientationHandler)
     }
 
     func deleteAllButton() -> some View {
@@ -128,7 +132,7 @@ public struct MediaPicker: View {
 #if targetEnvironment(simulator)
         CameraStubView(isPresented: $viewModel.showingCamera)
 #elseif os(iOS)
-        CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
+        CameraView(viewModel: viewModel, didTakePicture: didTakePicture, orientationHandler: orientationHandler)
             .ignoresSafeArea()
 #endif
     }

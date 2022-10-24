@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct Application: App {
+
+    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appDelegate)
         }
     }
 }
