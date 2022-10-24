@@ -13,6 +13,7 @@
 		1384FF0F283F912F00C9AAC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF0E283F912F00C9AAC1 /* Assets.xcassets */; };
 		1384FF12283F912F00C9AAC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF11283F912F00C9AAC1 /* Preview Assets.xcassets */; };
 		13D72C0F2873043E006B5EC7 /* MediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 13D72C0E2873043E006B5EC7 /* MediaPicker */; };
+		A82559832901A437008D9CC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82559822901A437008D9CC5 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		1384FF11283F912F00C9AAC1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1384FF19283F920A00C9AAC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		13D72C0D28730429006B5EC7 /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
+		A82559822901A437008D9CC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 				1384FF0A283F912E00C9AAC1 /* Application.swift */,
 				130FBF5428740D3E0086478A /* BuiltInPickerView.swift */,
 				1384FF0C283F912E00C9AAC1 /* ContentView.swift */,
+				A82559822901A437008D9CC5 /* AppDelegate.swift */,
 			);
 			path = "Example-iOS";
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A82559832901A437008D9CC5 /* AppDelegate.swift in Sources */,
 				1384FF0D283F912E00C9AAC1 /* ContentView.swift in Sources */,
 				130FBF5528740D3E0086478A /* BuiltInPickerView.swift in Sources */,
 				1384FF0B283F912E00C9AAC1 /* Application.swift in Sources */,

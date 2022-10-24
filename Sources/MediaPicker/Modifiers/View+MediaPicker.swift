@@ -9,12 +9,14 @@ public extension View {
     
     func mediaPicker(isPresented: Binding<Bool>,
                      limit: Int = 10,
-                     onChange: @escaping MediaPickerCompletionClosure) -> some View {
+                     onChange: @escaping MediaPickerCompletionClosure,
+                     orientationHandler: @escaping (Bool) -> Void) -> some View {
         self.sheet(isPresented: isPresented) {
             MediaPicker(
                 isPresented: isPresented,
                 limit: limit,
-                onChange: onChange
+                onChange: onChange,
+                orientationHandler: orientationHandler
             )
         }
     }
@@ -22,14 +24,16 @@ public extension View {
     func mediaPicker<T>(isPresented: Binding<Bool>,
                         limit: Int = 10,
                         trailingNavigation: @escaping () -> T,
-                        onChange: @escaping MediaPickerCompletionClosure) -> some View
+                        onChange: @escaping MediaPickerCompletionClosure,
+                        orientationHandler: @escaping (Bool) -> Void) -> some View
     where T: View {
         self.sheet(isPresented: isPresented) {
             MediaPicker(
                 isPresented: isPresented,
                 limit: limit,
                 trailingNavigation: trailingNavigation,
-                onChange: onChange
+                onChange: onChange,
+                orientationHandler: orientationHandler
             )
         }
     }
@@ -37,14 +41,16 @@ public extension View {
     func mediaPicker<L>(isPresented: Binding<Bool>,
                         limit: Int = 10,
                         leadingNavigation: @escaping () -> L,
-                        onChange: @escaping MediaPickerCompletionClosure) -> some View
+                        onChange: @escaping MediaPickerCompletionClosure,
+                        orientationHandler: @escaping (Bool) -> Void) -> some View
     where L: View {
         self.sheet(isPresented: isPresented) {
             MediaPicker(
                 isPresented: isPresented,
                 limit: limit,
                 leadingNavigation: leadingNavigation,
-                onChange: onChange
+                onChange: onChange,
+                orientationHandler: orientationHandler
             )
         }
     }
@@ -53,7 +59,8 @@ public extension View {
                            limit: Int = 10,
                            leadingNavigation: @escaping () -> L,
                            trailingNavigation: @escaping () -> T,
-                           onChange: @escaping MediaPickerCompletionClosure) -> some View
+                           onChange: @escaping MediaPickerCompletionClosure,
+                           orientationHandler: @escaping (Bool) -> Void) -> some View
     where L: View, T: View {
         self.sheet(isPresented: isPresented) {
             MediaPicker(
@@ -61,7 +68,8 @@ public extension View {
                 limit: limit,
                 leadingNavigation: leadingNavigation,
                 trailingNavigation: trailingNavigation,
-                onChange: onChange
+                onChange: onChange,
+                orientationHandler: orientationHandler
             )
         }
     }

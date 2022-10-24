@@ -11,6 +11,7 @@ import Combine
 
 struct ContentView: View {
 
+    @EnvironmentObject private var appDelegate: AppDelegate
     @State private var showDefaultMediaPicker = false
     @State private var showCustomizedMediaPicker = false
     @State private var medias: [Media] = []
@@ -53,7 +54,14 @@ struct ContentView: View {
                     print("Selected:", medias)
                 }
             },
-            onChange: { medias = $0 }
+            onChange: { medias = $0 },
+            orientationHandler: {
+                if $0 {
+                    appDelegate.lockOrientationToPortrait()
+                } else {
+                    appDelegate.unlockOrientation()
+                }
+            }
         )
 
         // MARK: - Customized media picker

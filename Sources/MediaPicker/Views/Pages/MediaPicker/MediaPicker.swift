@@ -14,7 +14,8 @@ public struct MediaPicker<L: View, R: View>: View {
     @StateObject private var permissionService = PermissionsService()
 
     private let mediaSelectionLimit: Int
-    private let onChange: MediaPickerCompletionClosure?
+    private let onChange: MediaPickerCompletionClosure
+    private let orientationHandler: (Bool) -> Void
 
     var leadingNavigation: (() -> L)? = nil
     var trailingNavigation: (() -> R)? = nil
@@ -26,10 +27,12 @@ public struct MediaPicker<L: View, R: View>: View {
                 limit: Int = 10,
                 leadingNavigation: @escaping () -> L,
                 trailingNavigation: @escaping () -> R,
-                onChange: @escaping MediaPickerCompletionClosure) {
+                onChange: @escaping MediaPickerCompletionClosure,
+                orientationHandler: @escaping (Bool) -> Void) {
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
 
         self.leadingNavigation = leadingNavigation
         self.trailingNavigation = trailingNavigation
@@ -38,12 +41,14 @@ public struct MediaPicker<L: View, R: View>: View {
     public init(isPresented: Binding<Bool>,
                 limit: Int = 10,
                 trailingNavigation: @escaping () -> R,
-                onChange: @escaping MediaPickerCompletionClosure)
+                onChange: @escaping MediaPickerCompletionClosure,
+                orientationHandler: @escaping (Bool) -> Void)
     where L == EmptyView {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
 
         self.leadingNavigation = { EmptyView() }
         self.trailingNavigation = trailingNavigation
@@ -52,12 +57,14 @@ public struct MediaPicker<L: View, R: View>: View {
     public init(isPresented: Binding<Bool>,
                 limit: Int = 10,
                 leadingNavigation: @escaping () -> L,
-                onChange: @escaping MediaPickerCompletionClosure)
+                onChange: @escaping MediaPickerCompletionClosure,
+                orientationHandler: @escaping (Bool) -> Void)
     where R == EmptyView {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
 
         self.leadingNavigation = leadingNavigation
         self.trailingNavigation = { EmptyView() }
@@ -65,12 +72,14 @@ public struct MediaPicker<L: View, R: View>: View {
 
     public init(isPresented: Binding<Bool>,
                 limit: Int = 10,
-                onChange: @escaping MediaPickerCompletionClosure)
+                onChange: @escaping MediaPickerCompletionClosure,
+                orientationHandler: @escaping (Bool) -> Void)
     where L == EmptyView, R == EmptyView {
 
         self._isPresented = isPresented
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
 
         self.leadingNavigation = { EmptyView() }
         self.trailingNavigation = { EmptyView() }
@@ -147,6 +156,7 @@ public struct MediaPicker<L: View, R: View>: View {
             cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
         }
+        .onReceive(viewModel.$showingCamera, perform: orientationHandler)
     }
 
     func deleteAllButton() -> some View {
@@ -161,7 +171,7 @@ public struct MediaPicker<L: View, R: View>: View {
 #if targetEnvironment(simulator)
         CameraStubView(isPresented: $viewModel.showingCamera)
 #elseif os(iOS)
-        CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
+        CameraView(viewModel: viewModel, didTakePicture: didTakePicture, orientationHandler: orientationHandler)
             .ignoresSafeArea()
 #endif
     }

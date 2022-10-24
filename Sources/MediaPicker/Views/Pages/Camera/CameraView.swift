@@ -9,6 +9,7 @@ struct CameraView: View {
 
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
+    let orientationHandler: (Bool) -> Void
 
     @StateObject private var cameraViewModel = CameraViewModel()
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
@@ -35,7 +36,7 @@ struct CameraView: View {
             LiveCameraView(
                 session: cameraViewModel.captureSession,
                 videoGravity: .resizeAspectFill,
-                orientation: cameraViewModel.deviceOrientation
+                orientation: .portrait
             )
             .overlay {
                 if cameraViewModel.snapOverlay {
@@ -103,7 +104,6 @@ struct CameraView: View {
         .background(Color.black)
         .onEnteredBackground(perform: cameraViewModel.stopSession)
         .onEnteredForeground(perform: cameraViewModel.startSession)
-        .onRotate(perform: cameraViewModel.orientationChanged(_:))
         .onReceive(cameraViewModel.capturedPhotoPublisher) {
             viewModel.pickedMediaUrl = $0
             didTakePicture()

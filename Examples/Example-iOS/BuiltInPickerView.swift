@@ -8,6 +8,7 @@ import MediaPicker
 
 struct BuiltInPickerView: View {
 
+    @EnvironmentObject private var appDelegate: AppDelegate
     @Binding var isPresented: Bool
     @State private var medias: [Media] = []
 
@@ -34,7 +35,14 @@ struct BuiltInPickerView: View {
                         .tint(.green)
                     }
                 },
-                onChange: { medias = $0 }
+                onChange: { medias = $0 },
+                orientationHandler: {
+                    if $0 {
+                        appDelegate.lockOrientationToPortrait()
+                    } else {
+                        appDelegate.unlockOrientation()
+                    }
+                }
             )
             .selectionStyle(.count)
             .mediaPickerTheme(
