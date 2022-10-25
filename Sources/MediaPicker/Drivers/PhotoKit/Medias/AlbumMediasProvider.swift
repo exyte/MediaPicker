@@ -27,7 +27,12 @@ final class AlbumMediasProvider: MediasProviderProtocol {
     }
 
     func reload() {
-        let fetchResult = PHAsset.fetchAssets(in: album.source, options: nil)
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [
+            NSSortDescriptor(key: "creationDate", ascending: false)
+        ]
+        
+        let fetchResult = PHAsset.fetchAssets(in: album.source, options: fetchOptions)
         if fetchResult.count == 0 {
             subject.send([])
         }

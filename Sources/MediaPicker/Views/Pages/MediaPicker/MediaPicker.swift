@@ -25,9 +25,6 @@ public struct MediaPicker: View {
     @StateObject private var cameraSelectionService = CameraSelectionService()
     @StateObject private var permissionService = PermissionsService()
 
-    private let defaultAlbumsProvider = DefaultAlbumsProvider()
-
-    @State private var bag = Set<AnyCancellable>()
 
     // MARK: - Object life cycle
 
@@ -60,7 +57,7 @@ public struct MediaPicker: View {
                     AlbumsView(
                         showingCamera: $viewModel.showingCamera,
                         viewModel: AlbumsViewModel(
-                            albumsProvider: defaultAlbumsProvider
+                            albumsProvider: viewModel.defaultAlbumsProvider
                         )
                     )
                 case .album(let album):
@@ -73,6 +70,7 @@ public struct MediaPicker: View {
                             )
                         )
                     )
+                    .id(album.id)
                 }
             }
             .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
@@ -97,6 +95,9 @@ public struct MediaPicker: View {
                 }
             }
         }
+        .onChange(of: viewModel.albums) {
+            self.albums = $0
+        }
         .background(theme.main.background.ignoresSafeArea())
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
@@ -107,12 +108,7 @@ public struct MediaPicker: View {
             
             cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
-
-            defaultAlbumsProvider.reload()
-            defaultAlbumsProvider.albums.sink { albums in
-                self.albums = albums//.map { Album(title: $0.title, preview: $0.preview) }
-            }
-            .store(in: &bag)
+            viewModel.onStart()
         }
     }
 

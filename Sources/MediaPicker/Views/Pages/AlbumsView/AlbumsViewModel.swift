@@ -14,7 +14,7 @@ final class AlbumsViewModel: ObservableObject {
     let albumsProvider: AlbumsProviderProtocol
 
     // MARK: Private
-    private var subscriptions = Set<AnyCancellable>()
+    private var albumsCancellable: AnyCancellable?
     
     // MARK: - Object life cycle
     init(albumsProvider: AlbumsProviderProtocol) {
@@ -24,19 +24,18 @@ final class AlbumsViewModel: ObservableObject {
     // MARK: - Public methods
     func onStart() {
         isLoading = true
-        albumsProvider.albums
+        albumsCancellable = albumsProvider.albums
             .print("albums")
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.albums = $0
                 self?.isLoading = false
             }
-            .store(in: &subscriptions)
         
         albumsProvider.reload()
     }
     
     func onStop() {
-        subscriptions.cancelAll()
+        albumsCancellable = nil
     }
 }

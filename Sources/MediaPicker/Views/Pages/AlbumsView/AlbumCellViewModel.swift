@@ -5,9 +5,11 @@
 #if os(iOS)
 import UIKit.UIImage
 #endif
+import Combine
 
 class AlbumCellViewModel: ObservableObject {
     let album: AlbumModel
+    private var previewCancellable: AnyCancellable?
     
     init(album: AlbumModel) {
         self.album = album
@@ -19,13 +21,13 @@ class AlbumCellViewModel: ObservableObject {
     // FIXME: Create preview for image/video for other platforms
 #endif
     
-    func fetchPreview() {
-        guard preview == nil
-        else { return }
-        let side = 100.0 * UIScreen.main.scale * 2
-        let size = CGSize(width: side, height: side)
-        album.preview?.source
+    func fetchPreview(size: CGSize) {
+        guard preview == nil else { return }
+        
+        previewCancellable = album.preview?.source
             .image(size: size)
-            .assign(to: &$preview)
+            .sink(receiveValue: { [weak self] in
+                self?.preview = $0
+            })
     }
 }

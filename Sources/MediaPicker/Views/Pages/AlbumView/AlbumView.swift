@@ -8,7 +8,7 @@ struct AlbumView: View {
 
     var shouldShowCamera: Bool
     @Binding var showingCamera: Bool
-    var viewModel: AlbumViewModel
+    @StateObject var viewModel: AlbumViewModel
 
     @State private var fullscreenItem: AssetMediaModel?
     
@@ -61,9 +61,7 @@ private extension AlbumView {
                         } content: {
                             Button {
                                 if fullscreenItem == nil {
-                                    withAnimation {
-                                        fullscreenItem = media
-                                    }
+                                    fullscreenItem = media
                                 }
                             } label: {
                                 MediaCell(viewModel: MediaViewModel(media: media))
@@ -77,12 +75,13 @@ private extension AlbumView {
                 
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
         }
         .background(theme.main.background)
         .sheet(item: $fullscreenItem) { item in
             FullscreenContainer(
                 medias: viewModel.medias,
-                index: viewModel.medias.firstIndex(of: item) ?? 0
+                selection: item.id
             )
         }
     }

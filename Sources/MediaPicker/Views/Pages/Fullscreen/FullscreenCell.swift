@@ -12,9 +12,9 @@ struct FullscreenCell: View {
     
     var body: some View {
         VStack {
-            if let preview = viewModel.preview {
+            if viewModel.isImageSet, let image = viewModel.preview {
                 ZoomableScrollView {
-                    Image(uiImage: preview)
+                    Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
                 }
@@ -26,11 +26,12 @@ struct FullscreenCell: View {
             } else {
                 Spacer()
                 ProgressView()
+                    .tint(.white)
                 Spacer()
             }
         }
-        .onAppear {
-            viewModel.onStart()
+        .task {
+            await viewModel.onStart()
         }
         .onDisappear {
             viewModel.onStop()

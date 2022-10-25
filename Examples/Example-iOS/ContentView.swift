@@ -40,7 +40,7 @@ struct ContentView: View {
                 //}
                 .padding(.horizontal)
             }
-            .tint(.black)
+            .foregroundColor(Color(uiColor: .label))
             .navigationTitle("Examples")
         }
 
@@ -98,8 +98,6 @@ struct MediaCell: View {
     var media: Media
     @State var url: URL?
 
-    @State private var subscriptions = Set<AnyCancellable>()
-
     var body: some View {
         ZStack {
             if let url = url {
@@ -108,10 +106,7 @@ struct MediaCell: View {
             }
         }
         .task {
-            media.getUrl().sink {
-                url = $0
-            }
-            .store(in: &subscriptions)
+            url = await media.getUrl()
         }
     }
 }

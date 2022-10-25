@@ -7,28 +7,29 @@ import SwiftUI
 
 struct FullscreenContainer: View {
 
-    var medias: [AssetMediaModel]
-    @State var index: Int
+    let medias: [AssetMediaModel]
+    @State var selection: AssetMediaModel.ID
 
     @Environment(\.mediaPickerTheme) private var theme
 
     @EnvironmentObject private var selectionService: SelectionService
     
     var body: some View {
-        TabView(selection: $index) {
-            ForEach(medias.enumerated().map({ $0 }), id: \.offset) { (index, media) in
+        TabView(selection: $selection) {
+            ForEach(medias, id: \.id) { media in
                 let index = selectionService.index(of: media)
                 SelectableView(selected: index, paddings: 20) {
                     selectionService.onSelect(media: media)
                 } content: {
                     FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
-                        .tag(index)
-                        .frame(maxHeight: .infinity)
                 }
-                .padding(.vertical)
+                .tag(media.id)
             }
+            .ignoresSafeArea()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(theme.main.fullscreenBackground)
+        .ignoresSafeArea()
     }
 }

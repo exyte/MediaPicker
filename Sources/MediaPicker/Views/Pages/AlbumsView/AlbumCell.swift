@@ -12,17 +12,25 @@ struct AlbumCell: View {
     
     var body: some View {
         VStack {
-            ThumbnailView(preview: viewModel.preview)
-                .aspectRatio(1, contentMode: .fill)
+            Rectangle()
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    GeometryReader { geometry in
+                        ThumbnailView(preview: viewModel.preview)
+                            .onAppear {
+                                viewModel.fetchPreview(size: geometry.size)
+                            }
+                    }
+                }
+                .clipped()
+                .foregroundColor(theme.main.background)
+            
             if let title = viewModel.album.title {
                 Text(title)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
                     .foregroundColor(theme.main.text)
             }
-        }
-        .onAppear {
-            viewModel.fetchPreview()
         }
     }
 }

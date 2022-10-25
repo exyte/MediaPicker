@@ -9,22 +9,22 @@ import Photos
 final class DefaultAlbumsProvider: AlbumsProviderProtocol {
 
     private var subject = CurrentValueSubject<[AlbumModel], Never>([])
-    private var subscriptions = Set<AnyCancellable>()
-
+    private var albumsCancellable: AnyCancellable?
+    private var permissionCancellable: AnyCancellable?
+    
     var albums: AnyPublisher<[AlbumModel], Never> {
         subject.eraseToAnyPublisher()
     }
 
     init() {
-        photoLibraryChangePermissionPublisher
+        permissionCancellable = photoLibraryChangePermissionPublisher
             .sink { [weak self] in
                 self?.reload()
             }
-            .store(in: &subscriptions)
     }
 
     func reload() {
-        [PHAssetCollectionType.album, .smartAlbum]
+        albumsCancellable = [PHAssetCollectionType.album, .smartAlbum]
             .publisher
             .map { fetchAlbums(type: $0) }
             .scan([], +)
@@ -32,7 +32,6 @@ final class DefaultAlbumsProvider: AlbumsProviderProtocol {
             .sink { [weak self] in
                 self?.subject.send($0)
             }
-            .store(in: &subscriptions)
     }
 }
 
@@ -57,6 +56,9 @@ private extension DefaultAlbumsProvider {
         for index in 0...(collections.count - 1) {
             let collection = collections[index]
             let options = PHFetchOptions()
+            options.sortDescriptors = [
+                NSSortDescriptor(key: "creationDate", ascending: false)
+            ]
             options.fetchLimit = 1
             let fetchResult = PHAsset.fetchAssets(in: collection, options: options)
             if fetchResult.count == 0 {

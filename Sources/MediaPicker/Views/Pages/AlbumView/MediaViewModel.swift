@@ -10,7 +10,7 @@ import UIKit.UIImage
 class MediaViewModel: ObservableObject {
     let media: AssetMediaModel
     
-    private var subscriptions = Set<AnyCancellable>()
+    private var imageCancellable: AnyCancellable?
     
     init(media: AssetMediaModel) {
         self.media = media
@@ -22,16 +22,15 @@ class MediaViewModel: ObservableObject {
     // FIXME: Create preview for image/video for other platforms
 #endif
     
-    func onStart() {
-        media.source
-            .image()
+    func onStart(size: CGSize) {
+        imageCancellable = media.source
+            .image(size: size)
             .sink {
                 self.preview = $0
             }
-            .store(in: &subscriptions)
     }
     
     func onStop() {
-        subscriptions.cancelAll()
+        imageCancellable = nil
     }
 }
