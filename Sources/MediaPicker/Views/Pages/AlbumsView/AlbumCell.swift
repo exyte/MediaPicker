@@ -24,7 +24,7 @@ struct AlbumCell: View {
                 }
                 .clipped()
                 .foregroundColor(theme.main.background)
-                
+            
             if let title = viewModel.album.title {
                 Text(title)
                     .lineLimit(2)

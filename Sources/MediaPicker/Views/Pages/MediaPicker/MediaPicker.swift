@@ -95,9 +95,9 @@ public struct MediaPicker: View {
                 }
             }
         }
-        .onChange(of: viewModel.albums, perform: {
+        .onChange(of: viewModel.albums) {
             self.albums = $0
-        })
+        }
         .background(theme.main.background.ignoresSafeArea())
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
@@ -111,7 +111,7 @@ public struct MediaPicker: View {
             viewModel.onStart()
         }
     }
-    
+
     func deleteAllButton() -> some View {
         Button("Delete All") {
             cameraSelectionService.removeAll()
