@@ -56,10 +56,9 @@ struct ContentView: View {
                     isPresented: $showDefaultMediaPicker,
                     pickerMode: $defaultMediaPickerMode,
                     orientationHandler: {
-                        if $0 {
-                            appDelegate.lockOrientationToPortrait()
-                        } else {
-                            appDelegate.unlockOrientation()
+                        switch $0 {
+                        case .lock: appDelegate.lockOrientationToPortrait()
+                        case .unlock: appDelegate.unlockOrientation()
                         }
                     },
                     onChange: { medias = $0 }

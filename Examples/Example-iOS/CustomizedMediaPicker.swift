@@ -31,10 +31,9 @@ struct CustomizedMediaPicker: View {
                 pickerMode: $mediaPickerMode,
                 limit: maxCount,
                 orientationHandler: {
-                    if $0 {
-                        appDelegate.lockOrientationToPortrait()
-                    } else {
-                        appDelegate.unlockOrientation()
+                    switch $0 {
+                    case .lock: appDelegate.lockOrientationToPortrait()
+                    case .unlock: appDelegate.unlockOrientation()
                     }
                 },
                 onChange: { selectedMedia = $0 }

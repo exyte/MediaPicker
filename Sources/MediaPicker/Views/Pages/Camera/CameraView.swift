@@ -9,7 +9,6 @@ struct CameraView: View {
 
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
-    let orientationHandler: (Bool) -> Void
 
     @StateObject private var cameraViewModel = CameraViewModel()
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
