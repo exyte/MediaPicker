@@ -5,3 +5,8 @@
 import Foundation
 
 public typealias MediaPickerCompletionClosure = ([Media]) -> Void
+public typealias MediaPickerOrientationHandler = (ShouldLock) -> Void
+
+public enum ShouldLock {
+    case lock, unlock
+}

@@ -2,7 +2,6 @@
 //  Created by Alex.M on 06.06.2022.
 //
 
-import Foundation
 import SwiftUI
 
 struct LiveCameraCell: View {
@@ -10,17 +9,24 @@ struct LiveCameraCell: View {
     let action: () -> Void
     
     @StateObject private var liveCameraViewModel = LiveCameraViewModel()
+    @State private var orientation = UIDevice.current.orientation
     
     var body: some View {
         Button {
             action()
         } label: {
-            Image(uiImage: liveCameraViewModel.capturedImage)
-                .resizable()
-                .aspectRatio(1.0, contentMode: .fill)
-                .overlay(
-                    Image(systemName: "camera")
-                        .foregroundColor(.white))
+            LiveCameraView(
+                session: liveCameraViewModel.captureSession,
+                videoGravity: .resizeAspectFill,
+                orientation: orientation
+            )
+            .overlay(
+                Image(systemName: "camera")
+                    .foregroundColor(.white)
+            )
         }
+        .onEnteredBackground(perform: liveCameraViewModel.stopSession)
+        .onEnteredForeground(perform: liveCameraViewModel.startSession)
+        .onRotate { orientation = $0 }
     }
 }

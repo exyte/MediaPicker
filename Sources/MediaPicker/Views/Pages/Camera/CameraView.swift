@@ -5,85 +5,108 @@
 import SwiftUI
 import Photos
 
-struct CameraView: UIViewControllerRepresentable {
+struct CameraView: View {
 
     @ObservedObject var viewModel: MediaPickerViewModel
+    let didTakePicture: () -> Void
 
-    var didTakePicture: ()->()
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let imagePicker = UIImagePickerController()
-        imagePicker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .camera) ?? ["public.image", "public.movie"]
-        imagePicker.sourceType = .camera
-        imagePicker.delegate = context.coordinator
+    @StateObject private var cameraViewModel = CameraViewModel()
+    @EnvironmentObject private var cameraSelectionService: CameraSelectionService
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
 
-        let hostingController = UIHostingController(rootView: CameraOverlayView(viewModel: viewModel) {
-            viewModel.showingCamera = false
-        } onFlash: {
-            imagePicker.cameraFlashMode = (imagePicker.cameraFlashMode == .on ? .off : .on)
-        } onFlip: {
-            imagePicker.cameraDevice = (imagePicker.cameraDevice == .front ? .rear : .front)
-        } onTake: {
-            imagePicker.takePicture()
-        })
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Button("Cancel") {
+                    if cameraSelectionService.hasSelected {
+                        viewModel.showingExitCameraConfirmation = true
+                    } else {
+                        viewModel.showingCamera = false
+                    }
+                }
+                .foregroundColor(.white)
+                .padding(.top, safeAreaInsets.top)
+                .padding(.leading)
+                .padding(.bottom)
 
-        hostingController._disableSafeArea = true
-        hostingController.view?.frame = CGRect(x: UIScreen.main.bounds.minX, y: UIScreen.main.bounds.minY, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        hostingController.view?.backgroundColor = .clear
-
-        imagePicker.showsCameraControls = false
-        imagePicker.cameraOverlayView = hostingController.view
-        imagePicker.cameraViewTransform = imagePicker.cameraViewTransform.scaledBy(x: 2, y: 2)
-        return imagePicker
-    }
-    
-    func makeCoordinator() -> CameraCoordinatorProtocol {
-        CameraCoordinator(pickedMediaUrl: $viewModel.pickedMediaUrl, isPresented: $viewModel.showingCamera, didTakePicture: didTakePicture)
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        /* Do nothing */
-    }
-}
-
-protocol CameraCoordinatorProtocol: UINavigationControllerDelegate, UIImagePickerControllerDelegate {}
-
-private class CameraCoordinator: NSObject, CameraCoordinatorProtocol {
-
-    @Binding var pickedMediaUrl: URL?
-    @Binding var isPresented: Bool
-
-    var didTakePicture: ()->()
-
-    init(pickedMediaUrl: Binding<URL?>, isPresented: Binding<Bool>, didTakePicture: @escaping ()->()) {
-        _pickedMediaUrl = pickedMediaUrl
-        _isPresented = isPresented
-        self.didTakePicture = didTakePicture
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        guard let type = info[UIImagePickerController.InfoKey.mediaType] as? String else { return } // TODO: Create error
-
-        switch type {
-        case "public.movie":
-            if let sourceUrl = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-                pickedMediaUrl = FileManager.storeToTempDir(url: sourceUrl)
-                didTakePicture()
+                Spacer()
             }
-        case "public.image":
-            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-                if let data = image.jpegData(compressionQuality: 0.8) {
-                    pickedMediaUrl = FileManager.storeToTempDir(data: data)
-                    didTakePicture()
+
+            LiveCameraView(
+                session: cameraViewModel.captureSession,
+                videoGravity: .resizeAspectFill,
+                orientation: .portrait
+            )
+            .overlay {
+                if cameraViewModel.snapOverlay {
+                    Rectangle()
                 }
             }
-        default:
-            fatalError("Unknown media type")
+            .gesture(
+                MagnificationGesture()
+                    .onChanged(cameraViewModel.zoomChanged(_:))
+                    .onEnded(cameraViewModel.zoomEnded(_:))
+            )
+
+            VStack(spacing: 0) {
+                if cameraSelectionService.hasSelected {
+                    HStack {
+                        Button("Done") {
+                            if cameraSelectionService.hasSelected {
+                                viewModel.showingCameraSelection = true
+                            }
+                            viewModel.showingCamera = false
+                        }
+                        Spacer()
+                        Text("\(cameraSelectionService.selected.count)")
+                            .font(.system(size: 15))
+                            .padding(8)
+                            .overlay(Circle()
+                                .stroke(Color.white, lineWidth: 2))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                }
+
+                HStack(spacing: 40) {
+                    Button {
+                        cameraViewModel.toggleFlash()
+                    } label: {
+                        // TODO: need an icon for flash on
+                        Image("FlashOff")
+                    }
+
+                    ZStack {
+                        Circle()
+                            .stroke(Color.white.opacity(0.4), lineWidth: 6)
+                            .frame(width: 72, height: 72)
+
+                        Button {
+                            cameraViewModel.takePhoto()
+                        } label: {
+                            Circle()
+                                .foregroundColor(.white)
+                                .frame(width: 60, height: 60)
+                        }
+                    }
+
+                    Button {
+                        cameraViewModel.flipCamera()
+                    } label: {
+                        Image("FlipCamera")
+                    }
+                }
+            }
+            .padding(.top, 24)
+            .padding(.bottom, safeAreaInsets.bottom + 50)
+        }
+        .background(Color.black)
+        .onEnteredBackground(perform: cameraViewModel.stopSession)
+        .onEnteredForeground(perform: cameraViewModel.startSession)
+        .onReceive(cameraViewModel.capturedPhotoPublisher) {
+            viewModel.pickedMediaUrl = $0
+            didTakePicture()
         }
     }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        isPresented = false
-    }
+
 }

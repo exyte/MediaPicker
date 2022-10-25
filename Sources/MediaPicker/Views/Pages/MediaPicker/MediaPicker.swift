@@ -15,6 +15,7 @@ public struct MediaPicker: View {
 
     private let mediaSelectionLimit: Int?
     private let onChange: MediaPickerCompletionClosure
+    private let orientationHandler: MediaPickerOrientationHandler
 
     // MARK: - Inner values
 
@@ -31,6 +32,7 @@ public struct MediaPicker: View {
     public init(isPresented: Binding<Bool>,
                 pickerMode: Binding<MediaPickerMode>,
                 limit: Int? = nil,
+                orientationHandler: @escaping MediaPickerOrientationHandler,
                 onChange: @escaping MediaPickerCompletionClosure) {
 
         self._isPresented = isPresented
@@ -39,6 +41,7 @@ public struct MediaPicker: View {
 
         self.mediaSelectionLimit = limit
         self.onChange = onChange
+        self.orientationHandler = orientationHandler
     }
 
     public var body: some View {
@@ -110,6 +113,9 @@ public struct MediaPicker: View {
             cameraSelectionService.onChange = onChange
             viewModel.onStart()
         }
+        .onReceive(viewModel.$showingCamera) {
+            orientationHandler($0 ? .lock : .unlock)
+        }
     }
 
     func deleteAllButton() -> some View {
@@ -125,7 +131,6 @@ public struct MediaPicker: View {
         CameraStubView(isPresented: $viewModel.showingCamera)
 #elseif os(iOS)
         CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
-            .background(Color.black)
             .ignoresSafeArea()
 #endif
     }

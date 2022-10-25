@@ -11,6 +11,7 @@ import Combine
 
 struct ContentView: View {
 
+    @EnvironmentObject private var appDelegate: AppDelegate
     @State private var showDefaultMediaPicker = false
     @State private var defaultMediaPickerMode = MediaPickerMode.photos
     @State private var defaultMediaPickerModeSelection = 0
@@ -51,9 +52,17 @@ struct ContentView: View {
                     .padding(12)
                     .background(Material.regular)
 
-                MediaPicker(isPresented: $showDefaultMediaPicker, pickerMode: $defaultMediaPickerMode) {
-                    medias = $0
-                }
+                MediaPicker(
+                    isPresented: $showDefaultMediaPicker,
+                    pickerMode: $defaultMediaPickerMode,
+                    orientationHandler: {
+                        switch $0 {
+                        case .lock: appDelegate.lockOrientationToPortrait()
+                        case .unlock: appDelegate.unlockOrientation()
+                        }
+                    },
+                    onChange: { medias = $0 }
+                )
             }
         }
 
