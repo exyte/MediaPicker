@@ -17,7 +17,7 @@ extension FileManager {
 
     static func storeToTempDir(url: URL) -> URL {
         let id = UUID().uuidString
-        let path = FileManager.tempPath.appendingPathComponent(id)
+        let path = FileManager.tempPath.appendingPathComponent(id + Self.imageFileExtension)
 
         try? FileManager.default.copyItem(at: url, to: path)
         return path
