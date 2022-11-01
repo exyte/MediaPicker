@@ -59,6 +59,7 @@ struct ContentView: View {
                     onChange: { medias = $0 }
                 )
                 .showDefaultHeader()
+                .showLiveCameraCell()
             }
         }
 

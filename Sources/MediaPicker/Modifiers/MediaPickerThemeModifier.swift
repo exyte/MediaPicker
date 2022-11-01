@@ -20,4 +20,10 @@ public extension View {
     func mediaPickerTheme(_ theme: MediaPickerTheme) -> some View {
         self.environment(\.mediaPickerTheme, theme)
     }
+
+    func mediaPickerTheme(main: MediaPickerTheme.Main = .init(),
+                selection: MediaPickerTheme.Selection = .init(),
+                error: MediaPickerTheme.Error = .init()) -> some View {
+        self.environment(\.mediaPickerTheme, MediaPickerTheme(main: main, selection: selection, error: error))
+    }
 }

@@ -18,6 +18,7 @@ public struct MediaPicker: View {
 
     private var pickerMode: Binding<MediaPickerMode>?
     private var showingDefaultHeader: Bool = false
+    private var showingLiveCameraCell: Bool = false
 
     // MARK: - Inner values
 
@@ -58,7 +59,7 @@ public struct MediaPicker: View {
                 switch pickerMode?.wrappedValue ?? internalPickerMode {
                 case .photos:
                     AlbumView(
-                        shouldShowCamera: true,
+                        shouldShowCamera: showingLiveCameraCell,
                         showingCamera: $viewModel.showingCamera,
                         viewModel: AlbumViewModel(
                             mediasProvider: AllPhotosProvider()
@@ -195,6 +196,12 @@ extension MediaPicker {
     public func showDefaultHeader() -> MediaPicker {
         var mediaPicker = self
         mediaPicker.showingDefaultHeader = true
+        return mediaPicker
+    }
+
+    public func showLiveCameraCell() -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.showingLiveCameraCell = true
         return mediaPicker
     }
 }

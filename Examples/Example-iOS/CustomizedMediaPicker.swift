@@ -41,15 +41,13 @@ struct CustomizedMediaPicker: View {
             .pickerMode($mediaPickerMode)
             .selectionStyle(.count)
             .mediaPickerTheme(
-                MediaPickerTheme(
-                    main: .init(
-                        background: .black
-                    ),
-                    selection: .init(
-                        emptyTint: .white,
-                        emptyBackground: .black.opacity(0.25),
-                        selectedTint: Color("CustomPurple")
-                    )
+                main: .init(
+                    background: .black
+                ),
+                selection: .init(
+                    emptyTint: .white,
+                    emptyBackground: .black.opacity(0.25),
+                    selectedTint: Color("CustomPurple")
                 )
             )
             .overlay(alignment: .topLeading) {
