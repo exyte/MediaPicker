@@ -48,13 +48,8 @@ struct ContentView: View {
         // MARK: - Default media picker
         .sheet(isPresented: $showDefaultMediaPicker) {
             VStack {
-                headerView
-                    .padding(12)
-                    .background(Material.regular)
-
                 MediaPicker(
                     isPresented: $showDefaultMediaPicker,
-                    pickerMode: $defaultMediaPickerMode,
                     orientationHandler: {
                         switch $0 {
                         case .lock: appDelegate.lockOrientationToPortrait()
@@ -63,41 +58,13 @@ struct ContentView: View {
                     },
                     onChange: { medias = $0 }
                 )
+                .showDefaultHeader()
             }
         }
 
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
             CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, mediaPickerMode: $customizedMediaPickerMode, medias: $medias)
-        }
-    }
-
-    var headerView: some View {
-        HStack {
-            Button("Cancel") {
-                showDefaultMediaPicker = false
-            }
-
-            Spacer()
-
-            Picker("", selection: $defaultMediaPickerModeSelection) {
-                Text("Photos")
-                    .tag(0)
-                Text("Albums")
-                    .tag(1)
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .frame(maxWidth: UIScreen.main.bounds.width / 2)
-            .onChange(of: defaultMediaPickerModeSelection) { newValue in
-                defaultMediaPickerMode = defaultMediaPickerModeSelection == 0 ? .photos : .albums
-            }
-
-            Spacer()
-
-            Button("Done") {
-                showDefaultMediaPicker = false
-                print("Selected:", medias)
-            }
         }
     }
 }

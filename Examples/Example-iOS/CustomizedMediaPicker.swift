@@ -28,7 +28,6 @@ struct CustomizedMediaPicker: View {
 
             MediaPicker(
                 isPresented: $isPresented,
-                pickerMode: $mediaPickerMode,
                 limit: maxCount,
                 orientationHandler: {
                     switch $0 {
@@ -39,6 +38,7 @@ struct CustomizedMediaPicker: View {
                 onChange: { selectedMedia = $0 }
             )
             .albums($albums)
+            .pickerMode($mediaPickerMode)
             .selectionStyle(.count)
             .mediaPickerTheme(
                 MediaPickerTheme(
@@ -48,7 +48,7 @@ struct CustomizedMediaPicker: View {
                     selection: .init(
                         emptyTint: .white,
                         emptyBackground: .black.opacity(0.25),
-                        selectedTint: .purple
+                        selectedTint: Color("CustomPurple")
                     )
                 )
             )
@@ -61,6 +61,8 @@ struct CustomizedMediaPicker: View {
                         .cornerRadius(5)
                 }
             }
+
+            Spacer()
             
             footerView
         }
@@ -70,8 +72,15 @@ struct CustomizedMediaPicker: View {
 
     var headerView: some View {
         HStack {
-            Text(selectedAlbum?.title ?? "Recents").onTapGesture {
-                showAlbumsDropDown.toggle()
+            HStack {
+                Text(selectedAlbum?.title ?? "Recents")
+                Image(systemName: "chevron.down")
+                    .rotationEffect(Angle(radians: showAlbumsDropDown ? .pi : 0))
+            }
+            .onTapGesture {
+                withAnimation {
+                    showAlbumsDropDown.toggle()
+                }
             }
 
             Spacer()
@@ -87,6 +96,7 @@ struct CustomizedMediaPicker: View {
                 isPresented = false
             } label: {
                 Text("Cancel")
+                    .foregroundColor(.white.opacity(0.7))
             }
 
             Spacer(minLength: 70)
@@ -110,7 +120,7 @@ struct CustomizedMediaPicker: View {
                 .frame(maxWidth: .infinity)
             }
             .background {
-                Color(hue: 0.2, saturation: 1, brightness: 0.9)
+                Color("CustomGreen")
                     .cornerRadius(16)
             }
         }
