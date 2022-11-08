@@ -13,6 +13,7 @@ struct CameraView: View {
     @StateObject private var cameraViewModel = CameraViewModel()
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @Environment(\.mediaPickerTheme) private var theme
 
     var body: some View {
         VStack(spacing: 0) {
@@ -100,7 +101,7 @@ struct CameraView: View {
             .padding(.top, 24)
             .padding(.bottom, safeAreaInsets.bottom + 50)
         }
-        .background(Color.black)
+        .background(theme.main.fullscreenBackground)
         .onEnteredBackground(perform: cameraViewModel.stopSession)
         .onEnteredForeground(perform: cameraViewModel.startSession)
         .onReceive(cameraViewModel.capturedPhotoPublisher) {

@@ -27,7 +27,7 @@ extension MediaPickerTheme {
 
         public init(text: Color = Color(uiColor: .label),
                     background: Color = Color(uiColor: .systemBackground),
-                    fullscreenBackground: Color = Color(uiColor: .systemBackground)) {
+                    fullscreenBackground: Color = .black) {
             self.text = text
             self.background = background
             self.fullscreenBackground = fullscreenBackground

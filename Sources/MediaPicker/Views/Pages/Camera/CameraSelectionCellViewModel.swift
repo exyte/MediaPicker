@@ -30,9 +30,7 @@ final class CameraSelectionCellViewModel: ObservableObject {
         }
     }
 
-    func onStop() {
-        //subscriptions.cancelAll()
-    }
+    func onStop() {}
 
     private func fetchImage() {
         DispatchQueue.global().async {

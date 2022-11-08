@@ -21,25 +21,32 @@ struct ContentView: View {
 
     @State private var medias: [Media] = []
 
-    let columns = [GridItem(.adaptive(minimum: 100), spacing: 1, alignment: .top)]
+    let columns = [GridItem(.flexible(), spacing: 1),
+                   GridItem(.flexible(), spacing: 1),
+                   GridItem(.flexible(), spacing: 1)]
     
     var body: some View {
         NavigationView {
             List {
-                Button("Default") {
-                    showDefaultMediaPicker = true
-                }
-
-                Button("Customized") {
-                    showCustomizedMediaPicker = true
-                }
-
-                //LazyVGrid(columns: columns, spacing: 1) {
-                    ForEach(medias) { media in
-                        MediaCell(media: media)
+                Section {
+                    Button("Default") {
+                        showDefaultMediaPicker = true
                     }
-                //}
-                .padding(.horizontal)
+                    Button("Customized") {
+                        showCustomizedMediaPicker = true
+                    }
+                }
+
+                if !medias.isEmpty {
+                    Section {
+                        LazyVGrid(columns: columns, spacing: 1) {
+                            ForEach(medias) { media in
+                                MediaCell(media: media)
+                                    .aspectRatio(1, contentMode: .fill)
+                            }
+                        }
+                    }
+                }
             }
             .foregroundColor(Color(uiColor: .label))
             .navigationTitle("Examples")
@@ -76,10 +83,20 @@ struct MediaCell: View {
     @State var url: URL?
 
     var body: some View {
-        ZStack {
+        GeometryReader { g in
             if let url = url {
-                AsyncImage(url: url)
-                    .frame(width: 100, height: 100)
+                AsyncImage(
+                    url: url,
+                    content: { image in
+                        image.resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: g.size.width, height: g.size.width)
+                            .clipped()
+                    },
+                    placeholder: {
+                        ProgressView()
+                    }
+                )
             }
         }
         .task {
