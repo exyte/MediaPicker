@@ -30,8 +30,13 @@ public extension Media {
 
     func getUrl() async -> URL? {
         switch source {
-        case .media(let media):
-            return await media.source.getURL()
+        case .media(let assetMediaModel):
+            if assetMediaModel.mediaType == .image {
+                return await assetMediaModel.source.getURL()
+            } else {
+                return await assetMediaModel.source.getThumbnailURL()
+            }
+
         case .url(let url):
             return url
         }

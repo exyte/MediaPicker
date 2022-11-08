@@ -5,6 +5,7 @@
 import Foundation
 import Combine
 import Photos
+import UniformTypeIdentifiers
 
 #if os(iOS)
 import UIKit.UIImage
@@ -103,7 +104,32 @@ extension PHAsset {
                 await requestStore.cancel(asset: self)
             }
         }
+    }
 
+    func getThumbnailURL() async -> URL? {
+        guard let url = await getURL() else { return nil }
+        let asset: AVAsset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+
+        do {
+            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
+            guard let data = thumbnailImage.jpegData else { return nil }
+            return FileManager.storeToTempDir(data: data)
+        } catch let error {
+            print(error)
+        }
+
+        return nil
+    }
+}
+
+extension CGImage {
+    var jpegData: Data? {
+        guard let mutableData = CFDataCreateMutable(nil, 0),
+              let destination = CGImageDestinationCreateWithData(mutableData, UTType.jpeg.identifier as CFString, 1, nil) else { return nil }
+        CGImageDestinationAddImage(destination, self, nil)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+        return mutableData as Data
     }
 }
 

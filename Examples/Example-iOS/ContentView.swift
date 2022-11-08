@@ -54,20 +54,18 @@ struct ContentView: View {
 
         // MARK: - Default media picker
         .sheet(isPresented: $showDefaultMediaPicker) {
-            VStack {
-                MediaPicker(
-                    isPresented: $showDefaultMediaPicker,
-                    orientationHandler: {
-                        switch $0 {
-                        case .lock: appDelegate.lockOrientationToPortrait()
-                        case .unlock: appDelegate.unlockOrientation()
-                        }
-                    },
-                    onChange: { medias = $0 }
-                )
-                .showDefaultHeader()
-                .showLiveCameraCell()
-            }
+            MediaPicker(
+                isPresented: $showDefaultMediaPicker,
+                orientationHandler: {
+                    switch $0 {
+                    case .lock: appDelegate.lockOrientationToPortrait()
+                    case .unlock: appDelegate.unlockOrientation()
+                    }
+                },
+                onChange: { medias = $0 }
+            )
+            .showDefaultHeader()
+            .showLiveCameraCell()
         }
 
         // MARK: - Customized media picker
