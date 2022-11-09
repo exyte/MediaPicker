@@ -2,7 +2,7 @@
 
 <p><h1 align="left">Media Picker</h1></p>
 
-<p><h4>SwiftUI library for customizable media picker. New Apple picker only gives you a button, this library gives you the whole view, meaning you can build it into you own screens as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (video is coming)</h4></p>
+<p><h4>SwiftUI library for a customizable media picker. The new iOS 16 SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)</h4></p>
 
 ___
 
