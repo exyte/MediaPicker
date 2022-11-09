@@ -32,4 +32,8 @@ final class MediaPickerViewModel: ObservableObject {
             self?.albums = albums//.map { Album(title: $0.title, preview: $0.preview) }
         }
     }
+
+    func getAlbumModel(_ album: Album) -> AlbumModel? {
+        albums.filter { $0.id == album.id }.first
+    }
 }

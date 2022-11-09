@@ -15,10 +15,10 @@ struct CustomizedMediaPicker: View {
     @Binding var medias: [Media]
 
     @State private var selectedMedia: [Media] = []
-    @State private var albums: [AlbumModel] = []
+    @State private var albums: [Album] = []
 
     @State private var showAlbumsDropDown: Bool = false
-    @State private var selectedAlbum: AlbumModel?
+    @State private var selectedAlbum: Album?
 
     let maxCount: Int = 5
 
@@ -126,14 +126,17 @@ struct CustomizedMediaPicker: View {
     }
 
     var albumsDropdown: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(albums) { album in
-                Button(album.title ?? "") {
-                    selectedAlbum = album
-                    mediaPickerMode = .album(album)
-                    showAlbumsDropDown = false
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(albums) { album in
+                    Button(album.title ?? "") {
+                        selectedAlbum = album
+                        mediaPickerMode = .album(album)
+                        showAlbumsDropDown = false
+                    }
                 }
             }
         }
+        .frame(maxHeight: 300)
     }
 }

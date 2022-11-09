@@ -10,7 +10,7 @@ public struct MediaPicker: View {
     // MARK: - Parameters
 
     @Binding private var isPresented: Bool
-    @Binding private var albums: [AlbumModel]
+    @Binding private var albums: [Album]
 
     private let mediaSelectionLimit: Int?
     private let onChange: MediaPickerCompletionClosure
@@ -47,6 +47,18 @@ public struct MediaPicker: View {
         self.orientationHandler = orientationHandler
     }
 
+    public init(isPresented: Binding<Bool>,
+                limit: Int? = nil,
+                onChange: @escaping MediaPickerCompletionClosure) {
+
+        self._isPresented = isPresented
+        self._albums = .constant([])
+
+        self.mediaSelectionLimit = limit
+        self.onChange = onChange
+        self.orientationHandler = { _ in }
+    }
+
     public var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -73,16 +85,18 @@ public struct MediaPicker: View {
                         )
                     )
                 case .album(let album):
-                    AlbumView(
-                        shouldShowCamera: false,
-                        showingCamera: $viewModel.showingCamera,
-                        viewModel: AlbumViewModel(
-                            mediasProvider: AlbumMediasProvider(
-                                album: album
+                    if let albumModel = viewModel.getAlbumModel(album) {
+                        AlbumView(
+                            shouldShowCamera: false,
+                            showingCamera: $viewModel.showingCamera,
+                            viewModel: AlbumViewModel(
+                                mediasProvider: AlbumMediasProvider(
+                                    album: albumModel
+                                )
                             )
                         )
-                    )
-                    .id(album.id)
+                        .id(album.id)
+                    }
                 }
             }
             .fullScreenCover(isPresented: $viewModel.showingCameraSelection) {
@@ -108,7 +122,7 @@ public struct MediaPicker: View {
             }
         }
         .onChange(of: viewModel.albums) {
-            self.albums = $0
+            self.albums = $0.map{ $0.toAlbum() }
         }
         .background(theme.main.background.ignoresSafeArea())
         .environmentObject(selectionService)
@@ -173,15 +187,9 @@ public struct MediaPicker: View {
     }
 }
 
-// TODO use this model for public stuff
-public struct Album {
-    let title: String?
-    let preview: AssetMediaModel?
-}
-
 extension MediaPicker {
 
-    public func albums(_ albums: Binding<[AlbumModel]>) -> MediaPicker {
+    public func albums(_ albums: Binding<[Album]>) -> MediaPicker {
         var mediaPicker = self
         mediaPicker._albums = albums
         return mediaPicker
