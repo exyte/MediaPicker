@@ -22,9 +22,9 @@ ___
 [![Platform](https://img.shields.io/cocoapods/p/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
 
 # Usage
-1. Add a binding bool to control picker presentation state
-2. Add medias array to save selection (`[Media]`)
-3. Init media picker and show it however you like, for example you can use .sheet
+1. Add a binding Bool to control the picker presentation state.
+2. Add Media array to save selection (`[Media]`).
+3. Initialize the media picker and present it however you like - for example, using the .sheet modifier
     ```swift
         .sheet(isPresented: $showMediaPicker) {
             MediaPicker(
@@ -35,20 +35,21 @@ ___
     ```
 
 ### Screen rotation
-If your app forbids screen rotation, you don't need this section.
-We recommend that you lock orientation for MediaPicker, because default rotation animation doesn't look good on camera screen. At the moment SwiftUI doesn't have a way of locking screen orientation, so you can use AppDelegate for now. There is an init variant with `orientationHandler` parameter - that is a closure getting called when you enter/leave camera screen inside MediaPicker. In this closure use your AppDelegate to lock/unlock rotation - see example project for implementation.
+If your app restricts screen rotation, you can skip this section.
+
+We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
 
 ### Init required parameters
-`isPresented` - binding to determine if the picker should be seen on screen or hidden   
-`onChange` - closure returning picked media every time selection changes
+`isPresented` - a binding to determine whether the picker should be seen or hidden   
+`onChange` - a closure that returns the selected media every time the selection changes
 
 ### Init optional parameters
-`limit` - max allowed media quantity to select, 'nil' means unlimited    
+`limit` - the maximum selection quantity allowed, 'nil' for unlimited selection
 
 ### Available modifiers
-`selectionStyle` - a way to display selected/unselected media state: either a counter or just a checkmark         
-`showingLiveCameraCell` - Show live camera feed cell in top left corner of gallery greed     
-`theme` - color settings. Use like this (See `MediaPickerTheme` for all available settings):    
+`selectionStyle` - a way to display selected/unselected media state: either a counter or a simple checkmark         
+`showingLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
+`theme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
   ```swift
 MediaPicker(...)
     .mediaPickerTheme(
@@ -61,23 +62,23 @@ MediaPicker(...)
             selectedTint: Color("CustomPurple")
         )
     )
-    ```
+  ```
 
 ### Available modifiers: managing albums
-`showingDefaultHeader` - Default header contains 'Done' and 'Cancel' button, and a simple switcher: Photos/Albums. Use it if you just wany out-of-the box picker (see default picker in example project for implementation)     
-`albums` - List of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
-`pickerMode` - Set this if you do not use the default header. Available options are:     
-    .photos - displays default photos grid      
-    .albums - displays list of albums with one preview photo for each
+`showingDefaultHeader` - the default header contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic  out-of-the box picker (see default picker in example project for an implementation example)     
+`albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
+`pickerMode` - set this if you don't plan to use the default header. Available options are:     
+    .photos - displays the default photos grid      
+    .albums - displays a list of albums with one preview photo for each
     .album(Album) - displays one album      
-(see custom picker in example project for implementation)
+(see the custom picker in the example project for implementation)
 
 ## Examples
 
-To try MediaPicker examples:
+To try out the MediaPicker examples:
 - Clone the repo `https://github.com/exyte/MediaPicker.git`
 - Open `Examples/Examples.xcworkspace` in the Xcode
-- Try it!
+- Run it!
 
 ## Installation
 ### [Swift Package Manager](https://swift.org/package-manager/)
