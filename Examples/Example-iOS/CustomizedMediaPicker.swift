@@ -53,7 +53,6 @@ struct CustomizedMediaPicker: View {
             .overlay(alignment: .topLeading) {
                 if showAlbumsDropDown {
                     albumsDropdown
-                        .padding(15)
                         .background(Color.white)
                         .foregroundColor(.black)
                         .cornerRadius(5)
@@ -136,6 +135,7 @@ struct CustomizedMediaPicker: View {
                     }
                 }
             }
+            .padding(15)
         }
         .frame(maxHeight: 300)
     }

@@ -1,8 +1,9 @@
 <img src="https://raw.githubusercontent.com/exyte/media/master/common/header.png">
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/demo.gif" />
 
 <p><h1 align="left">Media Picker</h1></p>
 
-<p><h4>SwiftUI library for a customizable media picker. The new iOS 16 SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)</h4></p>
+<p><h4>SwiftUI library for a customizable media picker.</h4></p>
 
 ___
 
@@ -20,6 +21,9 @@ ___
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-0473B3.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
 [![Platform](https://img.shields.io/cocoapods/p/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
+
+# Features
+The new iOS 16 SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
 
 # Usage
 1. Add a binding Bool to control the picker presentation state.
@@ -62,7 +66,13 @@ MediaPicker(...)
             selectedTint: Color("CustomPurple")
         )
     )
+<<<<<<< Updated upstream
   ```
+=======
+    ```
+Here is an example of how you can customize colors and elements to create a custom looking picker:
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" />
+>>>>>>> Stashed changes
 
 ### Available modifiers: managing albums
 `showingDefaultHeader` - the default header contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic  out-of-the box picker (see default picker in example project for an implementation example)     
@@ -73,6 +83,10 @@ MediaPicker(...)
     .album(Album) - displays one album      
 (see the custom picker in the example project for implementation)
 
+### Camera
+After making one photo, you see a preview of your and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to user them.
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" />
+
 ## Examples
 
 To try out the MediaPicker examples:
@@ -81,6 +95,7 @@ To try out the MediaPicker examples:
 - Run it!
 
 ## Installation
+
 ### [Swift Package Manager](https://swift.org/package-manager/)
 
 ```swift
@@ -89,7 +104,30 @@ dependencies: [
 ]
 ```
 
+### CocoaPods
+
+```ruby
+pod 'ExyteMediaPicker'
+```
+
+### Carthage
+
+```ogdl
+github "Exyte/MediaPicker"
+```
+
 ## Requirements
 
 * iOS 15+
 * Xcode 13+ 
+
+## Our other open source SwiftUI libraries
+[PopupView](https://github.com/exyte/PopupView) - Toasts and popups library    
+[Grid](https://github.com/exyte/Grid) - The most powerful Grid container    
+[ScalingHeaderScrollView](https://github.com/exyte/ScalingHeaderScrollView) - A scroll view with a sticky header which shrinks as you scroll.    
+[ConcentricOnboarding](https://github.com/exyte/ConcentricOnboarding) - Animated onboarding flow    
+[FloatingButton](https://github.com/exyte/FloatingButton) - Floating button menu    
+[ActivityIndicatorView](https://github.com/exyte/ActivityIndicatorView) - A number of animated loading indicators    
+[ProgressIndicatorView](https://github.com/exyte/ProgressIndicatorView) - A number of animated progress indicators    
+[SVGView](https://github.com/exyte/SVGView) - SVG parser    
+[LiquidSwipe](https://github.com/exyte/LiquidSwipe) - Liquid navigation animation    
