@@ -23,6 +23,13 @@ ___
 [![Platform](https://img.shields.io/cocoapods/p/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
 
 # Features
+* Photo and video picker
+* Single and multiple selection
+* Full-screen view
+* Live photo preview & capture
+* Full customization
+
+# MediaPicker vs iOS 16 SwiftUI Picker
 The new iOS 16 SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
 
 # Usage
