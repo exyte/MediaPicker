@@ -29,8 +29,8 @@ ___
 * Live photo preview & capture
 * Full customization
 
-# MediaPicker vs iOS 16 SwiftUI Picker
-The new iOS 16 SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
+# MediaPicker vs PhotosPicker
+The new iOS 16 SwiftUI PhotosPicker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
 
 # Usage
 1. Add a binding Bool to control the picker presentation state.
