@@ -31,7 +31,7 @@ ___
 * Full customization
 
 # MediaPicker vs PhotosPicker
-* The iOS 16 PhotosPicker SwiftUI picker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. 
+* The iOS 16 PhotosPicker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. 
 * PhotosPicker only lets you pick photos from the library - no camera. 
 * MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
 
@@ -78,7 +78,7 @@ MediaPicker(...)
     )
   ```
 Here is an example of how you can customize colors and elements to create a custom looking picker:  
-   
+
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" width="250"/>
 
 ### Available modifiers: managing albums
