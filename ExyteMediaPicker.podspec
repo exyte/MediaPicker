@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
      'Sources/*.h',
      'Sources/*.swift',
      'Sources/**/*.swift'
-     'Sources/**/**/*.swift'
   ]
 
 end
