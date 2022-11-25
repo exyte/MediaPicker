@@ -1,9 +1,10 @@
 <img src="https://raw.githubusercontent.com/exyte/media/master/common/header.png">
-<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/demo.gif" />
 
 <p><h1 align="left">Media Picker</h1></p>
 
 <p><h4>SwiftUI library for a customizable media picker.</h4></p>
+
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/banner.png" />
 
 ___
 
