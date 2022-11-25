@@ -15,7 +15,7 @@ ___
 
 <a href="https://exyte.com/contacts"><img src="https://i.imgur.com/vGjsQPt.png" width="134" height="34"></a> <a href="https://twitter.com/exyteHQ"><img src="https://i.imgur.com/DngwSn1.png" width="165" height="34"></a>
 
-</br></br>
+</br>
 
 [![Twitter](https://img.shields.io/badge/Twitter-@exyteHQ-blue.svg?style=flat)](http://twitter.com/exyteHQ)
 [![Version](https://img.shields.io/cocoapods/v/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
@@ -77,8 +77,8 @@ MediaPicker(...)
         )
     )
   ```
-Here is an example of how you can customize colors and elements to create a custom looking picker:
-<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" />
+Here is an example of how you can customize colors and elements to create a custom looking picker:     
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" width="250"/>
 
 ### Available modifiers: managing albums
 `showingDefaultHeader` - the default header contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic  out-of-the box picker (see default picker in example project for an implementation example)     
@@ -91,7 +91,7 @@ Here is an example of how you can customize colors and elements to create a cust
 
 ### Camera
 After making one photo, you see a preview of your and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to user them.
-<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" />
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
 
 ## Examples
 
