@@ -85,9 +85,9 @@ Here is an example of how you can customize colors and elements to create a cust
 `showingDefaultHeader` - the default header contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic  out-of-the box picker (see default picker in example project for an implementation example)     
 `albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
 `pickerMode` - set this if you don't plan to use the default header. Available options are:     
-    .photos - displays the default photos grid      
-    .albums - displays a list of albums with one preview photo for each
-    .album(Album) - displays one album      
+    * .photos - displays the default photos grid      
+    * .albums - displays a list of albums with one preview photo for each     
+    * .album(Album) - displays one album      
 (see the custom picker in the example project for implementation)
 
 ### Camera
