@@ -65,7 +65,7 @@ public struct MediaPicker: View {
                 if showingDefaultHeader {
                     defaultHeaderView
                         .padding(12)
-                        .background(Material.regular)
+                        .background(Color(uiColor: .systemGroupedBackground))
                 }
 
                 switch pickerMode?.wrappedValue ?? internalPickerMode {

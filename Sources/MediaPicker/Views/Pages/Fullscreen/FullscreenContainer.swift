@@ -7,6 +7,7 @@ import SwiftUI
 
 struct FullscreenContainer: View {
 
+    @Binding var isPresented: Bool
     let medias: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
 
@@ -17,19 +18,35 @@ struct FullscreenContainer: View {
     var body: some View {
         TabView(selection: $selection) {
             ForEach(medias, id: \.id) { media in
-                let index = selectionService.index(of: media)
-                SelectableView(selected: index, paddings: 20) {
-                    selectionService.onSelect(media: media)
-                } content: {
-                    FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
+                ZStack {
+                    let index = selectionService.index(of: media)
+                    SelectableView(selected: index, paddings: 20, isFullscreen: true) {
+                        selectionService.onSelect(media: media)
+                    } content: {
+                        FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                    .tag(media.id)
+
+                    closeButton
                 }
-                .tag(media.id)
             }
-            .ignoresSafeArea()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .background(theme.main.fullscreenBackground)
         .ignoresSafeArea()
+        .background(theme.main.fullscreenBackground)
+    }
+
+    var closeButton: some View {
+        Button {
+            isPresented = false
+        } label: {
+            Image(systemName: "xmark")
+                .resizable()
+                .tint(theme.selection.fullscreenTint)
+                .frame(width: 20, height: 20)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(20)
     }
 }

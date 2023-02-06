@@ -13,7 +13,6 @@ struct ContentView: View {
 
     @EnvironmentObject private var appDelegate: AppDelegate
     @State private var showDefaultMediaPicker = false
-    @State private var defaultMediaPickerMode = MediaPickerMode.photos
     @State private var defaultMediaPickerModeSelection = 0
 
     @State private var showCustomizedMediaPicker = false
@@ -66,6 +65,12 @@ struct ContentView: View {
             )
             .showDefaultHeader()
             .showLiveCameraCell()
+            .mediaPickerTheme(
+                main: MediaPickerTheme.Main(
+                    background: Color(uiColor: .systemGroupedBackground),
+                    fullscreenBackground: Color(uiColor: .systemGroupedBackground)),
+                selection: MediaPickerTheme.Selection(fullscreenTint: .blue)
+            )
         }
 
         // MARK: - Customized media picker

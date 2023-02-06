@@ -63,7 +63,7 @@ We recommend locking orientation for MediaPicker, because default rotation anima
 ### Available modifiers
 `selectionStyle` - a way to display selected/unselected media state: either a counter or a simple checkmark         
 `showingLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
-`theme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
+`mediaPickerTheme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
   ```swift
 MediaPicker(...)
     .mediaPickerTheme(
@@ -91,7 +91,7 @@ Here is an example of how you can customize colors and elements to create a cust
 (see the custom picker in the example project for implementation)
 
 ### Camera
-After making one photo, you see a preview of your and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to user them.     
+After making one photo, you see a preview of it and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to use them.     
 
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
 

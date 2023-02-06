@@ -56,7 +56,7 @@ private extension AlbumView {
                         }
                     } content: { media in
                         let index = selectionService.index(of: media)
-                        SelectableView(selected: index) {
+                        SelectableView(selected: index, isFullscreen: false) {
                             selectionService.onSelect(media: media)
                         } content: {
                             Button {
@@ -78,11 +78,25 @@ private extension AlbumView {
             .frame(maxWidth: .infinity)
         }
         .background(theme.main.background)
-        .sheet(item: $fullscreenItem) { item in
-            FullscreenContainer(
-                medias: viewModel.medias,
-                selection: item.id
-            )
+        .overlay {
+            if let item = fullscreenItem {
+                FullscreenContainer(
+                    isPresented: fullscreenPresentedBinding(),
+                    medias: viewModel.medias,
+                    selection: item.id
+                )
+            }
         }
+    }
+
+    func fullscreenPresentedBinding() -> Binding<Bool> {
+        Binding(
+            get: { fullscreenItem != nil },
+            set: { value in
+                if value == false {
+                    fullscreenItem = nil
+                }
+            }
+        )
     }
 }

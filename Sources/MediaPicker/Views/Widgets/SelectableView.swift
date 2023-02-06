@@ -6,26 +6,20 @@ import SwiftUI
 
 struct SelectableView<Content>: View where Content: View {
 
-    let selected: Int?
-    let paddings: CGFloat
+    var selected: Int?
+    var paddings: CGFloat = 2
+    var isFullscreen: Bool
     let onSelect: () -> Void
     @ViewBuilder let content: () -> Content
     
     @Environment(\.mediaSelectionStyle) private var mediaSelectionStyle
-
-    init(selected: Int?, paddings: CGFloat = 2, onSelect: @escaping () -> Void, content: @escaping () -> Content) {
-        self.selected = selected
-        self.paddings = paddings
-        self.onSelect = onSelect
-        self.content = content
-    }
     
     var body: some View {
         content().overlay {
             Button {
                 onSelect()
             } label: {
-                SelectIndicatorView(index: selected)
+                SelectIndicatorView(index: selected, isFullscreen: isFullscreen)
                     .padding([.bottom, .leading], 10)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)

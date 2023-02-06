@@ -11,6 +11,8 @@ struct SelectIndicatorView: View {
     @Environment(\.mediaSelectionStyle) var mediaSelectionStyle
     @Environment(\.mediaPickerTheme) private var theme
 
+    var isFullscreen: Bool
+
     var body: some View {
         Group {
             switch mediaSelectionStyle {
@@ -39,7 +41,7 @@ private extension SelectIndicatorView {
             } else {
                 Image(systemName: "circle")
                     .resizable()
-                    .foregroundColor(theme.selection.emptyTint)
+                    .foregroundColor(isFullscreen ? theme.selection.fullscreenTint : theme.selection.emptyTint)
                     .background {
                         Circle()
                             .fill(theme.selection.emptyBackground)
@@ -61,7 +63,7 @@ private extension SelectIndicatorView {
             } else {
                 Image(systemName: "circle")
                     .resizable()
-                    .foregroundColor(theme.selection.emptyTint)
+                    .foregroundColor(isFullscreen ? theme.selection.fullscreenTint : theme.selection.emptyTint)
                     .background {
                         Circle()
                             .fill(theme.selection.emptyBackground)
@@ -79,22 +81,22 @@ struct SelectIndicatorView_Preview: PreviewProvider {
                 .ignoresSafeArea()
             HStack {
                 VStack {
-                    SelectIndicatorView(index: nil)
-                    SelectIndicatorView(index: 0)
-                    SelectIndicatorView(index: 1)
-                    SelectIndicatorView(index: 16)
-                    SelectIndicatorView(index: 49)
-                    SelectIndicatorView(index: 50)
+                    SelectIndicatorView(index: nil, isFullscreen: false)
+                    SelectIndicatorView(index: 0, isFullscreen: false)
+                    SelectIndicatorView(index: 1, isFullscreen: false)
+                    SelectIndicatorView(index: 16, isFullscreen: false)
+                    SelectIndicatorView(index: 49, isFullscreen: false)
+                    SelectIndicatorView(index: 50, isFullscreen: false)
                         .padding(4)
                         .background(Color.red)
                 }
                 VStack {
-                    SelectIndicatorView(index: nil)
-                    SelectIndicatorView(index: 0)
-                    SelectIndicatorView(index: 1)
-                    SelectIndicatorView(index: 16)
-                    SelectIndicatorView(index: 49)
-                    SelectIndicatorView(index: 50)
+                    SelectIndicatorView(index: nil, isFullscreen: false)
+                    SelectIndicatorView(index: 0, isFullscreen: false)
+                    SelectIndicatorView(index: 1, isFullscreen: false)
+                    SelectIndicatorView(index: 16, isFullscreen: false)
+                    SelectIndicatorView(index: 49, isFullscreen: false)
+                    SelectIndicatorView(index: 50, isFullscreen: false)
                         .padding(4)
                         .background(Color.red)
                 }

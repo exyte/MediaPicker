@@ -39,15 +39,18 @@ extension MediaPickerTheme {
         public let emptyBackground: Color
         public let selectedTint: Color
         public let selectedBackground: Color
+        public let fullscreenTint: Color
 
         public init(emptyTint: Color = .white,
                     emptyBackground: Color = .clear,
                     selectedTint: Color = .blue,
-                    selectedBackground: Color = .white) {
+                    selectedBackground: Color = .white,
+                    fullscreenTint: Color = .white) {
             self.emptyTint = emptyTint
             self.emptyBackground = emptyBackground
             self.selectedTint = selectedTint
             self.selectedBackground = selectedBackground
+            self.fullscreenTint = fullscreenTint
         }
     }
 
