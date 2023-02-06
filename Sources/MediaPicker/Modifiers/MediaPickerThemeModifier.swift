@@ -10,7 +10,7 @@ struct MediaPickerThemeKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var mediaPickerTheme: MediaPickerTheme {
+    public var mediaPickerTheme: MediaPickerTheme {
         get { self[MediaPickerThemeKey.self] }
         set { self[MediaPickerThemeKey.self] = newValue }
     }
