@@ -40,16 +40,6 @@ final class SelectionService: ObservableObject {
         onChange?(mapToMedia())
     }
 
-//    func onSelect(assetIdentifier identifier: String) {
-//        Task {
-//            if let asset = await findAsset(identifier: identifier).value {
-//                await MainActor.run { [asset] in
-//                    onSelect(media: MediaModel(source: asset))
-//                }
-//            }
-//        }
-//    }
-
     func index(of media: AssetMediaModel) -> Int? {
         selected.firstIndex(of: media)
     }

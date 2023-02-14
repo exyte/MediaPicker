@@ -9,10 +9,8 @@ struct SelectableView<Content>: View where Content: View {
     var selected: Int?
     var paddings: CGFloat = 2
     var isFullscreen: Bool
-    let onSelect: () -> Void
-    @ViewBuilder let content: () -> Content
-    
-    @Environment(\.mediaSelectionStyle) private var mediaSelectionStyle
+    var onSelect: () -> Void
+    @ViewBuilder var content: () -> Content
     
     var body: some View {
         content().overlay {

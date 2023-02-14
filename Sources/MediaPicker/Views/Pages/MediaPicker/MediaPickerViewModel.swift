@@ -8,32 +8,40 @@ import Combine
 
 @MainActor
 final class MediaPickerViewModel: ObservableObject {
-    
+
 #if os(iOS)
-    @Published var showingCamera = false
-    @Published var showingCameraSelection = false
     @Published var showingExitCameraConfirmation = false
     @Published var pickedMediaUrl: URL?
 #endif
-    @Published var albums: [AlbumModel] = []
+
+    @Published private(set) var internalPickerMode: MediaPickerMode = .photos
+    @Published private(set) var albums: [AlbumModel] = []
+
     let defaultAlbumsProvider = DefaultAlbumsProvider()
     private let watcher = PhotoLibraryChangePermissionWatcher()
     private var albumsCancellable: AnyCancellable?
     
-    // MARK: Calculated property
-
-    func openCamera() {
-        self.showingCamera = true
-    }
-    
     func onStart() {
         defaultAlbumsProvider.reload()
         albumsCancellable = defaultAlbumsProvider.albums.sink { [weak self] albums in
-            self?.albums = albums//.map { Album(title: $0.title, preview: $0.preview) }
+            self?.albums = albums
         }
     }
 
     func getAlbumModel(_ album: Album) -> AlbumModel? {
         albums.filter { $0.id == album.id }.first
+    }
+
+    func setPickerMode(_ mode: MediaPickerMode) {
+        print(mode)
+        internalPickerMode = mode
+    }
+
+    func onCancelCameraSelection(_ hasSelected: Bool) {
+        if hasSelected {
+            showingExitCameraConfirmation = true
+        } else {
+            setPickerMode(.camera)
+        }
     }
 }

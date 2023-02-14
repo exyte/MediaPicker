@@ -7,11 +7,11 @@ import Combine
 
 struct AlbumsView: View {
 
-    @Binding var showingCamera: Bool
-    @StateObject var viewModel: AlbumsViewModel
-
     @EnvironmentObject private var selectionService: SelectionService
     @EnvironmentObject private var permissionsService: PermissionsService
+
+    @StateObject var viewModel: AlbumsViewModel
+    @Binding var showingCamera: Bool
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 100), spacing: 0, alignment: .top)]
@@ -37,13 +37,11 @@ struct AlbumsView: View {
                         ForEach(viewModel.albums) { album in
                             NavigationLink {
                                 AlbumView(
-                                    shouldShowCamera: false,
-                                    showingCamera: $showingCamera,
                                     viewModel: AlbumViewModel(
-                                        mediasProvider: AlbumMediasProvider(
-                                            album: album
-                                        )
-                                    )
+                                        mediasProvider: AlbumMediasProvider(album: album)
+                                    ),
+                                    showingCamera: $showingCamera,
+                                    shouldShowCamera: false
                                 )
                             } label: {
                                 AlbumCell(

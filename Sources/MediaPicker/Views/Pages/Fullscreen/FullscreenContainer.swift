@@ -7,34 +7,47 @@ import SwiftUI
 
 struct FullscreenContainer: View {
 
+    @EnvironmentObject private var selectionService: SelectionService
+    @Environment(\.mediaPickerTheme) private var theme
+
     @Binding var isPresented: Bool
     let medias: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
 
-    @Environment(\.mediaPickerTheme) private var theme
+    private var selectedMedia: AssetMediaModel? {
+        medias.first { $0.id == selection }
+    }
 
-    @EnvironmentObject private var selectionService: SelectionService
+    private var selectionServiceIndex: Int? {
+        guard let selectedMedia = selectedMedia else {
+            return nil
+        }
+        return selectionService.index(of: selectedMedia)
+    }
     
     var body: some View {
         TabView(selection: $selection) {
             ForEach(medias, id: \.id) { media in
-                ZStack {
-                    let index = selectionService.index(of: media)
-                    SelectableView(selected: index, paddings: 20, isFullscreen: true) {
-                        selectionService.onSelect(media: media)
-                    } content: {
-                        FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
+                FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .tag(media.id)
-
-                    closeButton
-                }
             }
         }
+        .overlay {
+            SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true)
+                .padding([.bottom, .leading], 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                .padding(10)
+        }
+        .onTapGesture {
+            if let selectedMedia = selectedMedia {
+                selectionService.onSelect(media: selectedMedia)
+            }
+        }
+        .overlay(closeButton)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .ignoresSafeArea()
-        .background(theme.main.fullscreenBackground)
+        .background(theme.main.fullscreenPhotoBackground)
     }
 
     var closeButton: some View {
@@ -45,8 +58,9 @@ struct FullscreenContainer: View {
                 .resizable()
                 .tint(theme.selection.fullscreenTint)
                 .frame(width: 20, height: 20)
+                .padding(.top, 22)
+                .padding(.leading, 20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(20)
     }
 }

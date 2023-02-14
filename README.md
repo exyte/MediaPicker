@@ -39,28 +39,89 @@ ___
 1. Add a binding Bool to control the picker presentation state.
 2. Add Media array to save selection (`[Media]`).
 3. Initialize the media picker and present it however you like - for example, using the .sheet modifier
-    ```swift
-        .sheet(isPresented: $showMediaPicker) {
-            MediaPicker(
-                isPresented: $showMediaPicker,
-                onChange: { medias = $0 }
-            )
-        }
-    ```
+```swift
+.sheet(isPresented: $showMediaPicker) {
+    MediaPicker(
+        isPresented: $showMediaPicker,
+        onChange: { medias = $0 }
+    )
+}
+```
 
-### Screen rotation
+## Modes
+This library lets you use both photo library and camera
+
+### Photos grid
+Default photos grid screen has a standard header which contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic out-of-the box picker (see default picker in example project for an usage example). This can be customized (see "Init - view builders" section)  
+
+### Camera
+After making one photo, you see a preview of it and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to use them. This preview screen of photos you've taken can also be customized (see "Init - view builders" section)     
+
+## Init - required parameters
+`isPresented` - a binding to determine whether the picker should be displayed or not   
+`onChange` - a closure that returns the selected media every time the selection changes
+
+## Init - optional parameters
+`limit` - the maximum selection quantity allowed, 'nil' for unlimited selection
+
+### Init - screen rotation
 If your app restricts screen rotation, you can skip this section.
 
 We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
 
-### Init required parameters
-`isPresented` - a binding to determine whether the picker should be seen or hidden   
-`onChange` - a closure that returns the selected media every time the selection changes
+### Init - view builders
+You can pass two view builders in order to add your own buttons and other elements to media picker screens. First screen you can customize is default photos grid view. Pass `albumSelectionBuilder` closure like this to replace the standard one with your own view:
+```swift
+MediaPicker(
+    isPresented: $isPresented,
+    onChange: { selectedMedia = $0 },
+    albumSelectionBuilder: { defaultHeaderView, albumSelectionView in
+        VStack {
+            defaultHeaderView
+            albumSelectionView
+            Spacer()
+            footerView
+        }
+        .background(Color.black)
+    }
+)
+```
 
-### Init optional parameters
-`limit` - the maximum selection quantity allowed, 'nil' for unlimited selection
+`albumSelectionBuilder` gives you two views to work with:
+- `defaultHeaderView` - a default looking `header` with photos/albums mode switcher
+- `albumSelectionView` - the photos grid itself
 
-### Available modifiers
+The second customizable screen is the one you see after taking a photo. Pass `cameraSelectionBuilder` like this:
+```swift
+MediaPicker(
+    isPresented: $isPresented,
+    onChange: { selectedMedia = $0 },
+    cameraSelectionBuilder: { addMoreClosure, cancelClosure, cameraSelectionView in
+        VStack {
+            HStack {
+                Spacer()
+                Button("Done", action: { isPresented = false })
+            }
+            cameraSelectionView
+            HStack {
+                Button("Cancel", action: cancelClosure)
+                Spacer()
+                Button(action: addMoreClosure) {
+                    Text("Take more photos")
+                }
+            }
+        }
+    }
+)
+```
+`cameraSelectionBuilder` gives you these parameters:
+- `addMoreClosure` - you can call this closure on tap of your own button, it will work same as default plus icon on camera selection preview screen
+- `cancelClosure` - show confirmation and return to photos grid screen if confirmed
+- `cameraSelectionView` - swipable camera photos preview collection itself
+
+You can pass one, both or none of these when creating your `MediaPicker`. (see the custom picker in the example project for usage example)
+
+## Available modifiers
 `selectionStyle` - a way to display selected/unselected media state: either a counter or a simple checkmark         
 `showingLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
 `mediaPickerTheme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
@@ -81,17 +142,15 @@ Here is an example of how you can customize colors and elements to create a cust
 
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" width="250"/>
 
-### Available modifiers: managing albums
-`showingDefaultHeader` - the default header contains the 'Done' and 'Cancel' buttons, and a simple switcher between Photos and Albums. Use it for a basic  out-of-the box picker (see default picker in example project for an implementation example)     
+### Available modifiers: managing albums  
 `albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
 `pickerMode` - set this if you don't plan to use the default header. Available options are:     
     * .photos - displays the default photos grid      
     * .albums - displays a list of albums with one preview photo for each     
-    * .album(Album) - displays one album      
+    * .album(Album) - displays one album     
+    * .camera - shows a fullscreen cover camera sheet
+    * .cameraSelection - displays a preview of photos taken with camera 
 (see the custom picker in the example project for implementation)
-
-### Camera
-After making one photo, you see a preview of it and a little plus icon, by tapping it you return back to camera mode and can continue making as many photos as you like. Press "Done" once you're finished and you will be able to scroll through all the photos you've taken before confirming you'd like to use them.     
 
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
 
@@ -132,7 +191,8 @@ github "Exyte/MediaPicker"
 ## Our other open source SwiftUI libraries
 [PopupView](https://github.com/exyte/PopupView) - Toasts and popups library    
 [Grid](https://github.com/exyte/Grid) - The most powerful Grid container    
-[ScalingHeaderScrollView](https://github.com/exyte/ScalingHeaderScrollView) - A scroll view with a sticky header which shrinks as you scroll.    
+[ScalingHeaderScrollView](https://github.com/exyte/ScalingHeaderScrollView) - A scroll view with a sticky header which shrinks as you scroll  
+[AnimatedTabBar](https://github.com/exyte/AnimatedTabBar) - A tabbar with number of preset animations        
 [ConcentricOnboarding](https://github.com/exyte/ConcentricOnboarding) - Animated onboarding flow    
 [FloatingButton](https://github.com/exyte/FloatingButton) - Floating button menu    
 [ActivityIndicatorView](https://github.com/exyte/ActivityIndicatorView) - A number of animated loading indicators    

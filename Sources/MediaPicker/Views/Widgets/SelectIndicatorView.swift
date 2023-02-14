@@ -6,11 +6,10 @@ import SwiftUI
 
 struct SelectIndicatorView: View {
 
-    let index: Int?
-    
     @Environment(\.mediaSelectionStyle) var mediaSelectionStyle
-    @Environment(\.mediaPickerTheme) private var theme
+    @Environment(\.mediaPickerTheme) var theme
 
+    var index: Int?
     var isFullscreen: Bool
 
     var body: some View {
@@ -24,9 +23,7 @@ struct SelectIndicatorView: View {
         }
         .frame(width: 24, height: 24)
     }
-}
 
-private extension SelectIndicatorView {
     var checkView: some View {
         Group {
             if index != nil {

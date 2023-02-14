@@ -22,7 +22,7 @@ struct CameraView: View {
                     if cameraSelectionService.hasSelected {
                         viewModel.showingExitCameraConfirmation = true
                     } else {
-                        viewModel.showingCamera = false
+                        viewModel.setPickerMode(.photos)
                     }
                 }
                 .foregroundColor(.white)
@@ -54,9 +54,8 @@ struct CameraView: View {
                     HStack {
                         Button("Done") {
                             if cameraSelectionService.hasSelected {
-                                viewModel.showingCameraSelection = true
+                                viewModel.setPickerMode(.cameraSelection)
                             }
-                            viewModel.showingCamera = false
                         }
                         Spacer()
                         Text("\(cameraSelectionService.selected.count)")
@@ -101,7 +100,7 @@ struct CameraView: View {
             .padding(.top, 24)
             .padding(.bottom, safeAreaInsets.bottom + 50)
         }
-        .background(theme.main.fullscreenBackground)
+        .background(theme.main.cameraBackground)
         .onEnteredBackground(perform: cameraViewModel.stopSession)
         .onEnteredForeground(perform: cameraViewModel.startSession)
         .onReceive(cameraViewModel.capturedPhotoPublisher) {

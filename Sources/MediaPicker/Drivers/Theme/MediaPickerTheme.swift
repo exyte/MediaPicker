@@ -22,15 +22,21 @@ public struct MediaPickerTheme {
 extension MediaPickerTheme {
     public struct Main {
         public let text: Color
-        public let background: Color
-        public let fullscreenBackground: Color
+        public let albumSelectionBackground: Color
+        public let fullscreenPhotoBackground: Color
+        public let cameraBackground: Color
+        public let cameraSelectionBackground: Color
 
         public init(text: Color = Color(uiColor: .label),
-                    background: Color = Color(uiColor: .systemBackground),
-                    fullscreenBackground: Color = .black) {
+                    albumSelectionBackground: Color = Color(uiColor: .systemGroupedBackground),
+                    fullscreenPhotoBackground: Color = Color(uiColor: .systemGroupedBackground),
+                    cameraBackground: Color = .black,
+                    cameraSelectionBackground: Color = .black) {
             self.text = text
-            self.background = background
-            self.fullscreenBackground = fullscreenBackground
+            self.albumSelectionBackground = albumSelectionBackground
+            self.fullscreenPhotoBackground = fullscreenPhotoBackground
+            self.cameraBackground = cameraBackground
+            self.cameraSelectionBackground = cameraSelectionBackground
         }
     }
 
@@ -45,7 +51,7 @@ extension MediaPickerTheme {
                     emptyBackground: Color = .clear,
                     selectedTint: Color = .blue,
                     selectedBackground: Color = .white,
-                    fullscreenTint: Color = .white) {
+                    fullscreenTint: Color = .blue) {
             self.emptyTint = emptyTint
             self.emptyBackground = emptyBackground
             self.selectedTint = selectedTint

@@ -11,57 +11,85 @@ struct CustomizedMediaPicker: View {
     @EnvironmentObject private var appDelegate: AppDelegate
 
     @Binding var isPresented: Bool
-    @Binding var mediaPickerMode: MediaPickerMode
     @Binding var medias: [Media]
 
     @State private var selectedMedia: [Media] = []
     @State private var albums: [Album] = []
 
-    @State private var showAlbumsDropDown: Bool = false
+    @State private var mediaPickerMode = MediaPickerMode.photos
     @State private var selectedAlbum: Album?
+    @State private var showAlbumsDropDown: Bool = false
 
     let maxCount: Int = 5
 
     var body: some View {
-        VStack {
-            headerView
-
-            MediaPicker(
-                isPresented: $isPresented,
-                limit: maxCount,
-                orientationHandler: {
-                    switch $0 {
-                    case .lock: appDelegate.lockOrientationToPortrait()
-                    case .unlock: appDelegate.unlockOrientation()
-                    }
-                },
-                onChange: { selectedMedia = $0 }
-            )
-            .albums($albums)
-            .pickerMode($mediaPickerMode)
-            .selectionStyle(.count)
-            .mediaPickerTheme(
-                main: .init(
-                    background: .black
-                ),
-                selection: .init(
-                    emptyTint: .white,
-                    emptyBackground: .black.opacity(0.25),
-                    selectedTint: Color("CustomPurple")
-                )
-            )
-            .overlay(alignment: .topLeading) {
-                if showAlbumsDropDown {
-                    albumsDropdown
-                        .background(Color.white)
-                        .foregroundColor(.black)
-                        .cornerRadius(5)
+        MediaPicker(
+            isPresented: $isPresented,
+            limit: maxCount,
+            orientationHandler: {
+                switch $0 {
+                case .lock: appDelegate.lockOrientationToPortrait()
+                case .unlock: appDelegate.unlockOrientation()
                 }
+            },
+            onChange: { selectedMedia = $0 },
+            albumSelectionBuilder: { _, albumSelectionView in
+                VStack {
+                    headerView
+                    albumSelectionView
+                    Spacer()
+                    footerView
+                }
+                .background(Color.black)
+            },
+            cameraSelectionBuilder: { addMoreClosure, cancelClosure, cameraSelectionView in
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button("Done", action: { isPresented = false })
+                    }
+                    cameraSelectionView
+                    HStack {
+                        Button("Cancel", action: cancelClosure)
+                        Spacer()
+                        Button(action: addMoreClosure) {
+                            Text("Take more photos")
+                                .font(.headline)
+                                .foregroundColor(.black)
+                                .padding()
+                        }
+                        .background {
+                            Color("CustomGreen")
+                                .cornerRadius(16)
+                        }
+                    }
+                }
+                .background(Color.black)
             }
-
-            Spacer()
-            
-            footerView
+        )
+        .showLiveCameraCell()
+        .albums($albums)
+        .pickerMode($mediaPickerMode)
+        .selectionStyle(.count)
+        .mediaPickerTheme(
+            main: .init(
+                albumSelectionBackground: .black,
+                fullscreenPhotoBackground: .black
+            ),
+            selection: .init(
+                emptyTint: .white,
+                emptyBackground: .black.opacity(0.25),
+                selectedTint: Color("CustomPurple"),
+                fullscreenTint: .white
+            )
+        )
+        .overlay(alignment: .topLeading) {
+            if showAlbumsDropDown {
+                albumsDropdown
+                    .background(Color.white)
+                    .foregroundColor(.black)
+                    .cornerRadius(5)
+            }
         }
         .background(Color.black)
         .foregroundColor(.white)

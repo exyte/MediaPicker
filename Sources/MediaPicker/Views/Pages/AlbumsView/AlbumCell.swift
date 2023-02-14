@@ -23,7 +23,7 @@ struct AlbumCell: View {
                     }
                 }
                 .clipped()
-                .foregroundColor(theme.main.background)
+                .foregroundColor(theme.main.albumSelectionBackground)
             
             if let title = viewModel.album.title {
                 Text(title)

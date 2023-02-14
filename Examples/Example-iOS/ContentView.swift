@@ -12,11 +12,9 @@ import Combine
 struct ContentView: View {
 
     @EnvironmentObject private var appDelegate: AppDelegate
-    @State private var showDefaultMediaPicker = false
-    @State private var defaultMediaPickerModeSelection = 0
 
+    @State private var showDefaultMediaPicker = false
     @State private var showCustomizedMediaPicker = false
-    @State private var customizedMediaPickerMode = MediaPickerMode.photos
 
     @State private var medias: [Media] = []
 
@@ -63,19 +61,12 @@ struct ContentView: View {
                 },
                 onChange: { medias = $0 }
             )
-            .showDefaultHeader()
             .showLiveCameraCell()
-            .mediaPickerTheme(
-                main: MediaPickerTheme.Main(
-                    background: Color(uiColor: .systemGroupedBackground),
-                    fullscreenBackground: Color(uiColor: .systemGroupedBackground)),
-                selection: MediaPickerTheme.Selection(fullscreenTint: .blue)
-            )
         }
 
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
-            CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, mediaPickerMode: $customizedMediaPickerMode, medias: $medias)
+            CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, medias: $medias)
         }
     }
 }

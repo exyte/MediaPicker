@@ -6,16 +6,15 @@ import SwiftUI
 
 struct AlbumView: View {
 
-    var shouldShowCamera: Bool
-    @Binding var showingCamera: Bool
-    @StateObject var viewModel: AlbumViewModel
-
-    @State private var fullscreenItem: AssetMediaModel?
-    
-    @Environment(\.mediaPickerTheme) private var theme
-
     @EnvironmentObject private var selectionService: SelectionService
     @EnvironmentObject private var permissionsService: PermissionsService
+    @Environment(\.mediaPickerTheme) private var theme
+
+    @StateObject var viewModel: AlbumViewModel
+    @Binding var showingCamera: Bool
+    var shouldShowCamera: Bool
+
+    @State private var fullscreenItem: AssetMediaModel?
 
     var body: some View {
         if let title = viewModel.title {
@@ -77,7 +76,7 @@ private extension AlbumView {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(theme.main.background)
+        .background(theme.main.albumSelectionBackground)
         .overlay {
             if let item = fullscreenItem {
                 FullscreenContainer(
