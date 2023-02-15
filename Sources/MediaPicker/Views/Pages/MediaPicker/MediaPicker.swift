@@ -101,17 +101,26 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
 
+            viewModel.shouldUpdatePickerMode = { mode in
+                pickerMode?.wrappedValue = mode
+            }
             viewModel.onStart()
+        }
+        .onReceive(viewModel.$internalPickerMode) { mode in
+            orientationHandler(mode == .camera ? .lock : .unlock)
         }
         .onChange(of: viewModel.albums) {
             self.albums = $0.map { $0.toAlbum() }
         }
-        .onChange(of: pickerMode?.wrappedValue ?? .photos) { mode in
-            viewModel.setPickerMode(mode)
+        .onChange(of: pickerMode?.wrappedValue) { mode in
+            if let mode = mode {
+                viewModel.setPickerMode(mode)
+            }
         }
-        .onReceive(viewModel.$internalPickerMode) { mode in
-            pickerMode?.wrappedValue = mode
-            orientationHandler(mode == .camera ? .lock : .unlock)
+        .onAppear {
+            if let mode = pickerMode?.wrappedValue {
+                viewModel.setPickerMode(mode)
+            }
         }
     }
 

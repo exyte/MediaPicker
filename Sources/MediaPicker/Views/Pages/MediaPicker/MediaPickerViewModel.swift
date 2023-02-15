@@ -17,6 +17,8 @@ final class MediaPickerViewModel: ObservableObject {
     @Published private(set) var internalPickerMode: MediaPickerMode = .photos
     @Published private(set) var albums: [AlbumModel] = []
 
+    var shouldUpdatePickerMode: (MediaPickerMode)->() = {_ in}
+
     let defaultAlbumsProvider = DefaultAlbumsProvider()
     private let watcher = PhotoLibraryChangePermissionWatcher()
     private var albumsCancellable: AnyCancellable?
@@ -33,8 +35,8 @@ final class MediaPickerViewModel: ObservableObject {
     }
 
     func setPickerMode(_ mode: MediaPickerMode) {
-        print(mode)
         internalPickerMode = mode
+        shouldUpdatePickerMode(mode)
     }
 
     func onCancelCameraSelection(_ hasSelected: Bool) {
