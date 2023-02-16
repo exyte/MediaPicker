@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ExyteMediaPicker"
-  s.version          = "0.1.1"
+  s.version          = "0.1.2"
   s.summary          = "MediaPicker is a customizable photo/video picker for iOS written in pure SwiftUI"
 
   s.homepage         = 'https://github.com/exyte/MediaPicker.git'

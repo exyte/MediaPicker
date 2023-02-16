@@ -16,7 +16,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     /// - add more photos closure
     /// - cancel closure
     /// - selection view you can embed in your view
-    public typealias CameraSelectionClosure = ((@escaping SimpleClosure, @escaping SimpleClosure, CameraSelectionTabView) -> CameraSelectionContent)
+    public typealias CameraSelectionClosure = ((@escaping SimpleClosure, @escaping SimpleClosure, CameraSelectionView) -> CameraSelectionContent)
 
     // MARK: - Parameters
 
@@ -70,7 +70,11 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 case .photos, .albums, .album(_):
                     albumSelectionContainer
                 case .camera:
-                    theme.main.albumSelectionBackground // show using fullScreenCover instead
+                    if cameraSelectionService.hasSelected {
+                        cameraSelectionContainer
+                    } else {
+                        albumSelectionContainer
+                    }
                 case .cameraSelection:
                     cameraSelectionContainer
                 }
@@ -145,10 +149,10 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 cameraSelectionBuilder(
                     { viewModel.setPickerMode(.camera) }, // add more
                     { viewModel.onCancelCameraSelection(cameraSelectionService.hasSelected) }, // cancel
-                    CameraSelectionTabView()
+                    CameraSelectionView()
                 )
             } else {
-                CameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
+                DefaultCameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
             }
         }
         .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {

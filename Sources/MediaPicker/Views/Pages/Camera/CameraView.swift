@@ -72,8 +72,7 @@ struct CameraView: View {
                     Button {
                         cameraViewModel.toggleFlash()
                     } label: {
-                        // TODO: need an icon for flash on
-                        Image("FlashOff")
+                        Image(cameraViewModel.flashEnabled ? "FlashOn" : "FlashOff", bundle: .current)
                     }
 
                     ZStack {
@@ -93,7 +92,7 @@ struct CameraView: View {
                     Button {
                         cameraViewModel.flipCamera()
                     } label: {
-                        Image("FlipCamera")
+                        Image("FlipCamera", bundle: .current)
                     }
                 }
             }

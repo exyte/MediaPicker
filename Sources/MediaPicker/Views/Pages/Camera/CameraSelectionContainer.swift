@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct CameraSelectionTabView: View {
+public struct CameraSelectionView: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
 
@@ -26,7 +26,7 @@ public struct CameraSelectionTabView: View {
     }
 }
 
-struct CameraSelectionContainer: View {
+struct DefaultCameraSelectionContainer: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @Environment(\.mediaPickerTheme) private var theme
@@ -46,7 +46,7 @@ struct CameraSelectionContainer: View {
             }
             .padding()
 
-            CameraSelectionTabView()
+            CameraSelectionView()
 
             HStack {
                 Button("Done") {
