@@ -18,6 +18,7 @@ let package = Package(
     targets: [
         .target(
             name: "ExyteMediaPicker",
+            path: "MediaPicker/Sources"
             dependencies: []
         ),
         .testTarget(
