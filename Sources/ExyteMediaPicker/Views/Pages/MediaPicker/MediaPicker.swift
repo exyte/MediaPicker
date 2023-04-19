@@ -207,6 +207,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             get: { viewModel.internalPickerMode == .camera },
             set: { value in
                 if value { viewModel.setPickerMode(.camera) }
+                else { viewModel.setPickerMode(.photos); isPresented = false }
             }
         )
     }
