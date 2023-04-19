@@ -12,16 +12,16 @@ let package = Package(
     products: [
         .library(
             name: "ExyteMediaPicker",
-            targets: ["MediaPicker"]),
+            targets: ["ExyteMediaPicker"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "MediaPicker",
+            name: "ExyteMediaPicker",
             dependencies: []
         ),
         .testTarget(
             name: "MediaPickerTests",
-            dependencies: ["MediaPicker"]),
+            dependencies: ["ExyteMediaPicker"]),
     ]
 )
