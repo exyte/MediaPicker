@@ -18,10 +18,12 @@ ___
 </br>
 
 [![Twitter](https://img.shields.io/badge/Twitter-@exyteHQ-blue.svg?style=flat)](http://twitter.com/exyteHQ)
-[![Version](https://img.shields.io/cocoapods/v/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
-[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-0473B3.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![License](https://img.shields.io/cocoapods/l/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
 [![Platform](https://img.shields.io/cocoapods/p/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
+[![Version](https://img.shields.io/cocoapods/v/ExyteMediaPicker.svg?style=flat)](http://cocoapods.org/pods/ExyteMediaPicker)
+[![SPM Compatible](https://img.shields.io/badge/SwiftPM-Compatible-brightgreen.svg)](https://www.swift.org/package-manager/)
+[![Cocoapods Compatible](https://img.shields.io/badge/cocoapods-Compatible-brightgreen.svg)](https://cocoapods.org)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg?style=flat)](https://github.com/Carthage/Carthage)
+![License](https://img.shields.io/cocoapods/l/ExytePopupView.svg?style=flat)
 
 # Features
 * Photo and video picker
@@ -34,6 +36,9 @@ ___
 * The iOS 16 PhotosPicker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. 
 * PhotosPicker only lets you pick photos from the library - no camera. 
 * MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
+
+## !SPM Renaming!
+SPM package is now called `ExyteMediaPicker` instead of `MediaPicker`, sorry for any inconveniences.
 
 # Usage
 1. Add a binding Bool to control the picker presentation state.
@@ -167,7 +172,7 @@ To try out the MediaPicker examples:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/exyte/MediaPicker.git")
+    .package(url: "https://github.com/exyte/ExyteMediaPicker.git")
 ]
 ```
 

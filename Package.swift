@@ -11,7 +11,7 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "MediaPicker",
+            name: "ExyteMediaPicker",
             targets: ["MediaPicker"]),
     ],
     dependencies: [],
