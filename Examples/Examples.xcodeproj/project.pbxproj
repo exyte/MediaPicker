@@ -12,7 +12,7 @@
 		1384FF0D283F912E00C9AAC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1384FF0C283F912E00C9AAC1 /* ContentView.swift */; };
 		1384FF0F283F912F00C9AAC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF0E283F912F00C9AAC1 /* Assets.xcassets */; };
 		1384FF12283F912F00C9AAC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF11283F912F00C9AAC1 /* Preview Assets.xcassets */; };
-		13D72C0F2873043E006B5EC7 /* MediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 13D72C0E2873043E006B5EC7 /* MediaPicker */; };
+		5B1CA4E029F137E100245B8B /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B1CA4DF29F137E100245B8B /* ExyteMediaPicker */; };
 		A82559832901A437008D9CC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82559822901A437008D9CC5 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -24,7 +24,7 @@
 		1384FF0E283F912F00C9AAC1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1384FF11283F912F00C9AAC1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1384FF19283F920A00C9AAC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		13D72C0D28730429006B5EC7 /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
+		5B1CA4DE29F137A600245B8B /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
 		A82559822901A437008D9CC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13D72C0F2873043E006B5EC7 /* MediaPicker in Frameworks */,
+				5B1CA4E029F137E100245B8B /* ExyteMediaPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +63,7 @@
 		1384FF01283F90FA00C9AAC1 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				13D72C0D28730429006B5EC7 /* MediaPicker */,
+				5B1CA4DE29F137A600245B8B /* MediaPicker */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -120,7 +120,7 @@
 			);
 			name = "Example-iOS";
 			packageProductDependencies = (
-				13D72C0E2873043E006B5EC7 /* MediaPicker */,
+				5B1CA4DF29F137E100245B8B /* ExyteMediaPicker */,
 			);
 			productName = "Example-iOS";
 			productReference = 1384FF07283F912E00C9AAC1 /* Example-iOS.app */;
@@ -384,9 +384,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		13D72C0E2873043E006B5EC7 /* MediaPicker */ = {
+		5B1CA4DF29F137E100245B8B /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = MediaPicker;
+			productName = ExyteMediaPicker;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -4,7 +4,7 @@
 
 import Foundation
 import SwiftUI
-import MediaPicker
+import ExyteMediaPicker
 
 struct CustomizedMediaPicker: View {
 

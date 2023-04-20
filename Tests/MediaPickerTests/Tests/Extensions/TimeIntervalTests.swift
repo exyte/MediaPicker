@@ -3,7 +3,7 @@
 //
 
 import XCTest
-@testable import MediaPicker
+@testable import ExyteMediaPicker
 
 final class TimeIntervalTests: XCTestCase {
     let testLocale: Locale = Locale(identifier: "en_US")

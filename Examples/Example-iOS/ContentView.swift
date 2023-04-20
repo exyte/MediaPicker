@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MediaPicker
+import ExyteMediaPicker
 import Combine
 
 struct ContentView: View {
