@@ -13,6 +13,7 @@ ___
 
 <a href="https://exyte.com/contacts"><img src="https://i.imgur.com/vGjsQPt.png" width="134" height="34"></a> <a href="https://twitter.com/exyteHQ"><img src="https://i.imgur.com/DngwSn1.png" width="165" height="34"></a>
 
+![](https://img.shields.io/github/v/tag/exyte/MediaPicker?label=Version)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fexyte%2FMediaPicker%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/exyte/MediaPicker)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fexyte%2FMediaPicker%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/exyte/MediaPicker)
 [![SPM Compatible](https://img.shields.io/badge/SwiftPM-Compatible-brightgreen.svg)](https://swiftpackageindex.com/exyte/MediaPicker)
@@ -30,7 +31,7 @@ ___
 # MediaPicker vs PhotosPicker
 * The iOS 16 PhotosPicker only provides you with a button, while this library gives you the whole view, meaning you can build it into you own screens and customize it as you see fit. 
 * PhotosPicker only lets you pick photos from the library - no camera. 
-* MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos (the ability to capture videos is coming very soon)
+* MediaPicker provides a default looking library picker, with ability to manage albums, and also a camera view to take photos/video
 
 ## !SPM Renaming!
 SPM package is now called `ExyteMediaPicker` instead of `MediaPicker`, sorry for any inconveniences.
@@ -47,6 +48,15 @@ SPM package is now called `ExyteMediaPicker` instead of `MediaPicker`, sorry for
     )
 }
 ```
+
+## Media model
+The lbrary will return an array of `Media` structs for you to use as you see fit. It has the following fields and methods (all the methods use async/await API):
+- `type` - .image or .video
+- `duration` - nil for .image
+- `getURL()` - returns `URL` to media (automatically stores in temporary directory if needed)
+- `getThumbnailURL()` - returns `URL` to media's thumbnail (for image just returns the image itself)
+- `getData()` - returns media's `Data` representation
+- `getThumbnailData()` - returns media's thumbnail `Data` representation
 
 ## Modes
 This library lets you use both photo library and camera
