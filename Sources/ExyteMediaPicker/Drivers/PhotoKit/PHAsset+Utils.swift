@@ -25,7 +25,7 @@ extension PHAsset {
             case .contentEditing(let id):
                 asset.cancelContentEditingInputRequest(id)
             case .imageRequest(let id):
-                PHImageManager.default().cancelImageRequest(id)
+                PHCachingImageManager.default().cancelImageRequest(id)
             case .none:
                 break
             }
@@ -37,7 +37,7 @@ extension PHAsset {
         case imageRequest(PHImageRequestID)
     }
     
-    func getURL(completion: @escaping (URL?) -> Void) -> Request? {
+    func getURLCancellableRequest(completion: @escaping (URL?) -> Void) -> Request? {
         var request: Request?
         
         if mediaType == .image {
@@ -56,20 +56,14 @@ extension PHAsset {
         } else if mediaType == .video {
             let options = PHVideoRequestOptions()
             options.version = .original
+            options.isNetworkAccessAllowed = true
+            options.deliveryMode = .highQualityFormat
+
             request = .imageRequest(
-                PHImageManager
-                    .default()
-                    .requestAVAsset(
-                        forVideo: self,
-                        options: options,
-                        resultHandler: { (asset, _, _) in
-                            if let urlAsset = asset as? AVURLAsset {
-                                completion(urlAsset.url)
-                            } else {
-                                completion(nil)
-                            }
-                        }
-                    )
+                PHCachingImageManager.default().requestAVAsset(forVideo: self, options: options) { avAsset, audio, info in
+                    let asset = avAsset as? AVURLAsset
+                    completion(asset?.url)
+                }
             )
         }
         
@@ -90,7 +84,7 @@ extension PHAsset {
         
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
-                let request = getURL { url in
+                let request = getURLCancellableRequest { url in
                     continuation.resume(returning: url)
                 }
                 if let request = request {
@@ -108,17 +102,27 @@ extension PHAsset {
 
     func getThumbnailURL() async -> URL? {
         guard let url = await getURL() else { return nil }
-        let asset: AVAsset = AVAsset(url: url)
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-
-        do {
-            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
-            guard let data = thumbnailImage.jpegData else { return nil }
-            return FileManager.storeToTempDir(data: data)
-        } catch let error {
-            print(error)
+        if mediaType == .image {
+            return url
         }
 
+        let asset: AVAsset = AVAsset(url: url)
+        if let thumbnailData = asset.generateThumbnail() {
+            return FileManager.storeToTempDir(data: thumbnailData)
+        }
+
+        return nil
+    }
+
+    func getThumbnailData() async -> Data? {
+        if mediaType == .image {
+            return try? await self.getData()
+        }
+        else if mediaType == .video {
+            guard let url = await getURL() else { return nil }
+            let asset: AVAsset = AVAsset(url: url)
+            return asset.generateThumbnail()
+        }
         return nil
     }
 }
@@ -171,23 +175,66 @@ extension PHAsset {
         return result
     }
 
-    func data() async -> Data? {
-        return await withCheckedContinuation { continuation in
-            let options = PHImageRequestOptions()
-            options.isNetworkAccessAllowed = true
-            options.deliveryMode = .highQualityFormat
-            options.isSynchronous = true
+    func getData() async throws -> Data? {
+        try await withCheckedThrowingContinuation { continuation in
+            if mediaType == .image {
+                let options = PHImageRequestOptions()
+                options.isNetworkAccessAllowed = true
+                options.deliveryMode = .highQualityFormat
+                options.isSynchronous = true
 
-            PHCachingImageManager.default().requestImageDataAndOrientation(
-                for: self,
-                options: options,
-                resultHandler: { data, _, _, info in
-                    guard info?.keys.contains(PHImageResultIsDegradedKey) == true
-                    else { fatalError("PHImageManager with `options.isSynchronous = true` should call result ONE time.") }
-                    continuation.resume(returning: data)
+                PHCachingImageManager.default().requestImageDataAndOrientation(
+                    for: self,
+                    options: options,
+                    resultHandler: { data, _, _, info in
+                        guard info?.keys.contains(PHImageResultIsDegradedKey) == true
+                        else { fatalError("PHImageManager with `options.isSynchronous = true` should call result ONE time.") }
+                        if let data = data {
+                            continuation.resume(returning: data)
+                        } else {
+                            continuation.resume(throwing: AssetFetchError.noImageData)
+                        }
+                    }
+                )
+            }
+            else if mediaType == .video {
+                let options = PHVideoRequestOptions()
+                options.isNetworkAccessAllowed = true
+                options.deliveryMode = .highQualityFormat
+
+                PHCachingImageManager.default().requestAVAsset(forVideo: self, options: options) { avAsset, audio, info in
+                    do {
+                        if let asset = avAsset as? AVURLAsset {
+                            let data = try Data(contentsOf: asset.url)
+                            continuation.resume(returning: data)
+                        }
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
                 }
-            )
+            } else {
+                continuation.resume(throwing: AssetFetchError.unknownType)
+            }
         }
     }
+}
+
+extension AVAsset {
+    func generateThumbnail() -> Data? {
+        let imageGenerator = AVAssetImageGenerator(asset: self)
+        do {
+            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
+            guard let data = thumbnailImage.jpegData else { return nil }
+            return data
+        } catch let error {
+            print(error)
+        }
+        return nil
+    }
+}
+
+enum AssetFetchError: Error {
+    case noImageData
+    case unknownType
 }
 #endif

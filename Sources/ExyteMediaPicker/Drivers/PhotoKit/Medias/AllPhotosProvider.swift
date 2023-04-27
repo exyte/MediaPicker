@@ -13,7 +13,7 @@ final class AllPhotosProvider: MediasProviderProtocol {
     private var subject = CurrentValueSubject<[AssetMediaModel], Never>([])
     private var subscriptions = Set<AnyCancellable>()
 
-    var medias: AnyPublisher<[AssetMediaModel], Never> {
+    var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> {
         subject.eraseToAnyPublisher()
     }
 

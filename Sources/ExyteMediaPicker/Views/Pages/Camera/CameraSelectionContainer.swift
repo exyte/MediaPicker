@@ -15,8 +15,8 @@ public struct CameraSelectionView: View {
 
     public var body: some View {
         TabView(selection: $index) {
-            ForEach(cameraSelectionService.selected.enumerated().map({ $0 }), id: \.offset) { (index, media) in
-                CameraSelectionCell(viewModel: CameraSelectionCellViewModel(media: media))
+            ForEach(cameraSelectionService.selected.enumerated().map({ $0 }), id: \.offset) { (index, mediaModel) in
+                FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel))
                     .tag(index)
                     .frame(maxHeight: .infinity)
                     .padding(.vertical)

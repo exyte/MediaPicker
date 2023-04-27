@@ -43,32 +43,32 @@ private extension AlbumView {
                 }
                 if viewModel.isLoading {
                     ProgressView()
-                } else if viewModel.medias.isEmpty {
+                } else if viewModel.assetMediaModels.isEmpty {
                     Text("Empty data")
                         .font(.title3)
                 } else {
-                    MediasGrid(viewModel.medias) {
+                    MediasGrid(viewModel.assetMediaModels) {
                         if shouldShowCamera && permissionsService.cameraAction == nil {
                             LiveCameraCell {
                                 showingCamera = true
                             }
                         }
-                    } content: { media in
-                        let index = selectionService.index(of: media)
+                    } content: { assetMediaModel in
+                        let index = selectionService.index(of: assetMediaModel)
                         SelectableView(selected: index, isFullscreen: false) {
-                            selectionService.onSelect(media: media)
+                            selectionService.onSelect(assetMediaModel: assetMediaModel)
                         } content: {
                             Button {
                                 if fullscreenItem == nil {
-                                    fullscreenItem = media
+                                    fullscreenItem = assetMediaModel
                                 }
                             } label: {
-                                MediaCell(viewModel: MediaViewModel(media: media))
+                                MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
                             }
                             .buttonStyle(MediaButtonStyle())
                             .contentShape(Rectangle())
                         }
-                        .disabled(!selectionService.canSelect(media: media))
+                        .disabled(!selectionService.canSelect(assetMediaModel: assetMediaModel))
                     }
                 }
                 
@@ -81,7 +81,7 @@ private extension AlbumView {
             if let item = fullscreenItem {
                 FullscreenContainer(
                     isPresented: fullscreenPresentedBinding(),
-                    medias: viewModel.medias,
+                    assetMediaModels: viewModel.assetMediaModels,
                     selection: item.id
                 )
             }

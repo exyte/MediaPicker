@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 extension FileManager {
 
@@ -14,6 +15,7 @@ extension FileManager {
     }
 
     static var imageFileExtension: String { ".jpg" }
+    static var videoFileExtension: String { ".mp4" }
 
     static func storeToTempDir(url: URL) -> URL {
         let id = UUID().uuidString
@@ -29,5 +31,10 @@ extension FileManager {
 
         try? data.write(to: path)
         return path
+    }
+
+    static func getTempUrl() -> URL {
+        let id = UUID().uuidString
+        return FileManager.tempPath.appendingPathComponent(id + Self.videoFileExtension)
     }
 }

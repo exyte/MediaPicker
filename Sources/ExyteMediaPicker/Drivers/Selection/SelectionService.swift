@@ -25,32 +25,32 @@ final class SelectionService: ObservableObject {
         return true
     }
 
-    func canSelect(media: AssetMediaModel) -> Bool {
-        fitsSelectionLimit || selected.contains(media)
+    func canSelect(assetMediaModel: AssetMediaModel) -> Bool {
+        fitsSelectionLimit || selected.contains(assetMediaModel)
     }
 
-    func onSelect(media: AssetMediaModel) {
-        if let index = selected.firstIndex(of: media) {
+    func onSelect(assetMediaModel: AssetMediaModel) {
+        if let index = selected.firstIndex(of: assetMediaModel) {
             selected.remove(at: index)
         } else {
             if fitsSelectionLimit {
-                selected.append(media)
+                selected.append(assetMediaModel)
             }
         }
         onChange?(mapToMedia())
     }
 
-    func index(of media: AssetMediaModel) -> Int? {
-        selected.firstIndex(of: media)
+    func index(of assetMediaModel: AssetMediaModel) -> Int? {
+        selected.firstIndex(of: assetMediaModel)
     }
 
     func mapToMedia() -> [Media] {
         selected
             .compactMap {
-                guard let type = $0.mediaType else {
+                guard $0.mediaType != nil else {
                     return nil
                 }
-                return Media(type: type, source: .media($0))
+                return Media(source: $0)
             }
     }
 }

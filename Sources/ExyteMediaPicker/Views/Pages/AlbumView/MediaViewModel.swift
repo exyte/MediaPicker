@@ -8,12 +8,12 @@ import UIKit.UIImage
 #endif
 
 class MediaViewModel: ObservableObject {
-    let media: AssetMediaModel
+    let assetMediaModel: AssetMediaModel
     
     private var imageCancellable: AnyCancellable?
     
-    init(media: AssetMediaModel) {
-        self.media = media
+    init(assetMediaModel: AssetMediaModel) {
+        self.assetMediaModel = assetMediaModel
     }
     
 #if os(iOS)
@@ -23,7 +23,7 @@ class MediaViewModel: ObservableObject {
 #endif
     
     func onStart(size: CGSize) {
-        imageCancellable = media.source
+        imageCancellable = assetMediaModel.asset
             .image(size: size)
             .sink {
                 self.preview = $0

@@ -47,10 +47,10 @@ final class CameraSelectionService: ObservableObject {
     func mapToMedia() -> [Media] {
         selected
             .compactMap {
-                guard let type = $0.mediaType else {
+                guard $0.mediaType != nil else {
                     return nil
                 }
-                return Media(type: type, source: .url($0.url))
+                return Media(source: $0)
             }
     }
 

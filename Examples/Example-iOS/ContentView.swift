@@ -38,7 +38,7 @@ struct ContentView: View {
                     Section {
                         LazyVGrid(columns: columns, spacing: 1) {
                             ForEach(medias) { media in
-                                MediaCell(media: media)
+                                MediaCell(viewModel: MediaCellViewModel(media: media))
                                     .aspectRatio(1, contentMode: .fill)
                             }
                         }
@@ -67,34 +67,6 @@ struct ContentView: View {
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
             CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, medias: $medias)
-        }
-    }
-}
-
-struct MediaCell: View {
-
-    var media: Media
-    @State var url: URL?
-
-    var body: some View {
-        GeometryReader { g in
-            if let url = url {
-                AsyncImage(
-                    url: url,
-                    content: { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: g.size.width, height: g.size.width)
-                            .clipped()
-                    },
-                    placeholder: {
-                        ProgressView()
-                    }
-                )
-            }
-        }
-        .task {
-            url = await media.getUrl()
         }
     }
 }

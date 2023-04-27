@@ -11,26 +11,26 @@ struct FullscreenContainer: View {
     @Environment(\.mediaPickerTheme) private var theme
 
     @Binding var isPresented: Bool
-    let medias: [AssetMediaModel]
+    let assetMediaModels: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
 
-    private var selectedMedia: AssetMediaModel? {
-        medias.first { $0.id == selection }
+    private var selectedMediaModel: AssetMediaModel? {
+        assetMediaModels.first { $0.id == selection }
     }
 
     private var selectionServiceIndex: Int? {
-        guard let selectedMedia = selectedMedia else {
+        guard let selectedMediaModel = selectedMediaModel else {
             return nil
         }
-        return selectionService.index(of: selectedMedia)
+        return selectionService.index(of: selectedMediaModel)
     }
     
     var body: some View {
         TabView(selection: $selection) {
-            ForEach(medias, id: \.id) { media in
-                FullscreenCell(viewModel: FullscreenCellViewModel(media: media))
+            ForEach(assetMediaModels, id: \.id) { assetMediaModel in
+                FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: assetMediaModel))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .tag(media.id)
+                    .tag(assetMediaModel.id)
             }
         }
         .overlay {
@@ -40,8 +40,8 @@ struct FullscreenContainer: View {
                 .padding(10)
         }
         .onTapGesture {
-            if let selectedMedia = selectedMedia {
-                selectionService.onSelect(media: selectedMedia)
+            if let selectedMediaModel = selectedMediaModel {
+                selectionService.onSelect(assetMediaModel: selectedMediaModel)
             }
         }
         .overlay(closeButton)

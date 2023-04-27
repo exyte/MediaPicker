@@ -12,7 +12,7 @@ struct FullscreenCell: View {
     
     var body: some View {
         VStack {
-            if viewModel.isImageSet, let image = viewModel.preview {
+            if let image = viewModel.image {
                 ZoomableScrollView {
                     Image(uiImage: image)
                         .resizable()

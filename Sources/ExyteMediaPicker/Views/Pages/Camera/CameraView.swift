@@ -15,6 +15,9 @@ struct CameraView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @Environment(\.mediaPickerTheme) private var theme
 
+    @State var capturingPhotos = true
+    @State var videoCaptureInProgress = false
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -49,7 +52,7 @@ struct CameraView: View {
                     .onEnded(cameraViewModel.zoomEnded(_:))
             )
 
-            VStack(spacing: 0) {
+            VStack(spacing: 10) {
                 if cameraSelectionService.hasSelected {
                     HStack {
                         Button("Done") {
@@ -57,6 +60,8 @@ struct CameraView: View {
                                 viewModel.setPickerMode(.cameraSelection)
                             }
                         }
+                        Spacer()
+                        photoVideoToggle
                         Spacer()
                         Text("\(cameraSelectionService.selected.count)")
                             .font(.system(size: 15))
@@ -67,6 +72,9 @@ struct CameraView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 12)
                 }
+                else {
+                    photoVideoToggle
+                }
 
                 HStack(spacing: 40) {
                     Button {
@@ -75,18 +83,12 @@ struct CameraView: View {
                         Image(cameraViewModel.flashEnabled ? "FlashOn" : "FlashOff", bundle: .current)
                     }
 
-                    ZStack {
-                        Circle()
-                            .stroke(Color.white.opacity(0.4), lineWidth: 6)
-                            .frame(width: 72, height: 72)
-
-                        Button {
-                            cameraViewModel.takePhoto()
-                        } label: {
-                            Circle()
-                                .foregroundColor(.white)
-                                .frame(width: 60, height: 60)
-                        }
+                    if capturingPhotos {
+                        takePhotoButton
+                    } else if !videoCaptureInProgress {
+                        startVideoCaptureButton
+                    } else {
+                        stopVideoCaptureButton
                     }
 
                     Button {
@@ -108,4 +110,67 @@ struct CameraView: View {
         }
     }
 
+    var photoVideoToggle: some View {
+        HStack {
+            Button("Video") {
+                capturingPhotos = false
+            }
+            .foregroundColor(capturingPhotos ? Color.white : Color.yellow)
+
+            Button("Photo") {
+                capturingPhotos = true
+            }
+            .foregroundColor(capturingPhotos ? Color.yellow : Color.white)
+        }
+    }
+
+    var takePhotoButton: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.white.opacity(0.4), lineWidth: 6)
+                .frame(width: 72, height: 72)
+
+            Button {
+                cameraViewModel.takePhoto()
+            } label: {
+                Circle()
+                    .foregroundColor(.white)
+                    .frame(width: 60, height: 60)
+            }
+        }
+    }
+
+    var startVideoCaptureButton: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.white.opacity(0.4), lineWidth: 6)
+                .frame(width: 72, height: 72)
+
+            Button {
+                cameraViewModel.startVideoCapture()
+                videoCaptureInProgress = true
+            } label: {
+                Circle()
+                    .foregroundColor(.red)
+                    .frame(width: 60, height: 60)
+            }
+        }
+    }
+
+    var stopVideoCaptureButton: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.white.opacity(0.4), lineWidth: 6)
+                .frame(width: 72, height: 72)
+
+            Button {
+                cameraViewModel.stopVideoCapture()
+                videoCaptureInProgress = false
+            } label: {
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(.red)
+                    .frame(width: 40, height: 40)
+            }
+        }
+    }
 }

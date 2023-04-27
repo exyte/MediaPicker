@@ -30,6 +30,6 @@ extension AlbumModel: Equatable {}
 
 extension AlbumModel {
     func toAlbum() -> Album {
-        Album(id: id, title: title, preview: preview?.source)
+        Album(id: id, title: title, preview: preview?.asset)
     }
 }

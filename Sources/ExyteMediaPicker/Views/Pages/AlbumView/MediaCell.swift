@@ -19,7 +19,7 @@ struct MediaCell: View {
             .aspectRatio(1, contentMode: .fill)
             .clipped()
             
-            if let duration = viewModel.media.source.formattedDuration {
+            if let duration = viewModel.assetMediaModel.asset.formattedDuration {
                 VStack {
                     Spacer()
                     Rectangle()

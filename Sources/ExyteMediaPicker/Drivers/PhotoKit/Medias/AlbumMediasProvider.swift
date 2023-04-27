@@ -13,7 +13,7 @@ final class AlbumMediasProvider: MediasProviderProtocol {
 
     let album: AlbumModel
 
-    var medias: AnyPublisher<[AssetMediaModel], Never> {
+    var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> {
         subject.eraseToAnyPublisher()
     }
 

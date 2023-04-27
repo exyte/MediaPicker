@@ -24,7 +24,7 @@ class AlbumCellViewModel: ObservableObject {
     func fetchPreview(size: CGSize) {
         guard preview == nil else { return }
         
-        previewCancellable = album.preview?.source
+        previewCancellable = album.preview?.asset
             .image(size: size)
             .sink(receiveValue: { [weak self] in
                 self?.preview = $0

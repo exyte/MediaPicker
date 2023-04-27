@@ -8,7 +8,7 @@ import Combine
 final class AlbumViewModel: ObservableObject {
 
     @Published var title: String? = nil
-    @Published var medias: [AssetMediaModel] = []
+    @Published var assetMediaModels: [AssetMediaModel] = []
     @Published var isLoading: Bool = false
     
     let mediasProvider: MediasProviderProtocol
@@ -21,10 +21,10 @@ final class AlbumViewModel: ObservableObject {
     }
     
     func onStart() {
-        mediaCancellable = mediasProvider.medias
+        mediaCancellable = mediasProvider.assetMediaModels
             .receive(on: RunLoop.main)
             .sink { [weak self] in
-                self?.medias = $0
+                self?.assetMediaModels = $0
             }
         
         mediasProvider.reload()

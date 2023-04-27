@@ -6,13 +6,13 @@ import Foundation
 import Photos
 
 struct AssetMediaModel {
-    let source: PHAsset
+    let asset: PHAsset
 }
 
-extension AssetMediaModel {
+extension AssetMediaModel: MediaModelProtocol {
 
     var mediaType: MediaType? {
-        switch source.mediaType {
+        switch asset.mediaType {
         case .image:
             return .image
         case .video:
@@ -21,11 +21,27 @@ extension AssetMediaModel {
             return nil
         }
     }
+
+    func getURL() async -> URL? {
+        await asset.getURL()
+    }
+
+    func getThumbnailURL() async -> URL? {
+        await asset.getThumbnailURL()
+    }
+
+    func getData() async throws -> Data? {
+        try await asset.getData()
+    }
+
+    func getThumbnailData() async -> Data? {
+        await asset.getThumbnailData()
+    }
 }
 
 extension AssetMediaModel: Identifiable {
     var id: String {
-        source.localIdentifier
+        asset.localIdentifier
     }
 }
 

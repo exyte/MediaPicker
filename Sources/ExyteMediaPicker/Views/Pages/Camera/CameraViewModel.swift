@@ -27,6 +27,7 @@ final class CameraViewModel: NSObject, ObservableObject {
     var capturedPhotoPublisher: AnyPublisher<URL, Never> { capturedPhotoSubject.eraseToAnyPublisher() }
 
     private let photoOutput = AVCapturePhotoOutput()
+    private let videoOutput = AVCaptureMovieFileOutput()
     private let motionManager = MotionManager()
     private let sessionQueue = DispatchQueue(label: "LiveCameraQueue")
     private let capturedPhotoSubject = PassthroughSubject<URL, Never>()
@@ -72,6 +73,15 @@ final class CameraViewModel: NSObject, ObservableObject {
 
         withAnimation(.linear(duration: 0.1)) { snapOverlay = true }
         withAnimation(.linear(duration: 0.1).delay(0.1)) { snapOverlay = false }
+    }
+
+    func startVideoCapture() {
+        let videoUrl = FileManager.getTempUrl()
+        videoOutput.startRecording(to: videoUrl, recordingDelegate: self)
+    }
+
+    func stopVideoCapture() {
+        videoOutput.stopRecording()
     }
 
     func flipCamera() {
@@ -161,6 +171,10 @@ final class CameraViewModel: NSObject, ObservableObject {
         photoOutput.isLivePhotoCaptureEnabled = false
         guard session.canAddOutput(photoOutput) else { return }
         session.addOutput(photoOutput)
+
+        guard session.canAddOutput(videoOutput) else { return }
+        session.addOutput(videoOutput)
+
         updateOutputOrientation()
     }
 
@@ -216,5 +230,11 @@ extension CameraViewModel: AVCapturePhotoCaptureDelegate {
         ).jpegData(compressionQuality: 0.8) else { return }
 
         capturedPhotoSubject.send(FileManager.storeToTempDir(data: data))
+    }
+}
+
+extension CameraViewModel: AVCaptureFileOutputRecordingDelegate {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        capturedPhotoSubject.send(outputFileURL)
     }
 }

@@ -7,24 +7,23 @@ import Combine
 import Photos
 
 protocol MediasProviderProtocol {
-    var medias: AnyPublisher<[AssetMediaModel], Never> { get }
-
+    var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> { get }
     func reload()
 }
 
 class MediasProvider {
 
     static func map(fetchResult: PHFetchResult<PHAsset>) -> [AssetMediaModel] {
-        var medias: [AssetMediaModel] = []
+        var assetMediaModels: [AssetMediaModel] = []
 
         if fetchResult.count == 0 {
-            return medias
+            return assetMediaModels
         }
 
         for index in 0...(fetchResult.count - 1) {
             let asset = fetchResult[index]
-            medias.append(AssetMediaModel(source: asset))
+            assetMediaModels.append(AssetMediaModel(asset: asset))
         }
-        return medias
+        return assetMediaModels
     }
 }

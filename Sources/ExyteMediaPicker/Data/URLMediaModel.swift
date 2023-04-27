@@ -12,13 +12,45 @@ struct URLMediaModel {
     let url: URL
 }
 
-extension URLMediaModel {
+extension URLMediaModel: MediaModelProtocol {
 
     var mediaType: MediaType? {
         if url.isImageFile {
             return .image
-        } else {
+        }
+        if url.isVideoFile {
             return .video
+        }
+        return nil
+    }
+
+    func getURL() async -> URL? {
+        url
+    }
+
+    func getThumbnailURL() async -> URL? {
+        switch mediaType {
+        case .image:
+            return url
+        case .video:
+            return await url.getThumbnailURL()
+        case .none:
+            return nil
+        }
+    }
+
+    func getData() async throws -> Data? {
+        try? Data(contentsOf: url)
+    }
+
+    func getThumbnailData() async -> Data? {
+        switch mediaType {
+        case .image:
+            return try? Data(contentsOf: url)
+        case .video:
+            return await url.getThumbnailData()
+        case .none:
+            return nil
         }
     }
 }
@@ -32,11 +64,5 @@ extension URLMediaModel: Identifiable {
 extension URLMediaModel: Equatable {
     static func ==(lhs: URLMediaModel, rhs: URLMediaModel) -> Bool {
         lhs.id == rhs.id
-    }
-}
-
-extension URL {
-    var isImageFile: Bool {
-        UTType(filenameExtension: pathExtension)?.conforms(to: .image) ?? false
     }
 }
