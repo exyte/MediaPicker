@@ -53,6 +53,11 @@ final class SelectionService: ObservableObject {
                 return Media(source: $0)
             }
     }
+
+    func removeAll() {
+        selected.removeAll()
+        onChange?([])
+    }
 }
 
 private extension SelectionService {

@@ -56,5 +56,6 @@ final class CameraSelectionService: ObservableObject {
 
     func removeAll() {
         selected.removeAll()
+        onChange?([])
     }
 }

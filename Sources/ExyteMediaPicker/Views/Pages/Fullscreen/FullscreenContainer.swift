@@ -35,19 +35,26 @@ struct FullscreenContainer: View {
         }
         .overlay {
             SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true)
-                .padding([.bottom, .leading], 10)
+                .padding([.horizontal, .bottom], 20)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if let selectedMediaModel = selectedMediaModel {
+                        selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                    }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .padding(10)
         }
         .onTapGesture {
-            if let selectedMediaModel = selectedMediaModel {
+            if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
                 selectionService.onSelect(assetMediaModel: selectedMediaModel)
             }
         }
         .overlay(closeButton)
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .ignoresSafeArea()
-        .background(theme.main.fullscreenPhotoBackground)
+        .background(
+            theme.main.fullscreenPhotoBackground
+                .ignoresSafeArea()
+        )
     }
 
     var closeButton: some View {
@@ -58,9 +65,8 @@ struct FullscreenContainer: View {
                 .resizable()
                 .tint(theme.selection.fullscreenTint)
                 .frame(width: 20, height: 20)
-                .padding(.top, 22)
-                .padding(.leading, 20)
         }
+        .padding([.horizontal, .bottom], 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }

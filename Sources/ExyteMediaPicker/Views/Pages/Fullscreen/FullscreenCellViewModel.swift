@@ -14,8 +14,8 @@ final class FullscreenCellViewModel: ObservableObject {
 
     @Published var image: UIImage? = nil
     @Published var player: AVPlayer? = nil
+    @Published var isPlaying = false
 
-    private var isPlaying = false
     private var currentTask: Task<Void, Never>?
 
     init(mediaModel: MediaModelProtocol) {
@@ -37,13 +37,23 @@ final class FullscreenCellViewModel: ObservableObject {
             case .video:
                 let url = await mediaModel.getURL()
                 guard let url = url else { return }
-                DispatchQueue.main.async {
-                    self.player = AVPlayer(url: url)
-                }
+                setupPlayer(url)
             case .none:
                 break
             }
         }
+    }
+
+    func setupPlayer(_ url: URL) {
+        DispatchQueue.main.async {
+            self.player = AVPlayer(url: url)
+        }
+        NotificationCenter.default.addObserver(self, selector: #selector(finishVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+
+    @objc func finishVideo() {
+        player?.seek(to: CMTime(seconds: 0, preferredTimescale: 10))
+        isPlaying = false
     }
 
     func onStop() {

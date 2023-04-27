@@ -22,6 +22,10 @@ extension AssetMediaModel: MediaModelProtocol {
         }
     }
 
+    var duration: CGFloat? {
+        CGFloat(asset.duration)
+    }
+
     func getURL() async -> URL? {
         await asset.getURL()
     }

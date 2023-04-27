@@ -21,7 +21,22 @@ struct FullscreenCell: View {
             } else if let player = viewModel.player {
                 ZoomableScrollView {
                     VideoPlayer(player: player)
-                        .padding()
+                        .disabled(true)
+                        .overlay {
+                            ZStack {
+                                Color.clear
+                                if !viewModel.isPlaying {
+                                    Image(systemName: "play.fill")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .foregroundColor(.white.opacity(0.8))
+                                }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.togglePlay()
+                            }
+                        }
                 }
             } else {
                 Spacer()

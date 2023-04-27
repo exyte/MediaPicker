@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import AVFoundation
 
 struct URLMediaModel {
     let url: URL
@@ -22,6 +23,10 @@ extension URLMediaModel: MediaModelProtocol {
             return .video
         }
         return nil
+    }
+
+    var duration: CGFloat? {
+        CMTimeGetSeconds(AVURLAsset(url: url).duration)
     }
 
     func getURL() async -> URL? {

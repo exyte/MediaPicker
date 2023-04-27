@@ -171,6 +171,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     var defaultHeaderView: some View {
         HStack {
             Button("Cancel") {
+                selectionService.removeAll()
+                cameraSelectionService.removeAll()
                 isPresented = false
             }
 
