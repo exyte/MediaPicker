@@ -225,7 +225,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 #if targetEnvironment(simulator)
         CameraStubView(isPresented: cameraBinding())
 #elseif os(iOS)
-        CameraView(viewModel: viewModel, didTakePicture: didTakePicture)
+        CameraView(viewModel: viewModel, didTakePicture: didTakePicture, selectionParamsHolder: selectionParamsHolder)
             .ignoresSafeArea()
 #endif
     }

@@ -18,6 +18,8 @@ struct CameraView: View {
     @State var capturingPhotos = true
     @State var videoCaptureInProgress = false
 
+    let selectionParamsHolder: SelectionParamsHolder
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -61,7 +63,9 @@ struct CameraView: View {
                             }
                         }
                         Spacer()
-                        photoVideoToggle
+                        if selectionParamsHolder.mediaType.allowsVideo {
+                            photoVideoToggle
+                        }
                         Spacer()
                         Text("\(cameraSelectionService.selected.count)")
                             .font(.system(size: 15))
@@ -72,7 +76,7 @@ struct CameraView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 12)
                 }
-                else {
+                else if selectionParamsHolder.mediaType.allowsVideo {
                     photoVideoToggle
                 }
 
