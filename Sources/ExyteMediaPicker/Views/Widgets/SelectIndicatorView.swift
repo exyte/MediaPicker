@@ -6,15 +6,15 @@ import SwiftUI
 
 struct SelectIndicatorView: View {
 
-    @Environment(\.mediaSelectionStyle) var mediaSelectionStyle
     @Environment(\.mediaPickerTheme) var theme
 
     var index: Int?
     var isFullscreen: Bool
+    var selectionParamsHolder: SelectionParamsHolder
 
     var body: some View {
         Group {
-            switch mediaSelectionStyle {
+            switch selectionParamsHolder.selectionStyle {
             case .checkmark:
                 checkView
             case .count:
@@ -78,26 +78,25 @@ struct SelectIndicatorView_Preview: PreviewProvider {
                 .ignoresSafeArea()
             HStack {
                 VStack {
-                    SelectIndicatorView(index: nil, isFullscreen: false)
-                    SelectIndicatorView(index: 0, isFullscreen: false)
-                    SelectIndicatorView(index: 1, isFullscreen: false)
-                    SelectIndicatorView(index: 16, isFullscreen: false)
-                    SelectIndicatorView(index: 49, isFullscreen: false)
-                    SelectIndicatorView(index: 50, isFullscreen: false)
+                    SelectIndicatorView(index: nil, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 0, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 1, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 16, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 49, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 50, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
                         .padding(4)
                         .background(Color.red)
                 }
                 VStack {
-                    SelectIndicatorView(index: nil, isFullscreen: false)
-                    SelectIndicatorView(index: 0, isFullscreen: false)
-                    SelectIndicatorView(index: 1, isFullscreen: false)
-                    SelectIndicatorView(index: 16, isFullscreen: false)
-                    SelectIndicatorView(index: 49, isFullscreen: false)
-                    SelectIndicatorView(index: 50, isFullscreen: false)
+                    SelectIndicatorView(index: nil, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 0, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 1, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 16, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 49, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
+                    SelectIndicatorView(index: 50, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
                         .padding(4)
                         .background(Color.red)
                 }
-                .environment(\.mediaSelectionStyle, .count)
             }
         }
     }

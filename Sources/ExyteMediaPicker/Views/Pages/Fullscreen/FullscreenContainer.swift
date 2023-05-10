@@ -13,6 +13,7 @@ struct FullscreenContainer: View {
     @Binding var isPresented: Bool
     let assetMediaModels: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
+    var selectionParamsHolder: SelectionParamsHolder
 
     private var selectedMediaModel: AssetMediaModel? {
         assetMediaModels.first { $0.id == selection }
@@ -34,7 +35,7 @@ struct FullscreenContainer: View {
             }
         }
         .overlay {
-            SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true)
+            SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, selectionParamsHolder: selectionParamsHolder)
                 .padding([.horizontal, .bottom], 20)
                 .contentShape(Rectangle())
                 .onTapGesture {

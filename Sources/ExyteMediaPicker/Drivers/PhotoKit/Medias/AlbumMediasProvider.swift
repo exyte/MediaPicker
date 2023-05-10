@@ -12,13 +12,15 @@ final class AlbumMediasProvider: MediasProviderProtocol {
     private var subscriptions = Set<AnyCancellable>()
 
     let album: AlbumModel
+    let selectionParamsHolder: SelectionParamsHolder
 
     var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> {
         subject.eraseToAnyPublisher()
     }
 
-    init(album: AlbumModel) {
+    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder) {
         self.album = album
+        self.selectionParamsHolder = selectionParamsHolder
         photoLibraryChangePermissionPublisher
             .sink { [weak self] in
                 self?.reload()
@@ -36,7 +38,9 @@ final class AlbumMediasProvider: MediasProviderProtocol {
         if fetchResult.count == 0 {
             subject.send([])
         }
-        let assets = MediasProvider.map(fetchResult: fetchResult)
-        subject.send(assets)
+        let assets = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: selectionParamsHolder.mediaType)
+        DispatchQueue.main.async { [weak self] in
+            self?.subject.send(assets)
+        }
     }
 }

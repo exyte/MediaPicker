@@ -25,13 +25,6 @@ struct CustomizedMediaPicker: View {
     var body: some View {
         MediaPicker(
             isPresented: $isPresented,
-            limit: maxCount,
-            orientationHandler: {
-                switch $0 {
-                case .lock: appDelegate.lockOrientationToPortrait()
-                case .unlock: appDelegate.unlockOrientation()
-                }
-            },
             onChange: { selectedMedia = $0 },
             albumSelectionBuilder: { _, albumSelectionView in
                 VStack {
@@ -70,7 +63,14 @@ struct CustomizedMediaPicker: View {
         .showLiveCameraCell()
         .albums($albums)
         .pickerMode($mediaPickerMode)
-        .selectionStyle(.count)
+        .orientationHandler {
+            switch $0 {
+            case .lock: appDelegate.lockOrientationToPortrait()
+            case .unlock: appDelegate.unlockOrientation()
+            }
+        }
+        .mediaSelectionStyle(.count)
+        .mediaSelectionLimit(maxCount)
         .mediaPickerTheme(
             main: .init(
                 albumSelectionBackground: .black,

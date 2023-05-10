@@ -78,6 +78,7 @@ After making one photo, you see a preview of it and a little plus icon, by tappi
 If your app restricts screen rotation, you can skip this section.
 
 We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
+NOTE: `orientationHandler` is a modifirier from version 1.1.0 - not init parameter
 
 ### Init - view builders
 You can pass two view builders in order to add your own buttons and other elements to media picker screens. First screen you can customize is default photos grid view. Pass `albumSelectionBuilder` closure like this to replace the standard one with your own view:

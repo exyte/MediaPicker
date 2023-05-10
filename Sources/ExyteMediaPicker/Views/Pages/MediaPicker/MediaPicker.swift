@@ -21,19 +21,21 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     // MARK: - Parameters
 
     @Binding private var isPresented: Bool
-    @Binding private var albums: [Album]
-
-    private let mediaSelectionLimit: Int?
     private let onChange: MediaPickerCompletionClosure
-    private let orientationHandler: MediaPickerOrientationHandler
-
-    private var pickerMode: Binding<MediaPickerMode>?
-    private var showingLiveCameraCell: Bool = false
 
     // MARK: - View builders
 
     private var albumSelectionBuilder: AlbumSelectionClosure? = nil
     private var cameraSelectionBuilder: CameraSelectionClosure? = nil
+
+    // MARK: - Customization
+
+    @Binding private var albums: [Album]
+
+    private var pickerMode: Binding<MediaPickerMode>?
+    private var showingLiveCameraCell: Bool = false
+    private var orientationHandler: MediaPickerOrientationHandler = {_ in}
+    private var selectionParamsHolder = SelectionParamsHolder()
 
     // MARK: - Inner values
 
@@ -47,8 +49,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     // MARK: - Object life cycle
 
     public init(isPresented: Binding<Bool>,
-                limit: Int? = nil,
-                orientationHandler: MediaPickerOrientationHandler? = nil,
                 onChange: @escaping MediaPickerCompletionClosure,
                 albumSelectionBuilder: @escaping AlbumSelectionClosure,
                 cameraSelectionBuilder: @escaping CameraSelectionClosure) {
@@ -56,9 +56,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         self._isPresented = isPresented
         self._albums = .constant([])
 
-        self.mediaSelectionLimit = limit
         self.onChange = onChange
-        self.orientationHandler = orientationHandler ?? { _ in }
         self.albumSelectionBuilder = albumSelectionBuilder
         self.cameraSelectionBuilder = cameraSelectionBuilder
     }
@@ -99,11 +97,11 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
         .onAppear {
-            selectionService.mediaSelectionLimit = mediaSelectionLimit
             selectionService.onChange = onChange
+            selectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
             
-            cameraSelectionService.mediaSelectionLimit = mediaSelectionLimit
             cameraSelectionService.onChange = onChange
+            cameraSelectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
 
             viewModel.shouldUpdatePickerMode = { mode in
                 pickerMode?.wrappedValue = mode
@@ -130,7 +128,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), showingLiveCameraCell: showingLiveCameraCell)
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder)
 
         if let albumSelectionBuilder = albumSelectionBuilder {
             albumSelectionBuilder(ModeSwitcher(selection: modeBinding()), albumSelectionView)
@@ -209,7 +207,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             get: { viewModel.internalPickerMode == .camera },
             set: { value in
                 if value { viewModel.setPickerMode(.camera) }
-                else { viewModel.setPickerMode(.photos); isPresented = false }
+                //else { viewModel.setPickerMode(.photos); isPresented = false } TODO: remember why this was needed (it breaks the camera mode - only takes one photo)
             }
         )
     }
@@ -254,6 +252,27 @@ public extension MediaPicker {
         mediaPicker.showingLiveCameraCell = true
         return mediaPicker
     }
+
+    func orientationHandler(_ orientationHandler: @escaping MediaPickerOrientationHandler) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.orientationHandler = orientationHandler
+        return mediaPicker
+    }
+
+    func mediaSelectionType(_ type: MediaSelectionType) -> MediaPicker {
+        selectionParamsHolder.mediaType = type
+        return self
+    }
+
+    func mediaSelectionStyle(_ style: MediaSelectionStyle) -> MediaPicker {
+        selectionParamsHolder.selectionStyle = style
+        return self
+    }
+
+    func mediaSelectionLimit(_ limit: Int) -> MediaPicker {
+        selectionParamsHolder.selectionLimit = limit
+        return self
+    }
 }
 
 // MARK: - Partial genereic specification imitation
@@ -261,33 +280,25 @@ public extension MediaPicker {
 public extension MediaPicker where AlbumSelectionContent == EmptyView, CameraSelectionContent == EmptyView {
 
     init(isPresented: Binding<Bool>,
-         limit: Int? = nil,
-         orientationHandler: MediaPickerOrientationHandler? = nil,
          onChange: @escaping MediaPickerCompletionClosure) {
 
         self._isPresented = isPresented
         self._albums = .constant([])
 
-        self.mediaSelectionLimit = limit
         self.onChange = onChange
-        self.orientationHandler = orientationHandler ?? {_ in}
     }
 }
 
 public extension MediaPicker where AlbumSelectionContent == EmptyView {
 
     init(isPresented: Binding<Bool>,
-         limit: Int? = nil,
-         orientationHandler: MediaPickerOrientationHandler? = nil,
          onChange: @escaping MediaPickerCompletionClosure,
          cameraSelectionBuilder: @escaping CameraSelectionClosure) {
 
         self._isPresented = isPresented
         self._albums = .constant([])
 
-        self.mediaSelectionLimit = limit
         self.onChange = onChange
-        self.orientationHandler = orientationHandler ?? {_ in}
         self.cameraSelectionBuilder = cameraSelectionBuilder
     }
 }
@@ -295,17 +306,13 @@ public extension MediaPicker where AlbumSelectionContent == EmptyView {
 public extension MediaPicker where CameraSelectionContent == EmptyView {
 
     init(isPresented: Binding<Bool>,
-         limit: Int? = nil,
-         orientationHandler: MediaPickerOrientationHandler? = nil,
          onChange: @escaping MediaPickerCompletionClosure,
          albumSelectionBuilder: @escaping AlbumSelectionClosure) {
 
         self._isPresented = isPresented
         self._albums = .constant([])
 
-        self.mediaSelectionLimit = limit
         self.onChange = onChange
-        self.orientationHandler = orientationHandler ?? {_ in}
         self.albumSelectionBuilder = albumSelectionBuilder
     }
 }

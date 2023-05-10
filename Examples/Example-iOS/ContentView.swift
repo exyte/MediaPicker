@@ -53,15 +53,16 @@ struct ContentView: View {
         .sheet(isPresented: $showDefaultMediaPicker) {
             MediaPicker(
                 isPresented: $showDefaultMediaPicker,
-                orientationHandler: {
-                    switch $0 {
-                    case .lock: appDelegate.lockOrientationToPortrait()
-                    case .unlock: appDelegate.unlockOrientation()
-                    }
-                },
                 onChange: { medias = $0 }
             )
             .showLiveCameraCell()
+            .orientationHandler {
+                switch $0 {
+                case .lock: appDelegate.lockOrientationToPortrait()
+                case .unlock: appDelegate.unlockOrientation()
+                }
+            }
+            .mediaSelectionType(.photo)
         }
 
         // MARK: - Customized media picker

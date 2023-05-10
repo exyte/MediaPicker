@@ -17,7 +17,10 @@ final class AllPhotosProvider: MediasProviderProtocol {
         subject.eraseToAnyPublisher()
     }
 
-    init() {
+    let selectionParamsHolder: SelectionParamsHolder
+
+    init(selectionParamsHolder: SelectionParamsHolder) {
+        self.selectionParamsHolder = selectionParamsHolder
         photoLibraryChangePermissionPublisher
             .sink { [weak self] in
                 self?.reload()
@@ -31,7 +34,7 @@ final class AllPhotosProvider: MediasProviderProtocol {
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
         let allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
-        let assets = MediasProvider.map(fetchResult: allPhotos)
+        let assets = MediasProvider.map(fetchResult: allPhotos, mediaSelectionType: selectionParamsHolder.mediaType)
 
         DispatchQueue.main.async { [weak self] in
             self?.subject.send(assets)

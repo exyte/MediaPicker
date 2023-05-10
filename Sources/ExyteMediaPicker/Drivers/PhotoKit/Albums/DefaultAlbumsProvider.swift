@@ -16,6 +16,8 @@ final class DefaultAlbumsProvider: AlbumsProviderProtocol {
         subject.eraseToAnyPublisher()
     }
 
+    var mediaSelectionType: MediaSelectionType = .photoAndVideo
+
     init() {
         permissionCancellable = photoLibraryChangePermissionPublisher
             .sink { [weak self] in
@@ -64,7 +66,7 @@ private extension DefaultAlbumsProvider {
             if fetchResult.count == 0 {
                 continue
             }
-            let preview = MediasProvider.map(fetchResult: fetchResult).first
+            let preview = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: mediaSelectionType).first
             let album = AlbumModel(preview: preview, source: collection)
             albums.append(album)
         }

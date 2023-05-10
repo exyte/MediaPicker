@@ -13,6 +13,7 @@ struct AlbumView: View {
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
     var shouldShowCamera: Bool
+    var selectionParamsHolder: SelectionParamsHolder
 
     @State private var fullscreenItem: AssetMediaModel?
 
@@ -55,7 +56,7 @@ private extension AlbumView {
                         }
                     } content: { assetMediaModel in
                         let index = selectionService.index(of: assetMediaModel)
-                        SelectableView(selected: index, isFullscreen: false) {
+                        SelectableView(selected: index, isFullscreen: false, selectionParamsHolder: selectionParamsHolder) {
                             selectionService.onSelect(assetMediaModel: assetMediaModel)
                         } content: {
                             Button {
@@ -82,7 +83,8 @@ private extension AlbumView {
                 FullscreenContainer(
                     isPresented: fullscreenPresentedBinding(),
                     assetMediaModels: viewModel.assetMediaModels,
-                    selection: item.id
+                    selection: item.id,
+                    selectionParamsHolder: selectionParamsHolder
                 )
             }
         }
