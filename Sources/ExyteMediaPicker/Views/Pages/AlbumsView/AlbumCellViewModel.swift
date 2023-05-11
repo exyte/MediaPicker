@@ -5,11 +5,12 @@
 #if os(iOS)
 import UIKit.UIImage
 #endif
-import Combine
+import Photos
 
 class AlbumCellViewModel: ObservableObject {
     let album: AlbumModel
-    private var previewCancellable: AnyCancellable?
+
+    private var requestID: PHImageRequestID?
     
     init(album: AlbumModel) {
         self.album = album
@@ -24,10 +25,15 @@ class AlbumCellViewModel: ObservableObject {
     func fetchPreview(size: CGSize) {
         guard preview == nil else { return }
         
-        previewCancellable = album.preview?.asset
-            .image(size: size)
-            .sink(receiveValue: { [weak self] in
+        requestID = album.preview?.asset
+            .image(size: size) { [weak self] in
                 self?.preview = $0
-            })
+            }
+    }
+
+    func onStop() {
+        if let requestID = requestID {
+            PHCachingImageManager.default().cancelImageRequest(requestID)
+        }
     }
 }

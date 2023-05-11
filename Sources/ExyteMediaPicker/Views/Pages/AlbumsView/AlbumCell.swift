@@ -32,5 +32,8 @@ struct AlbumCell: View {
                     .foregroundColor(theme.main.text)
             }
         }
+        .onDisappear {
+            viewModel.onStop()
+        }
     }
 }

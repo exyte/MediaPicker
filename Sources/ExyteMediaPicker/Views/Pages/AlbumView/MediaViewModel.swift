@@ -2,15 +2,15 @@
 //  Created by Alex.M on 03.06.2022.
 //
 
-import Combine
 #if os(iOS)
 import UIKit.UIImage
 #endif
+import Photos
 
 class MediaViewModel: ObservableObject {
     let assetMediaModel: AssetMediaModel
     
-    private var imageCancellable: AnyCancellable?
+    private var requestID: PHImageRequestID?
     
     init(assetMediaModel: AssetMediaModel) {
         self.assetMediaModel = assetMediaModel
@@ -23,14 +23,15 @@ class MediaViewModel: ObservableObject {
 #endif
     
     func onStart(size: CGSize) {
-        imageCancellable = assetMediaModel.asset
-            .image(size: size)
-            .sink {
+        requestID = assetMediaModel.asset
+            .image(size: size) {
                 self.preview = $0
             }
     }
     
     func onStop() {
-        imageCancellable = nil
+        if let requestID = requestID {
+            PHCachingImageManager.default().cancelImageRequest(requestID)
+        }
     }
 }

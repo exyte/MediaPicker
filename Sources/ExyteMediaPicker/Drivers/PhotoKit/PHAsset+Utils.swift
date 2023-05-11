@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import Combine
 import Photos
 import UniformTypeIdentifiers
 
@@ -140,39 +139,22 @@ extension CGImage {
 #if os(iOS)
 extension PHAsset {
 
-    func image(size: CGSize) -> AnyPublisher<UIImage?, Never> {
+    func image(size: CGSize, resultClosure: @escaping (UIImage?)->()) -> PHImageRequestID {
         let requestSize = CGSize(width: size.width * UIScreen.main.scale, height: size.height * UIScreen.main.scale)
-        let passthroughSubject = PassthroughSubject<UIImage?, Never>()
-        var requestID: PHImageRequestID?
-        
-        let result = passthroughSubject
-            .handleEvents(receiveSubscription: { _ in
-                let options = PHImageRequestOptions()
-                options.isNetworkAccessAllowed = true
-                options.deliveryMode = .opportunistic
-                
-                requestID = PHCachingImageManager.default().requestImage(
-                    for: self,
-                    targetSize: requestSize,
-                    contentMode: .aspectFill,
-                    options: options,
-                    resultHandler: { image, info in
-                        passthroughSubject.send(image)
-                        if info?.keys.contains(PHImageResultIsDegradedKey) == false {
-                            passthroughSubject.send(completion: .finished)
-                        }
-                    }
-                )
-            }, receiveCancel: {
-                if let requestID = requestID {
-                    PHCachingImageManager.default().cancelImageRequest(requestID)
-                }
-            })
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-        
-        return result
+
+        let options = PHImageRequestOptions()
+        options.isNetworkAccessAllowed = true
+        options.deliveryMode = .opportunistic
+
+        return PHCachingImageManager.default().requestImage(
+            for: self,
+            targetSize: requestSize,
+            contentMode: .aspectFill,
+            options: options,
+            resultHandler: { image, info in
+                resultClosure(image) // called for every quality approximation
+            }
+        )
     }
 
     func getData() async throws -> Data? {
