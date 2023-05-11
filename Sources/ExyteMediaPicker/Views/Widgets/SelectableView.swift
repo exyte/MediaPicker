@@ -9,6 +9,7 @@ struct SelectableView<Content>: View where Content: View {
     var selected: Int?
     var paddings: CGFloat = 2
     var isFullscreen: Bool
+    var canSelect: Bool
     var selectionParamsHolder: SelectionParamsHolder
     var onSelect: () -> Void
     @ViewBuilder var content: () -> Content
@@ -18,7 +19,7 @@ struct SelectableView<Content>: View where Content: View {
             Button {
                 onSelect()
             } label: {
-                SelectIndicatorView(index: selected, isFullscreen: isFullscreen, selectionParamsHolder: selectionParamsHolder)
+                SelectIndicatorView(index: selected, isFullscreen: isFullscreen, canSelect: canSelect, selectionParamsHolder: selectionParamsHolder)
                     .padding([.bottom, .leading], 10)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)

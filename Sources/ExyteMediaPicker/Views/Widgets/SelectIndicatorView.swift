@@ -6,10 +6,13 @@ import SwiftUI
 
 struct SelectIndicatorView: View {
 
+    @EnvironmentObject private var selectionService: SelectionService
+
     @Environment(\.mediaPickerTheme) var theme
 
     var index: Int?
     var isFullscreen: Bool
+    var canSelect: Bool
     var selectionParamsHolder: SelectionParamsHolder
 
     var body: some View {
@@ -35,7 +38,7 @@ struct SelectIndicatorView: View {
                         Circle()
                             .fill(theme.selection.selectedBackground)
                     }
-            } else {
+            } else if canSelect {
                 Image(systemName: "circle")
                     .resizable()
                     .foregroundColor(isFullscreen ? theme.selection.fullscreenTint : theme.selection.emptyTint)
@@ -57,7 +60,7 @@ struct SelectIndicatorView: View {
                         Circle()
                             .fill(theme.selection.selectedBackground)
                     }
-            } else {
+            } else if canSelect {
                 Image(systemName: "circle")
                     .resizable()
                     .foregroundColor(isFullscreen ? theme.selection.fullscreenTint : theme.selection.emptyTint)
@@ -65,38 +68,6 @@ struct SelectIndicatorView: View {
                         Circle()
                             .fill(theme.selection.emptyBackground)
                     }
-            }
-        }
-    }
-}
-
-struct SelectIndicatorView_Preview: PreviewProvider {
-    static var previews: some View {
-        ZStack {
-            Rectangle()
-                .fill(.green)
-                .ignoresSafeArea()
-            HStack {
-                VStack {
-                    SelectIndicatorView(index: nil, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 0, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 1, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 16, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 49, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 50, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                        .padding(4)
-                        .background(Color.red)
-                }
-                VStack {
-                    SelectIndicatorView(index: nil, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 0, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 1, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 16, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 49, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                    SelectIndicatorView(index: 50, isFullscreen: false, selectionParamsHolder: SelectionParamsHolder())
-                        .padding(4)
-                        .background(Color.red)
-                }
             }
         }
     }

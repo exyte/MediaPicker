@@ -29,7 +29,7 @@ final class FullscreenCellViewModel: ObservableObject {
         currentTask = Task {
             switch self.mediaModel.mediaType {
             case .image:
-                let data = try? await mediaModel.getData() // url is slow to load in UI, this way photos don't flocker when swiping
+                let data = try? await mediaModel.getData() // url is slow to load in UI, this way photos don't flicker when swiping
                 guard let data = data else { return }
                 DispatchQueue.main.async {
                     self.image = UIImage(data: data)

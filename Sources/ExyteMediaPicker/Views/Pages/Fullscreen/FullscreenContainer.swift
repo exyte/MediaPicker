@@ -35,15 +35,15 @@ struct FullscreenContainer: View {
             }
         }
         .overlay {
-            SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, selectionParamsHolder: selectionParamsHolder)
-                .padding([.horizontal, .bottom], 20)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if let selectedMediaModel = selectedMediaModel {
+            if let selectedMediaModel = selectedMediaModel {
+                SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
+                    .padding([.horizontal, .bottom], 20)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
                         selectionService.onSelect(assetMediaModel: selectedMediaModel)
                     }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            }
         }
         .onTapGesture {
             if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {

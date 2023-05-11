@@ -56,7 +56,7 @@ private extension AlbumView {
                         }
                     } content: { assetMediaModel in
                         let index = selectionService.index(of: assetMediaModel)
-                        SelectableView(selected: index, isFullscreen: false, selectionParamsHolder: selectionParamsHolder) {
+                        SelectableView(selected: index, isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
                             selectionService.onSelect(assetMediaModel: assetMediaModel)
                         } content: {
                             Button {
@@ -69,7 +69,6 @@ private extension AlbumView {
                             .buttonStyle(MediaButtonStyle())
                             .contentShape(Rectangle())
                         }
-                        .disabled(!selectionService.canSelect(assetMediaModel: assetMediaModel))
                     }
                 }
                 
