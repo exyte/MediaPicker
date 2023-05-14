@@ -28,10 +28,6 @@ struct AlbumView: View {
 
 private extension AlbumView {
 
-    var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: 100), spacing: 0)]
-    }
-    
     @ViewBuilder
     var content: some View {
         ScrollView {
