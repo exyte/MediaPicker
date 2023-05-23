@@ -12,7 +12,11 @@ struct AlbumsView: View {
 
     @StateObject var viewModel: AlbumsViewModel
     @Binding var showingCamera: Bool
-    var selectionParamsHolder: SelectionParamsHolder
+    let selectionParamsHolder: SelectionParamsHolder
+    let filterClosure: MediaPicker.FilterClosure?
+    let massFilterClosure: MediaPicker.MassFilterClosure?
+
+    @State private var showingLoadingCell = false
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 100), spacing: 0, alignment: .top)]
@@ -39,10 +43,11 @@ struct AlbumsView: View {
                             NavigationLink {
                                 AlbumView(
                                     viewModel: AlbumViewModel(
-                                        mediasProvider: AlbumMediasProvider(album: album, selectionParamsHolder: selectionParamsHolder)
+                                        mediasProvider: AlbumMediasProvider(album: album, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
                                     ),
                                     showingCamera: $showingCamera,
                                     shouldShowCamera: false,
+                                    shouldShowLoadingCell: showingLoadingCell,
                                     selectionParamsHolder: selectionParamsHolder
                                 )
                             } label: {

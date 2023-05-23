@@ -54,7 +54,7 @@ extension PHAsset {
             )
         } else if mediaType == .video {
             let options = PHVideoRequestOptions()
-            options.version = .original
+            options.version = .current
             options.isNetworkAccessAllowed = true
             options.deliveryMode = .highQualityFormat
 
@@ -183,6 +183,7 @@ extension PHAsset {
                 let options = PHVideoRequestOptions()
                 options.isNetworkAccessAllowed = true
                 options.deliveryMode = .highQualityFormat
+                options.version = .current
 
                 PHCachingImageManager.default().requestAVAsset(forVideo: self, options: options) { avAsset, audio, info in
                     do {

@@ -13,6 +13,7 @@ struct AlbumView: View {
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
     var shouldShowCamera: Bool
+    var shouldShowLoadingCell: Bool
     var selectionParamsHolder: SelectionParamsHolder
 
     @State private var fullscreenItem: AssetMediaModel?
@@ -40,7 +41,7 @@ private extension AlbumView {
                 }
                 if viewModel.isLoading {
                     ProgressView()
-                } else if viewModel.assetMediaModels.isEmpty {
+                } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
                     Text("Empty data")
                         .font(.title3)
                 } else {
@@ -64,6 +65,14 @@ private extension AlbumView {
                             }
                             .buttonStyle(MediaButtonStyle())
                             .contentShape(Rectangle())
+                        }
+                    } loadingCell: {
+                        if shouldShowLoadingCell {
+                            ZStack {
+                                Color.white.opacity(0.5)
+                                ProgressView()
+                            }
+                            .aspectRatio(1, contentMode: .fit)
                         }
                     }
                 }

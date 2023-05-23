@@ -18,6 +18,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     /// - selection view you can embed in your view
     public typealias CameraSelectionClosure = ((@escaping SimpleClosure, @escaping SimpleClosure, CameraSelectionView) -> CameraSelectionContent)
 
+    public typealias FilterClosure = (Media) async -> Media?
+    public typealias MassFilterClosure = ([Media]) async -> [Media]
+
     // MARK: - Parameters
 
     @Binding private var isPresented: Bool
@@ -35,6 +38,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     private var pickerMode: Binding<MediaPickerMode>?
     private var showingLiveCameraCell: Bool = false
     private var orientationHandler: MediaPickerOrientationHandler = {_ in}
+    private var filterClosure: FilterClosure?
+    private var massFilterClosure: MassFilterClosure?
     private var selectionParamsHolder = SelectionParamsHolder()
 
     // MARK: - Inner values
@@ -128,7 +133,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder)
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure)
 
         if let albumSelectionBuilder = albumSelectionBuilder {
             albumSelectionBuilder(ModeSwitcher(selection: modeBinding()), albumSelectionView)
@@ -235,27 +240,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
 public extension MediaPicker {
 
-    func albums(_ albums: Binding<[Album]>) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker._albums = albums
-        return mediaPicker
-    }
-
-    func pickerMode(_ mode: Binding<MediaPickerMode>) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.pickerMode = mode
-        return mediaPicker
-    }
-
     func showLiveCameraCell() -> MediaPicker {
         var mediaPicker = self
         mediaPicker.showingLiveCameraCell = true
-        return mediaPicker
-    }
-
-    func orientationHandler(_ orientationHandler: @escaping MediaPickerOrientationHandler) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.orientationHandler = orientationHandler
         return mediaPicker
     }
 
@@ -272,6 +259,36 @@ public extension MediaPicker {
     func mediaSelectionLimit(_ limit: Int) -> MediaPicker {
         selectionParamsHolder.selectionLimit = limit
         return self
+    }
+
+    func applyFilter(_ filterClosure: @escaping FilterClosure) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.filterClosure = filterClosure
+        return mediaPicker
+    }
+
+    func applyFilter(_ filterClosure: @escaping MassFilterClosure) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.massFilterClosure = filterClosure
+        return mediaPicker
+    }
+
+    func orientationHandler(_ orientationHandler: @escaping MediaPickerOrientationHandler) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.orientationHandler = orientationHandler
+        return mediaPicker
+    }
+
+    func albums(_ albums: Binding<[Album]>) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker._albums = albums
+        return mediaPicker
+    }
+
+    func pickerMode(_ mode: Binding<MediaPickerMode>) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.pickerMode = mode
+        return mediaPicker
     }
 }
 

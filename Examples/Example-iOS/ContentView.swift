@@ -15,6 +15,7 @@ struct ContentView: View {
 
     @State private var showDefaultMediaPicker = false
     @State private var showCustomizedMediaPicker = false
+    @State private var showFilterMediaPicker = false
 
     @State private var medias: [Media] = []
 
@@ -31,6 +32,9 @@ struct ContentView: View {
                     }
                     Button("Customized") {
                         showCustomizedMediaPicker = true
+                    }
+                    Button("Filter") {
+                        showFilterMediaPicker = true
                     }
                 }
 
@@ -68,6 +72,11 @@ struct ContentView: View {
         // MARK: - Customized media picker
         .sheet(isPresented: $showCustomizedMediaPicker) {
             CustomizedMediaPicker(isPresented: $showCustomizedMediaPicker, medias: $medias)
+        }
+
+        // MARK: - Filter media picker
+        .sheet(isPresented: $showFilterMediaPicker) {
+            FilterMediaPicker(isPresented: $showFilterMediaPicker, medias: $medias)
         }
     }
 }

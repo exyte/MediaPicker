@@ -18,14 +18,13 @@ final class DefaultAlbumsProvider: AlbumsProviderProtocol {
 
     var mediaSelectionType: MediaSelectionType = .photoAndVideo
 
-    init() {
-        permissionCancellable = photoLibraryChangePermissionPublisher
-            .sink { [weak self] in
-                self?.reload()
-            }
+    func reload() {
+        PermissionsService.requestPermission { [ weak self] in
+            self?.reloadInternal()
+        }
     }
 
-    func reload() {
+    func reloadInternal() {
         albumsCancellable = [PHAssetCollectionType.album, .smartAlbum]
             .publisher
             .map { fetchAlbums(type: $0) }

@@ -8,8 +8,75 @@ import Photos
 import SwiftUI
 
 protocol MediasProviderProtocol {
-    var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> { get }
     func reload()
+    func cancel()
+
+    var assetMediaModelsPublisher: CurrentValueSubject<[AssetMediaModel], Never> { get }
+}
+
+class BaseMediasProvider {
+
+    var selectionParamsHolder: SelectionParamsHolder
+    var filterClosure: MediaPicker.FilterClosure?
+    var massFilterClosure: MediaPicker.MassFilterClosure?
+
+    @Binding var showingLoadingCell: Bool
+
+    var assetMediaModelsPublisher = CurrentValueSubject<[AssetMediaModel], Never>([])
+
+    @Published var cancellableTask: Task<Void, Never>?
+
+    init(selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure?, massFilterClosure: MediaPicker.MassFilterClosure?, showingLoadingCell: Binding<Bool>) {
+        self.selectionParamsHolder = selectionParamsHolder
+        self.filterClosure = filterClosure
+        self.massFilterClosure = massFilterClosure
+        self._showingLoadingCell = showingLoadingCell
+    }
+
+    func filterAndPublish(assets: [AssetMediaModel]) {
+        if let filterClosure = filterClosure {
+            showLoading(true)
+            cancellableTask = Task {
+                let serialQueue = DispatchQueue(label: "filterSerialQueue")
+                var result = [AssetMediaModel]()
+                await assets.asyncForEach {
+                    if cancellableTask?.isCancelled ?? false {
+                        return
+                    }
+                    if let media = await filterClosure(Media(source: $0)), let model = media.source as? AssetMediaModel {
+                        serialQueue.sync {
+                            result.append(model)
+                            print(result.count)
+                            assetMediaModelsPublisher.send(result)
+                        }
+                    }
+                }
+                showLoading(false)
+            }
+        } else if let massFilterClosure = massFilterClosure {
+            showLoading(true)
+            cancellableTask = Task {
+                let result = await massFilterClosure(assets.map { Media(source: $0) })
+                assetMediaModelsPublisher.send(result.compactMap { $0.source as? AssetMediaModel })
+                showLoading(false)
+            }
+        }
+        else {
+            DispatchQueue.main.async { [weak self] in
+                self?.assetMediaModelsPublisher.send(assets)
+            }
+        }
+    }
+
+    func showLoading(_ show: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.$showingLoadingCell.wrappedValue = show
+        }
+    }
+
+    func cancel() {
+        cancellableTask?.cancel()
+    }
 }
 
 class MediasProvider {

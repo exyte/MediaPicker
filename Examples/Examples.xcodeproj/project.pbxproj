@@ -14,6 +14,7 @@
 		1384FF12283F912F00C9AAC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1384FF11283F912F00C9AAC1 /* Preview Assets.xcassets */; };
 		5B1CA4E029F137E100245B8B /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B1CA4DF29F137E100245B8B /* ExyteMediaPicker */; };
 		5B5AA87329F2923A001306F9 /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5AA87229F2923A001306F9 /* MediaCell.swift */; };
+		5B92AABC2A162DB3002F9EB2 /* FilterMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B92AABB2A162DB3002F9EB2 /* FilterMediaPicker.swift */; };
 		A82559832901A437008D9CC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82559822901A437008D9CC5 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		1384FF19283F920A00C9AAC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B1CA4DE29F137A600245B8B /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
 		5B5AA87229F2923A001306F9 /* MediaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCell.swift; sourceTree = "<group>"; };
+		5B92AABB2A162DB3002F9EB2 /* FilterMediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMediaPicker.swift; sourceTree = "<group>"; };
 		A82559822901A437008D9CC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +89,7 @@
 				1384FF0C283F912E00C9AAC1 /* ContentView.swift */,
 				A82559822901A437008D9CC5 /* AppDelegate.swift */,
 				5B5AA87229F2923A001306F9 /* MediaCell.swift */,
+				5B92AABB2A162DB3002F9EB2 /* FilterMediaPicker.swift */,
 			);
 			path = "Example-iOS";
 			sourceTree = "<group>";
@@ -183,6 +186,7 @@
 				1384FF0D283F912E00C9AAC1 /* ContentView.swift in Sources */,
 				5B5AA87329F2923A001306F9 /* MediaCell.swift in Sources */,
 				130FBF5528740D3E0086478A /* CustomizedMediaPicker.swift in Sources */,
+				5B92AABC2A162DB3002F9EB2 /* FilterMediaPicker.swift in Sources */,
 				1384FF0B283F912E00C9AAC1 /* Application.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

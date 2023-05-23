@@ -26,6 +26,15 @@ final class PermissionsService: ObservableObject {
         checkCameraAuthorizationStatus()
         checkPhotoLibraryAuthorizationStatus()
     }
+
+    /// photoLibraryChangePermissionPublisher gets called multiple times even when nothing changed in photo library, so just use this one to make sure the closure runs exactly once
+    static func requestPermission(_ permissionGrantedClosure: @escaping ()->()) {
+        PHPhotoLibrary.requestAuthorization { status in
+            if status == .authorized || status == .limited {
+                permissionGrantedClosure()
+            }
+        }
+    }
 }
 
 private extension PermissionsService {

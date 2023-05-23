@@ -12,18 +12,23 @@ public struct AlbumSelectionView: View {
     @ObservedObject var viewModel: MediaPickerViewModel
 
     @Binding var showingCamera: Bool
-    var showingLiveCameraCell: Bool = false
-    var selectionParamsHolder: SelectionParamsHolder
+    let showingLiveCameraCell: Bool
+    let selectionParamsHolder: SelectionParamsHolder
+    let filterClosure: MediaPicker.FilterClosure?
+    let massFilterClosure: MediaPicker.MassFilterClosure?
+
+    @State private var showingLoadingCell = false
 
     public var body: some View {
         switch viewModel.internalPickerMode {
         case .photos:
             AlbumView(
                 viewModel: AlbumViewModel(
-                    mediasProvider: AllPhotosProvider(selectionParamsHolder: selectionParamsHolder)
+                    mediasProvider: AllPhotosProvider(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
                 ),
                 showingCamera: $showingCamera,
                 shouldShowCamera: showingLiveCameraCell,
+                shouldShowLoadingCell: showingLoadingCell,
                 selectionParamsHolder: selectionParamsHolder
             )
         case .albums:
@@ -32,7 +37,9 @@ public struct AlbumSelectionView: View {
                     albumsProvider: viewModel.defaultAlbumsProvider
                 ),
                 showingCamera: $showingCamera,
-                selectionParamsHolder: selectionParamsHolder
+                selectionParamsHolder: selectionParamsHolder,
+                filterClosure: filterClosure,
+                massFilterClosure: massFilterClosure
             )
             .onAppear {
                 viewModel.defaultAlbumsProvider.mediaSelectionType = selectionParamsHolder.mediaType
@@ -41,10 +48,11 @@ public struct AlbumSelectionView: View {
             if let albumModel = viewModel.getAlbumModel(album) {
                 AlbumView(
                     viewModel: AlbumViewModel(
-                        mediasProvider: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder)
+                        mediasProvider: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
                     ),
                     showingCamera: $showingCamera,
                     shouldShowCamera: false,
+                    shouldShowLoadingCell: showingLoadingCell,
                     selectionParamsHolder: selectionParamsHolder
                 )
                 .id(album.id)

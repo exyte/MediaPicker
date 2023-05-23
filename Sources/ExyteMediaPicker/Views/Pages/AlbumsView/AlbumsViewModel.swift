@@ -25,7 +25,6 @@ final class AlbumsViewModel: ObservableObject {
     func onStart() {
         isLoading = true
         albumsCancellable = albumsProvider.albums
-            .print("albums")
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.albums = $0

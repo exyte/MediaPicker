@@ -71,16 +71,7 @@ After making one photo, you see a preview of it and a little plus icon, by tappi
 `isPresented` - a binding to determine whether the picker should be displayed or not   
 `onChange` - a closure that returns the selected media every time the selection changes
 
-## Init - optional parameters
-`limit` - the maximum selection quantity allowed, 'nil' for unlimited selection
-
-### Init - screen rotation
-If your app restricts screen rotation, you can skip this section.
-
-We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
-NOTE: `orientationHandler` is a modifirier from version 1.1.0 - not init parameter
-
-### Init - view builders
+### Init - optional view builders
 You can pass two view builders in order to add your own buttons and other elements to media picker screens. First screen you can customize is default photos grid view. Pass `albumSelectionBuilder` closure like this to replace the standard one with your own view:
 ```swift
 MediaPicker(
@@ -133,8 +124,33 @@ MediaPicker(
 You can pass one, both or none of these when creating your `MediaPicker`. (see the custom picker in the example project for usage example)
 
 ## Available modifiers
-`selectionStyle` - a way to display selected/unselected media state: either a counter or a simple checkmark         
-`showingLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
+`showLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
+`mediaSelectionType` - limit displayed media type: .photo, .video or both   
+`mediaSelectionStyle` - a way to display selected/unselected media state: a counter or a simple checkmark   
+`mediaSelectionLimit` - the maximum selection quantity allowed, 'nil' for unlimited selection   
+
+### Available modifiers - filtering
+`applyFilter((Media) async -> Media?)` - pass a closure to apply to each of medias individually. Closures's return type is `Media?`: return `Media` the closure gives to you if you want it to be displayed on photo grid, or `nil` if you want to exclude it. The code you apply to each media can be asyncronous (using async/await syntactics, check out `FilterMediaPicker` in example project)
+`applyFilter(([Media]) async -> [Media])` - same but apply the closure to whole medias array. Can also be used for reodering. 
+
+### Available modifiers - screen rotation
+If your app restricts screen rotation, you can skip this section.
+
+We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
+
+### Available modifiers: managing albums  
+`albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
+`pickerMode` - set this if you don't plan to use the default header. Available options are:     
+    * .photos - displays the default photos grid      
+    * .albums - displays a list of albums with one preview photo for each     
+    * .album(Album) - displays one album     
+    * .camera - shows a fullscreen cover camera sheet
+    * .cameraSelection - displays a preview of photos taken with camera 
+(see the custom picker in the example project for implementation)
+
+<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
+
+### Available modifiers: theme  
 `mediaPickerTheme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
   ```swift
 MediaPicker(...)
@@ -152,18 +168,6 @@ MediaPicker(...)
 Here is an example of how you can customize colors and elements to create a custom looking picker:  
 
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/1.jpg" width="250"/>
-
-### Available modifiers: managing albums  
-`albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
-`pickerMode` - set this if you don't plan to use the default header. Available options are:     
-    * .photos - displays the default photos grid      
-    * .albums - displays a list of albums with one preview photo for each     
-    * .album(Album) - displays one album     
-    * .camera - shows a fullscreen cover camera sheet
-    * .cameraSelection - displays a preview of photos taken with camera 
-(see the custom picker in the example project for implementation)
-
-<img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
 
 ## Examples
 

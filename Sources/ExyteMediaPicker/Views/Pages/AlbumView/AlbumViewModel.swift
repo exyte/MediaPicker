@@ -21,16 +21,19 @@ final class AlbumViewModel: ObservableObject {
     }
     
     func onStart() {
-        mediaCancellable = mediasProvider.assetMediaModels
+        isLoading = true
+        mediaCancellable = mediasProvider.assetMediaModelsPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] in
                 self?.assetMediaModels = $0
+                self?.isLoading = false
             }
         
         mediasProvider.reload()
     }
-    
-    func onStop() {
+
+    deinit {
+        mediasProvider.cancel()
         mediaCancellable = nil
     }
 }

@@ -5,42 +5,34 @@
 import Foundation
 import Combine
 import Photos
+import SwiftUI
 
-final class AlbumMediasProvider: MediasProviderProtocol {
-    
-    private var subject = CurrentValueSubject<[AssetMediaModel], Never>([])
-    private var subscriptions = Set<AnyCancellable>()
+final class AlbumMediasProvider: BaseMediasProvider, MediasProviderProtocol {
 
     let album: AlbumModel
-    let selectionParamsHolder: SelectionParamsHolder
 
-    var assetMediaModels: AnyPublisher<[AssetMediaModel], Never> {
-        subject.eraseToAnyPublisher()
-    }
-
-    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder) {
+    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure? = nil, massFilterClosure: MediaPicker.MassFilterClosure? = nil, showingLoadingCell: Binding<Bool>) {
         self.album = album
-        self.selectionParamsHolder = selectionParamsHolder
-        photoLibraryChangePermissionPublisher
-            .sink { [weak self] in
-                self?.reload()
-            }
-            .store(in: &subscriptions)
+        super.init(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: showingLoadingCell)
     }
 
     func reload() {
+        PermissionsService.requestPermission { [ weak self] in
+            self?.reloadInternal()
+        }
+    }
+
+    func reloadInternal() {
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
-        
         let fetchResult = PHAsset.fetchAssets(in: album.source, options: fetchOptions)
         if fetchResult.count == 0 {
-            subject.send([])
+            assetMediaModelsPublisher.send([])
         }
+
         let assets = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: selectionParamsHolder.mediaType)
-        DispatchQueue.main.async { [weak self] in
-            self?.subject.send(assets)
-        }
+        filterAndPublish(assets: assets)
     }
 }
