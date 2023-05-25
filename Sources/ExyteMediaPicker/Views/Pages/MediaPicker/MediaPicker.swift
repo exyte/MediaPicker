@@ -73,27 +73,20 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 case .photos, .albums, .album(_):
                     albumSelectionContainer
                 case .camera:
-                    if cameraSelectionService.hasSelected {
-                        cameraSelectionContainer
-                    } else {
-                        albumSelectionContainer
+                    cameraSheet() {
+                        // did take picture
+                        if !cameraSelectionService.hasSelected {
+                            viewModel.setPickerMode(.cameraSelection)
+                        }
+                        guard let url = viewModel.pickedMediaUrl else { return }
+                        cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                        viewModel.pickedMediaUrl = nil
+                    }
+                    .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                        deleteAllButton
                     }
                 case .cameraSelection:
                     cameraSelectionContainer
-                }
-            }
-            .fullScreenCover(isPresented: cameraBinding()) {
-                cameraSheet() {
-                    // did take picture
-                    if !cameraSelectionService.hasSelected {
-                        viewModel.setPickerMode(.cameraSelection)
-                    }
-                    guard let url = viewModel.pickedMediaUrl else { return }
-                    cameraSelectionService.onSelect(media: URLMediaModel(url: url))
-                    viewModel.pickedMediaUrl = nil
-                }
-                .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
-                    deleteAllButton
                 }
             }
         }
@@ -212,7 +205,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             get: { viewModel.internalPickerMode == .camera },
             set: { value in
                 if value { viewModel.setPickerMode(.camera) }
-                //else { viewModel.setPickerMode(.photos); isPresented = false } TODO: remember why this was needed (it breaks the camera mode - only takes one photo)
             }
         )
     }
