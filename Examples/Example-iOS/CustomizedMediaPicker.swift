@@ -13,7 +13,6 @@ struct CustomizedMediaPicker: View {
     @Binding var isPresented: Bool
     @Binding var medias: [Media]
 
-    @State private var selectedMedia: [Media] = []
     @State private var albums: [Album] = []
 
     @State private var mediaPickerMode = MediaPickerMode.photos
@@ -25,7 +24,7 @@ struct CustomizedMediaPicker: View {
     var body: some View {
         MediaPicker(
             isPresented: $isPresented,
-            onChange: { selectedMedia = $0 },
+            onChange: { medias = $0 },
             albumSelectionBuilder: { _, albumSelectionView in
                 VStack {
                     headerView
@@ -110,7 +109,7 @@ struct CustomizedMediaPicker: View {
 
             Spacer()
 
-            Text("\(selectedMedia.count) out of \(maxCount) selected")
+            Text("\(medias.count) out of \(maxCount) selected")
         }
         .padding()
     }
@@ -118,6 +117,7 @@ struct CustomizedMediaPicker: View {
     var footerView: some View {
         HStack {
             Button {
+                medias = []
                 isPresented = false
             } label: {
                 Text("Cancel")
@@ -127,13 +127,12 @@ struct CustomizedMediaPicker: View {
             Spacer(minLength: 70)
 
             Button {
-                medias = selectedMedia
                 isPresented = false
             } label: {
                 HStack {
                     Text("Add")
 
-                    Text("\(selectedMedia.count)")
+                    Text("\(medias.count)")
                         .padding(6)
                         .background(Color.white)
                         .clipShape(Circle())
