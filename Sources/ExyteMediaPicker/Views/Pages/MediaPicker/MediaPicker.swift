@@ -37,6 +37,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     private var pickerMode: Binding<MediaPickerMode>?
     private var showingLiveCameraCell: Bool = false
+    private var didPressCancel: (() -> Void)?
     private var orientationHandler: MediaPickerOrientationHandler = {_ in}
     private var filterClosure: FilterClosure?
     private var massFilterClosure: MassFilterClosure?
@@ -81,6 +82,12 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                         guard let url = viewModel.pickedMediaUrl else { return }
                         cameraSelectionService.onSelect(media: URLMediaModel(url: url))
                         viewModel.pickedMediaUrl = nil
+                    } didPressCancel: {
+                        if let didPressCancel = didPressCancel {
+                            didPressCancel()
+                        } else {
+                            viewModel.setPickerMode(.photos)
+                        }
                     }
                     .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
                         deleteAllButton
@@ -218,11 +225,11 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         )
     }
 
-    func cameraSheet(didTakePicture: @escaping ()->()) -> some View {
+    func cameraSheet(didTakePicture: @escaping ()->(), didPressCancel: @escaping ()->()) -> some View {
 #if targetEnvironment(simulator)
         CameraStubView(isPresented: cameraBinding())
 #elseif os(iOS)
-        CameraView(viewModel: viewModel, didTakePicture: didTakePicture, selectionParamsHolder: selectionParamsHolder)
+        CameraView(viewModel: viewModel, didTakePicture: didTakePicture, didPressCancel: didPressCancel, selectionParamsHolder: selectionParamsHolder)
             .ignoresSafeArea()
 #endif
     }
@@ -262,6 +269,12 @@ public extension MediaPicker {
     func applyFilter(_ filterClosure: @escaping MassFilterClosure) -> MediaPicker {
         var mediaPicker = self
         mediaPicker.massFilterClosure = filterClosure
+        return mediaPicker
+    }
+
+    func didPressCancel(_ didPressCancel: @escaping ()->()) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.didPressCancel = didPressCancel
         return mediaPicker
     }
 

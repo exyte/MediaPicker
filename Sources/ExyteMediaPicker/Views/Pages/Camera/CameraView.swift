@@ -9,6 +9,7 @@ struct CameraView: View {
 
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
+    let didPressCancel: () -> Void
 
     @StateObject private var cameraViewModel = CameraViewModel()
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
@@ -27,7 +28,7 @@ struct CameraView: View {
                     if cameraSelectionService.hasSelected {
                         viewModel.showingExitCameraConfirmation = true
                     } else {
-                        viewModel.setPickerMode(.photos)
+                        didPressCancel()
                     }
                 }
                 .foregroundColor(.white)
