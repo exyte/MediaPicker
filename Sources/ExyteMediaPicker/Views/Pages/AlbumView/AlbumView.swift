@@ -12,11 +12,20 @@ struct AlbumView: View {
 
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
+    @Binding var currentFullscreenMedia: Media?
     var shouldShowCamera: Bool
     var shouldShowLoadingCell: Bool
     var selectionParamsHolder: SelectionParamsHolder
 
-    @State private var fullscreenItem: AssetMediaModel?
+    @State private var fullscreenItem: AssetMediaModel? {
+        didSet {
+            if let item = fullscreenItem {
+                currentFullscreenMedia = Media(source: item)
+            } else {
+                currentFullscreenMedia = nil
+            }
+        }
+    }
 
     var body: some View {
         if let title = viewModel.title {

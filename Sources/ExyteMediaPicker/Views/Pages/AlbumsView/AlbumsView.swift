@@ -12,6 +12,7 @@ struct AlbumsView: View {
 
     @StateObject var viewModel: AlbumsViewModel
     @Binding var showingCamera: Bool
+    @Binding var currentFullscreenMedia: Media?
     let selectionParamsHolder: SelectionParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
@@ -46,6 +47,7 @@ struct AlbumsView: View {
                                         mediasProvider: AlbumMediasProvider(album: album, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
                                     ),
                                     showingCamera: $showingCamera,
+                                    currentFullscreenMedia: $currentFullscreenMedia,
                                     shouldShowCamera: false,
                                     shouldShowLoadingCell: showingLoadingCell,
                                     selectionParamsHolder: selectionParamsHolder
