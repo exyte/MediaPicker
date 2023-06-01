@@ -37,7 +37,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     private var pickerMode: Binding<MediaPickerMode>?
     private var showingLiveCameraCell: Bool = false
-    private var didPressCancel: (() -> Void)?
+    private var didPressCancelCamera: (() -> Void)?
     private var orientationHandler: MediaPickerOrientationHandler = {_ in}
     private var filterClosure: FilterClosure?
     private var massFilterClosure: MassFilterClosure?
@@ -83,7 +83,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                         cameraSelectionService.onSelect(media: URLMediaModel(url: url))
                         viewModel.pickedMediaUrl = nil
                     } didPressCancel: {
-                        if let didPressCancel = didPressCancel {
+                        if let didPressCancel = didPressCancelCamera {
                             didPressCancel()
                         } else {
                             viewModel.setPickerMode(.photos)
@@ -272,9 +272,9 @@ public extension MediaPicker {
         return mediaPicker
     }
 
-    func didPressCancel(_ didPressCancel: @escaping ()->()) -> MediaPicker {
+    func didPressCancelCamera(_ didPressCancelCamera: @escaping ()->()) -> MediaPicker {
         var mediaPicker = self
-        mediaPicker.didPressCancel = didPressCancel
+        mediaPicker.didPressCancelCamera = didPressCancelCamera
         return mediaPicker
     }
 
