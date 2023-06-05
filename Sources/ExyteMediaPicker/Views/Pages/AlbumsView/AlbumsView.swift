@@ -11,8 +11,11 @@ struct AlbumsView: View {
     @EnvironmentObject private var permissionsService: PermissionsService
 
     @StateObject var viewModel: AlbumsViewModel
+    @ObservedObject var mediaPickerViewModel: MediaPickerViewModel
+
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
+
     let selectionParamsHolder: SelectionParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
@@ -41,22 +44,12 @@ struct AlbumsView: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: 0) {
                         ForEach(viewModel.albums) { album in
-                            NavigationLink {
-                                AlbumView(
-                                    viewModel: AlbumViewModel(
-                                        mediasProvider: AlbumMediasProvider(album: album, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
-                                    ),
-                                    showingCamera: $showingCamera,
-                                    currentFullscreenMedia: $currentFullscreenMedia,
-                                    shouldShowCamera: false,
-                                    shouldShowLoadingCell: showingLoadingCell,
-                                    selectionParamsHolder: selectionParamsHolder
-                                )
-                            } label: {
-                                AlbumCell(
-                                    viewModel: AlbumCellViewModel(album: album)
-                                )
-                                .padding(cellPadding)
+                            AlbumCell(
+                                viewModel: AlbumCellViewModel(album: album)
+                            )
+                            .padding(cellPadding)
+                            .onTapGesture {
+                                mediaPickerViewModel.setPickerMode(.album(album.toAlbum()))
                             }
                         }
                     }
