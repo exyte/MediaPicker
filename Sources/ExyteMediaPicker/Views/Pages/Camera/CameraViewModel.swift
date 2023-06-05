@@ -76,12 +76,23 @@ final class CameraViewModel: NSObject, ObservableObject {
     }
 
     func startVideoCapture() {
+        setVideoTorchMode(flashEnabled ? .on : .off)
+
         let videoUrl = FileManager.getTempUrl()
         videoOutput.startRecording(to: videoUrl, recordingDelegate: self)
     }
 
     func stopVideoCapture() {
+        setVideoTorchMode(.off)
         videoOutput.stopRecording()
+    }
+
+    func setVideoTorchMode(_ mode: AVCaptureDevice.TorchMode) {
+        if captureDevice?.device.torchMode != mode {
+            try? captureDevice?.device.lockForConfiguration()
+            captureDevice?.device.torchMode = mode
+            captureDevice?.device.unlockForConfiguration()
+        }
     }
 
     func flipCamera() {
