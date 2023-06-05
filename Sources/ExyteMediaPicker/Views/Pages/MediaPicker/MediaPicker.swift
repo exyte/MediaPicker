@@ -53,6 +53,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var cameraSelectionService = CameraSelectionService()
     @StateObject private var permissionService = PermissionsService()
 
+    @State var readyToShowCamera = false
+
     // MARK: - Object life cycle
 
     public init(isPresented: Binding<Bool>,
@@ -76,23 +78,37 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 case .photos, .albums, .album(_):
                     albumSelectionContainer
                 case .camera:
-                    cameraSheet() {
-                        // did take picture
-                        if !cameraSelectionService.hasSelected {
-                            viewModel.setPickerMode(.cameraSelection)
+                    ZStack {
+                        Color.black
+                            .ignoresSafeArea(.all)
+                            .onAppear {
+                                DispatchQueue.main.async {
+                                    readyToShowCamera = true
+                                }
+                            }
+                            .onDisappear {
+                                readyToShowCamera = false
+                            }
+                        if readyToShowCamera {
+                            cameraSheet() {
+                                // did take picture
+                                if !cameraSelectionService.hasSelected {
+                                    viewModel.setPickerMode(.cameraSelection)
+                                }
+                                guard let url = viewModel.pickedMediaUrl else { return }
+                                cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                                viewModel.pickedMediaUrl = nil
+                            } didPressCancel: {
+                                if let didPressCancel = didPressCancelCamera {
+                                    didPressCancel()
+                                } else {
+                                    viewModel.setPickerMode(.photos)
+                                }
+                            }
+                            .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                                deleteAllButton
+                            }
                         }
-                        guard let url = viewModel.pickedMediaUrl else { return }
-                        cameraSelectionService.onSelect(media: URLMediaModel(url: url))
-                        viewModel.pickedMediaUrl = nil
-                    } didPressCancel: {
-                        if let didPressCancel = didPressCancelCamera {
-                            didPressCancel()
-                        } else {
-                            viewModel.setPickerMode(.photos)
-                        }
-                    }
-                    .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
-                        deleteAllButton
                     }
                 case .cameraSelection:
                     cameraSelectionContainer
