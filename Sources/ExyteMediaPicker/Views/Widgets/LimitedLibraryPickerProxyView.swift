@@ -8,6 +8,7 @@ import PhotosUI
 
 struct LimitedLibraryPickerProxyView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
+    var didDismiss: ()->()
     
     func makeUIViewController(context: Context) -> UIViewController {
         let controller = UIViewController()
@@ -23,20 +24,23 @@ struct LimitedLibraryPickerProxyView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(isPresented: $isPresented)
+        Coordinator(isPresented: $isPresented, didDismiss: didDismiss)
     }
     
     class Coordinator: NSObject {
         private var isPresented: Binding<Bool>
+        var didDismiss: ()->()
         
-        init(isPresented: Binding<Bool>) {
+        init(isPresented: Binding<Bool>, didDismiss: @escaping ()->()) {
             self.isPresented = isPresented
+            self.didDismiss = didDismiss
         }
         
         func trackCompletion(in controller: UIViewController) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self, weak controller] in
                 if controller?.presentedViewController == nil {
                     self?.isPresented.wrappedValue = false
+                    self?.didDismiss()
                 } else if let controller = controller {
                     self?.trackCompletion(in: controller)
                 }

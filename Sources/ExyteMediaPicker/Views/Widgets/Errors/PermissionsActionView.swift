@@ -14,8 +14,12 @@ struct PermissionsActionView: View {
     var body: some View {
         ZStack {
             if showSheet {
-                LimitedLibraryPickerProxyView(isPresented: $showSheet)
-                    .frame(width: 1, height: 1)
+                LimitedLibraryPickerProxyView(isPresented: $showSheet) {
+                    NotificationCenter.default.post(
+                        name: photoLibraryChangeLimitedPhotosNotification,
+                        object: nil)
+                }
+                .frame(width: 1, height: 1)
             }
             
             switch action {

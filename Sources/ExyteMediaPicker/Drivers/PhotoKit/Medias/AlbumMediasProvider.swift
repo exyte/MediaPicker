@@ -7,7 +7,7 @@ import Combine
 import Photos
 import SwiftUI
 
-final class AlbumMediasProvider: BaseMediasProvider, MediasProviderProtocol {
+final class AlbumMediasProvider: BaseMediasProvider {
 
     let album: AlbumModel
 
@@ -16,7 +16,7 @@ final class AlbumMediasProvider: BaseMediasProvider, MediasProviderProtocol {
         super.init(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: showingLoadingCell)
     }
 
-    func reload() {
+    override func reload() {
         PermissionsService.requestPermission { [ weak self] in
             self?.reloadInternal()
         }

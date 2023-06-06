@@ -58,6 +58,12 @@ final class SelectionService: ObservableObject {
         selected.removeAll()
         onChange?([])
     }
+
+    func updateSelection(with models: [AssetMediaModel]) {
+        selected = selected.filter {
+            models.contains($0)
+        }
+    }
 }
 
 private extension SelectionService {

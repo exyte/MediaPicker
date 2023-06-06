@@ -84,6 +84,9 @@ private extension AlbumView {
                             .aspectRatio(1, contentMode: .fit)
                         }
                     }
+                    .onChange(of: viewModel.assetMediaModels) { newValue in 
+                        selectionService.updateSelection(with: newValue)
+                    }
                 }
                 
                 Spacer()

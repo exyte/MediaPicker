@@ -66,7 +66,6 @@ struct ContentView: View {
                 case .unlock: appDelegate.unlockOrientation()
                 }
             }
-            .mediaSelectionType(.photo)
         }
 
         // MARK: - Customized media picker

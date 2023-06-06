@@ -14,8 +14,7 @@ protocol MediasProviderProtocol {
     var assetMediaModelsPublisher: CurrentValueSubject<[AssetMediaModel], Never> { get }
 }
 
-class BaseMediasProvider {
-
+class BaseMediasProvider: MediasProviderProtocol {
     var selectionParamsHolder: SelectionParamsHolder
     var filterClosure: MediaPicker.FilterClosure?
     var massFilterClosure: MediaPicker.MassFilterClosure?
@@ -26,11 +25,19 @@ class BaseMediasProvider {
 
     @Published var cancellableTask: Task<Void, Never>?
 
+    private var cancellable: AnyCancellable?
+    
     init(selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure?, massFilterClosure: MediaPicker.MassFilterClosure?, showingLoadingCell: Binding<Bool>) {
         self.selectionParamsHolder = selectionParamsHolder
         self.filterClosure = filterClosure
         self.massFilterClosure = massFilterClosure
         self._showingLoadingCell = showingLoadingCell
+
+        cancellable = photoLibraryChangeLimitedPhotosPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self?.reload()
+            }
     }
 
     func filterAndPublish(assets: [AssetMediaModel]) {
@@ -73,6 +80,8 @@ class BaseMediasProvider {
             self?.$showingLoadingCell.wrappedValue = show
         }
     }
+
+    func reload() { }
 
     func cancel() {
         cancellableTask?.cancel()

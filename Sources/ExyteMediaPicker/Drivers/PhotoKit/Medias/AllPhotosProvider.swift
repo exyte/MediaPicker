@@ -9,9 +9,9 @@ import Photos
 import Combine
 import SwiftUI
 
-final class AllPhotosProvider: BaseMediasProvider, MediasProviderProtocol {
+final class AllPhotosProvider: BaseMediasProvider {
 
-    func reload() {
+    override func reload() {
         PermissionsService.requestPermission { [ weak self] in
             self?.reloadInternal()
         }
