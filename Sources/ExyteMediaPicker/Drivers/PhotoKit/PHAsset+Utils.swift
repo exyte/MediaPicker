@@ -205,6 +205,7 @@ extension PHAsset {
 extension AVAsset {
     func generateThumbnail() -> Data? {
         let imageGenerator = AVAssetImageGenerator(asset: self)
+        imageGenerator.appliesPreferredTrackTransform = true
         do {
             let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
             guard let data = thumbnailImage.jpegData else { return nil }
