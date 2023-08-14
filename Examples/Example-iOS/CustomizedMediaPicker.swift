@@ -59,7 +59,6 @@ struct CustomizedMediaPicker: View {
                 .background(Color.black)
             }
         )
-        .showLiveCameraCell()
         .albums($albums)
         .pickerMode($mediaPickerMode)
         .orientationHandler {

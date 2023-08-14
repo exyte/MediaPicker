@@ -72,47 +72,14 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     }
 
     public var body: some View {
-        NavigationView {
-            Group {
-                switch viewModel.internalPickerMode {
-                case .photos, .albums, .album(_):
-                    albumSelectionContainer
-                case .camera:
-                    ZStack {
-                        Color.black
-                            .ignoresSafeArea(.all)
-                            .onAppear {
-                                DispatchQueue.main.async {
-                                    readyToShowCamera = true
-                                }
-                            }
-                            .onDisappear {
-                                readyToShowCamera = false
-                            }
-                        if readyToShowCamera {
-                            cameraSheet() {
-                                // did take picture
-                                if !cameraSelectionService.hasSelected {
-                                    viewModel.setPickerMode(.cameraSelection)
-                                }
-                                guard let url = viewModel.pickedMediaUrl else { return }
-                                cameraSelectionService.onSelect(media: URLMediaModel(url: url))
-                                viewModel.pickedMediaUrl = nil
-                            } didPressCancel: {
-                                if let didPressCancel = didPressCancelCamera {
-                                    didPressCancel()
-                                } else {
-                                    viewModel.setPickerMode(.photos)
-                                }
-                            }
-                            .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
-                                deleteAllButton
-                            }
-                        }
-                    }
-                case .cameraSelection:
-                    cameraSelectionContainer
-                }
+        Group {
+            switch viewModel.internalPickerMode {
+            case .photos, .albums, .album(_):
+                albumSelectionContainer
+            case .camera:
+                cameraContainer
+            case .cameraSelection:
+                cameraSelectionContainer
             }
         }
         .background(theme.main.albumSelectionBackground.ignoresSafeArea())
@@ -120,6 +87,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
         .onAppear {
+            permissionService.askLibraryPermissionIfNeeded()
+
             selectionService.onChange = onChange
             selectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
             
@@ -178,6 +147,42 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         }
         .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
             deleteAllButton
+        }
+    }
+
+    @ViewBuilder
+    var cameraContainer: some View {
+        ZStack {
+            Color.black
+                .ignoresSafeArea(.all)
+                .onAppear {
+                    DispatchQueue.main.async {
+                        readyToShowCamera = true
+                    }
+                }
+                .onDisappear {
+                    readyToShowCamera = false
+                }
+            if readyToShowCamera {
+                cameraSheet() {
+                    // did take picture
+                    if !cameraSelectionService.hasSelected {
+                        viewModel.setPickerMode(.cameraSelection)
+                    }
+                    guard let url = viewModel.pickedMediaUrl else { return }
+                    cameraSelectionService.onSelect(media: URLMediaModel(url: url))
+                    viewModel.pickedMediaUrl = nil
+                } didPressCancel: {
+                    if let didPressCancel = didPressCancelCamera {
+                        didPressCancel()
+                    } else {
+                        viewModel.setPickerMode(.photos)
+                    }
+                }
+                .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
+                    deleteAllButton
+                }
+            }
         }
     }
 
@@ -257,9 +262,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
 public extension MediaPicker {
 
-    func showLiveCameraCell() -> MediaPicker {
+    func showLiveCameraCell(_ show: Bool = true) -> MediaPicker {
         var mediaPicker = self
-        mediaPicker.showingLiveCameraCell = true
+        mediaPicker.showingLiveCameraCell = show
         return mediaPicker
     }
 

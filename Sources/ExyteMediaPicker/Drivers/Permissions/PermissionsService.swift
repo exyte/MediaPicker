@@ -16,14 +16,18 @@ final class PermissionsService: ObservableObject {
     init() {
         photoLibraryChangePermissionPublisher
             .sink { [weak self] in
-                self?.reload()
+                self?.checkPhotoLibraryAuthorizationStatus()
             }
             .store(in: &subscriptions)
-        reload()
+
+        cameraChangePermissionPublisher
+            .sink { [weak self] in
+                self?.checkCameraAuthorizationStatus()
+            }
+            .store(in: &subscriptions)
     }
 
-    func reload() {
-        checkCameraAuthorizationStatus()
+    func askLibraryPermissionIfNeeded() {
         checkPhotoLibraryAuthorizationStatus()
     }
 
