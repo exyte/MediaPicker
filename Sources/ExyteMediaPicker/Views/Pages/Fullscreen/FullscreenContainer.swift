@@ -35,7 +35,7 @@ struct FullscreenContainer: View {
             }
         }
         .overlay {
-            if let selectedMediaModel = selectedMediaModel {
+            if let selectedMediaModel = selectedMediaModel, selectionParamsHolder.selectionLimit != 1 {
                 SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
                     .padding([.horizontal, .bottom], 20)
                     .contentShape(Rectangle())

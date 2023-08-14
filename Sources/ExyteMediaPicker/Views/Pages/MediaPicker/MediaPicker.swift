@@ -34,7 +34,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     // MARK: - Customization
 
     @Binding private var albums: [Album]
-    @Binding private var currentFullscreenMedia: Media?
+    @Binding private var currentFullscreenMediaBinding: Media?
 
     private var pickerMode: Binding<MediaPickerMode>?
     private var showingLiveCameraCell: Bool = false
@@ -53,7 +53,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var cameraSelectionService = CameraSelectionService()
     @StateObject private var permissionService = PermissionsService()
 
-    @State var readyToShowCamera = false
+    @State private var readyToShowCamera = false
+    @State private var currentFullscreenMedia: Media?
 
     // MARK: - Object life cycle
 
@@ -64,7 +65,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
         self._isPresented = isPresented
         self._albums = .constant([])
-        self._currentFullscreenMedia = .constant(nil)
+        self._currentFullscreenMediaBinding = .constant(nil)
 
         self.onChange = onChange
         self.albumSelectionBuilder = albumSelectionBuilder
@@ -110,6 +111,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             if let mode = mode {
                 viewModel.setPickerMode(mode)
             }
+        }
+        .onChange(of: currentFullscreenMedia) { currentFullscreenMedia in
+            _currentFullscreenMedia.wrappedValue = currentFullscreenMedia
         }
         .onAppear {
             if let mode = pickerMode?.wrappedValue {
@@ -223,6 +227,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             Spacer()
 
             Button("Done") {
+                if selectionService.selected.isEmpty, let current = currentFullscreenMedia {
+                    onChange([current])
+                }
                 isPresented = false
             }
         }
@@ -309,7 +316,7 @@ public extension MediaPicker {
 
     func currentFullscreenMedia(_ currentFullscreenMedia: Binding<Media?>) -> MediaPicker {
         var mediaPicker = self
-        mediaPicker._currentFullscreenMedia = currentFullscreenMedia
+        mediaPicker._currentFullscreenMediaBinding = currentFullscreenMedia
         return mediaPicker
     }
 
@@ -335,7 +342,7 @@ public extension MediaPicker where AlbumSelectionContent == EmptyView, CameraSel
 
         self._isPresented = isPresented
         self._albums = .constant([])
-        self._currentFullscreenMedia = .constant(nil)
+        self._currentFullscreenMediaBinding = .constant(nil)
 
         self.onChange = onChange
     }
@@ -349,7 +356,7 @@ public extension MediaPicker where AlbumSelectionContent == EmptyView {
 
         self._isPresented = isPresented
         self._albums = .constant([])
-        self._currentFullscreenMedia = .constant(nil)
+        self._currentFullscreenMediaBinding = .constant(nil)
 
         self.onChange = onChange
         self.cameraSelectionBuilder = cameraSelectionBuilder
@@ -364,7 +371,7 @@ public extension MediaPicker where CameraSelectionContent == EmptyView {
 
         self._isPresented = isPresented
         self._albums = .constant([])
-        self._currentFullscreenMedia = .constant(nil)
+        self._currentFullscreenMediaBinding = .constant(nil)
 
         self.onChange = onChange
         self.albumSelectionBuilder = albumSelectionBuilder

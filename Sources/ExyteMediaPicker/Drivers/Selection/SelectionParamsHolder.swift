@@ -11,7 +11,7 @@ final class SelectionParamsHolder: ObservableObject {
 
     @Published var mediaType: MediaSelectionType = .photoAndVideo
     @Published var selectionStyle: MediaSelectionStyle = .checkmark
-    @Published var selectionLimit: Int? // if nill - unlimited
+    @Published var selectionLimit: Int? // if nil - unlimited
 }
 
 public enum MediaSelectionStyle {
