@@ -10,7 +10,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     /// To provide custom buttons layout for photos grid view use actions and views provided by this closure:
     /// - standard header with photos/albums switcher
     /// - selection view you can embed in your view
-    public typealias AlbumSelectionClosure = ((ModeSwitcher, AlbumSelectionView) -> AlbumSelectionContent)
+    /// - is in fullscreen photo details mode
+    public typealias AlbumSelectionClosure = ((ModeSwitcher, AlbumSelectionView, Bool) -> AlbumSelectionContent)
 
     /// To provide custom buttons layout for camera selection view use actions and views by this closure:
     /// - add more photos closure
@@ -54,6 +55,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var permissionService = PermissionsService()
 
     @State private var readyToShowCamera = false
+    @State private var isInFullscreen: Bool = false
     @State private var currentFullscreenMedia: Media?
 
     // MARK: - Object life cycle
@@ -124,13 +126,17 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure)
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), isInFullscreen: $isInFullscreen, currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure)
 
         if let albumSelectionBuilder = albumSelectionBuilder {
-            albumSelectionBuilder(ModeSwitcher(selection: modeBinding()), albumSelectionView)
+            albumSelectionBuilder(ModeSwitcher(selection: modeBinding()), albumSelectionView, isInFullscreen)
         } else {
             VStack(spacing: 0) {
-                defaultHeaderView
+                if !isInFullscreen {
+                    defaultHeaderView
+                } else {
+                    Color.clear.frame(height: 15)
+                }
                 albumSelectionView
             }
         }

@@ -73,9 +73,11 @@ You can pass two view builders in order to add your own buttons and other elemen
 MediaPicker(
     isPresented: $isPresented,
     onChange: { selectedMedia = $0 },
-    albumSelectionBuilder: { defaultHeaderView, albumSelectionView in
+    albumSelectionBuilder: { defaultHeaderView, albumSelectionView, isInFullscreen in
         VStack {
-            defaultHeaderView
+            if !isInFullscreen {
+                defaultHeaderView
+            }
             albumSelectionView
             Spacer()
             footerView
@@ -88,6 +90,7 @@ MediaPicker(
 `albumSelectionBuilder` gives you two views to work with:
 - `defaultHeaderView` - a default looking `header` with photos/albums mode switcher
 - `albumSelectionView` - the photos grid itself
+- `isInFullscreen` - is fullscreen photo details screen displayed. Use for example to hide the header while in fullscreen mode.
 
 The second customizable screen is the one you see after taking a photo. Pass `cameraSelectionBuilder` like this:
 ```swift

@@ -12,7 +12,9 @@ struct AlbumView: View {
 
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
+    @Binding var isInFullscreen: Bool
     @Binding var currentFullscreenMedia: Media?
+
     var shouldShowCamera: Bool
     var shouldShowLoadingCell: Bool
     var selectionParamsHolder: SelectionParamsHolder
@@ -20,8 +22,10 @@ struct AlbumView: View {
     @State private var fullscreenItem: AssetMediaModel? {
         didSet {
             if let item = fullscreenItem {
+                isInFullscreen = true
                 currentFullscreenMedia = Media(source: item)
             } else {
+                isInFullscreen = false
                 currentFullscreenMedia = nil
             }
         }
