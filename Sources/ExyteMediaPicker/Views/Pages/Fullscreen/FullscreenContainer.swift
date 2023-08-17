@@ -14,6 +14,7 @@ struct FullscreenContainer: View {
     let assetMediaModels: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
     var selectionParamsHolder: SelectionParamsHolder
+    var shouldDismiss: ()->()
 
     private var selectedMediaModel: AssetMediaModel? {
         assetMediaModels.first { $0.id == selection }
@@ -34,15 +35,22 @@ struct FullscreenContainer: View {
                     .tag(assetMediaModel.id)
             }
         }
-        .overlay {
-            if let selectedMediaModel = selectedMediaModel, selectionParamsHolder.selectionLimit != 1 {
-                SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
-                    .padding([.horizontal, .bottom], 20)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
+        .overlay(alignment: .topTrailing) {
+            if let selectedMediaModel = selectedMediaModel {
+                if selectionParamsHolder.selectionLimit == 1 {
+                    Button("Select") {
                         selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                        shouldDismiss()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .padding([.horizontal, .bottom], 20)
+                } else {
+                    SelectIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
+                        .padding([.horizontal, .bottom], 20)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                        }
+                }
             }
         }
         .onTapGesture {

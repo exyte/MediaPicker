@@ -18,6 +18,7 @@ struct AlbumView: View {
     var shouldShowCamera: Bool
     var shouldShowLoadingCell: Bool
     var selectionParamsHolder: SelectionParamsHolder
+    var shouldDismiss: ()->()
 
     @State private var fullscreenItem: AssetMediaModel? {
         didSet {
@@ -106,7 +107,8 @@ private extension AlbumView {
                     isPresented: fullscreenPresentedBinding(),
                     assetMediaModels: viewModel.assetMediaModels,
                     selection: item.id,
-                    selectionParamsHolder: selectionParamsHolder
+                    selectionParamsHolder: selectionParamsHolder,
+                    shouldDismiss: shouldDismiss
                 )
             }
         }
