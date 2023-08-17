@@ -55,11 +55,13 @@ private extension AlbumView {
                         .font(.title3)
                 } else {
                     MediasGrid(viewModel.assetMediaModels) {
+#if !targetEnvironment(simulator)
                         if shouldShowCamera && permissionsService.cameraAction == nil {
                             LiveCameraCell {
                                 showingCamera = true
                             }
                         }
+#endif
                     } content: { assetMediaModel in
                         let index = selectionService.index(of: assetMediaModel)
                         SelectableView(selected: index, isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
