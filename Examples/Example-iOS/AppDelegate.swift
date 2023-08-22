@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     private var orientationLock = UIInterfaceOrientationMask.all
 
     func lockOrientationToPortrait() {
+        orientationLock = .portrait
         if #available(iOS 16, *) {
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 scene.requestGeometryUpdate(.iOS(interfaceOrientations: .portrait))
@@ -21,7 +22,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         } else {
             UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
         }
-        orientationLock = .portrait
     }
 
     func unlockOrientation() {

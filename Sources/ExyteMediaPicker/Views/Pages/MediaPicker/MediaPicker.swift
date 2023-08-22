@@ -118,10 +118,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             if let mode = pickerMode?.wrappedValue {
                 viewModel.setPickerMode(mode)
             }
-            orientationHandler(.lock)
-        }
-        .onDisappear {
-            orientationHandler(.unlock)
         }
     }
 
@@ -197,6 +193,12 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                     deleteAllButton
                 }
             }
+        }
+        .onAppear {
+            orientationHandler(.lock)
+        }
+        .onDisappear {
+            orientationHandler(.unlock)
         }
     }
 
