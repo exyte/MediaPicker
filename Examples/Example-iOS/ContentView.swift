@@ -60,6 +60,7 @@ struct ContentView: View {
                 onChange: { medias = $0 }
             )
             .showLiveCameraCell()
+            .mediaSelectionLimit(1)
             .orientationHandler {
                 switch $0 {
                 case .lock: appDelegate.lockOrientationToPortrait()

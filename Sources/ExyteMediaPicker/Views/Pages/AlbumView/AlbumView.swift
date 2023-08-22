@@ -68,20 +68,7 @@ private extension AlbumView {
                         }
 #endif
                     } content: { assetMediaModel in
-                        let index = selectionService.index(of: assetMediaModel)
-                        SelectableView(selected: index, isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
-                            selectionService.onSelect(assetMediaModel: assetMediaModel)
-                        } content: {
-                            Button {
-                                if fullscreenItem == nil {
-                                    fullscreenItem = assetMediaModel
-                                }
-                            } label: {
-                                MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
-                            }
-                            .buttonStyle(MediaButtonStyle())
-                            .contentShape(Rectangle())
-                        }
+                        cellView(assetMediaModel)
                     } loadingCell: {
                         if shouldShowLoadingCell {
                             ZStack {
@@ -124,4 +111,30 @@ private extension AlbumView {
             }
         )
     }
+
+    @ViewBuilder
+    func cellView(_ assetMediaModel: AssetMediaModel) -> some View {
+        if selectionService.mediaSelectionLimit == 1 {
+            MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
+                .onTapGesture {
+                    selectionService.onSelect(assetMediaModel: assetMediaModel)
+                    shouldDismiss()
+                }
+        } else {
+            SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
+                selectionService.onSelect(assetMediaModel: assetMediaModel)
+            } content: {
+                Button {
+                    if fullscreenItem == nil {
+                        fullscreenItem = assetMediaModel
+                    }
+                } label: {
+                    MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
+                }
+                .buttonStyle(MediaButtonStyle())
+                .contentShape(Rectangle())
+            }
+        }
+    }
+
 }
