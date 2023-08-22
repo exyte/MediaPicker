@@ -103,9 +103,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             }
             viewModel.onStart()
         }
-        .onReceive(viewModel.$internalPickerMode) { mode in
-            orientationHandler(mode == .camera ? .lock : .unlock)
-        }
         .onChange(of: viewModel.albums) {
             self.albums = $0.map { $0.toAlbum() }
         }
@@ -121,6 +118,10 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             if let mode = pickerMode?.wrappedValue {
                 viewModel.setPickerMode(mode)
             }
+            orientationHandler(.lock)
+        }
+        .onDisappear {
+            orientationHandler(.unlock)
         }
     }
 
