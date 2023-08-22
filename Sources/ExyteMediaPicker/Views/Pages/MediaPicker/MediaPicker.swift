@@ -58,6 +58,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @State private var isInFullscreen: Bool = false
     @State private var currentFullscreenMedia: Media?
 
+    @State private var internalPickerMode: MediaPickerMode = .photos // a hack for slow camera dismissal
+
     // MARK: - Object life cycle
 
     public init(isPresented: Binding<Bool>,
@@ -76,14 +78,14 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     public var body: some View {
         Group {
-            switch viewModel.internalPickerMode {
-            case .photos, .albums, .album(_):
-                albumSelectionContainer
-            case .camera:
-                cameraContainer
-            case .cameraSelection:
-                cameraSelectionContainer
-            }
+            switch internalPickerMode { // please don't use viewModel.internalPickerMode here - it slows down camera dismissal
+                case .photos, .albums, .album(_):
+                    albumSelectionContainer
+                case .camera:
+                    cameraContainer
+                case .cameraSelection:
+                    cameraSelectionContainer
+                }
         }
         .background(theme.main.albumSelectionBackground.ignoresSafeArea())
         .environmentObject(selectionService)
@@ -110,6 +112,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             if let mode = mode {
                 viewModel.setPickerMode(mode)
             }
+        }
+        .onChange(of: viewModel.internalPickerMode) { newValue in
+            internalPickerMode = newValue
         }
         .onChange(of: currentFullscreenMedia) { currentFullscreenMedia in
             _currentFullscreenMedia.wrappedValue = currentFullscreenMedia
