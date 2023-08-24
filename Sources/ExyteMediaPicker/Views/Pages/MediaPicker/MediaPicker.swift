@@ -117,7 +117,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             internalPickerMode = newValue
         }
         .onChange(of: currentFullscreenMedia) { currentFullscreenMedia in
-            _currentFullscreenMedia.wrappedValue = currentFullscreenMedia
+            _currentFullscreenMediaBinding.wrappedValue = currentFullscreenMedia
         }
         .onAppear {
             if let mode = pickerMode?.wrappedValue {

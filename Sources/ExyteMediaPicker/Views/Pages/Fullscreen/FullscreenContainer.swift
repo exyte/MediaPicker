@@ -10,6 +10,8 @@ struct FullscreenContainer: View {
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
 
+    @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
+
     @Binding var isPresented: Bool
     let assetMediaModels: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
@@ -58,6 +60,7 @@ struct FullscreenContainer: View {
                 selectionService.onSelect(assetMediaModel: selectedMediaModel)
             }
         }
+        .disabled(keyboardHeightHelper.keyboardDisplayed)
         .overlay(closeButton)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(
