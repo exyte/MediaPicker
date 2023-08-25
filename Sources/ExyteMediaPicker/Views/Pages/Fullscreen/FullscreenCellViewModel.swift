@@ -15,6 +15,7 @@ final class FullscreenCellViewModel: ObservableObject {
     @Published var image: UIImage? = nil
     @Published var player: AVPlayer? = nil
     @Published var isPlaying = false
+    @Published var videoSize: CGSize = .zero
 
     private var currentTask: Task<Void, Never>?
 
@@ -38,6 +39,7 @@ final class FullscreenCellViewModel: ObservableObject {
                 let url = await mediaModel.getURL()
                 guard let url = url else { return }
                 setupPlayer(url)
+                videoSize = getVideoSize(url)
             case .none:
                 break
             }
@@ -70,5 +72,17 @@ final class FullscreenCellViewModel: ObservableObject {
             player?.play()
         }
         isPlaying = !isPlaying
+    }
+
+    func getVideoSize(_ url: URL) -> CGSize {
+        let videoAsset = AVURLAsset(url : url)
+        let videoAssetTrack = videoAsset.tracks(withMediaType: .video).first
+        let naturalSize = videoAssetTrack?.naturalSize ?? .zero
+        let transform = videoAssetTrack?.preferredTransform
+        if (transform?.tx == naturalSize.width && transform?.ty == naturalSize.height) || (transform?.tx == 0 && transform?.ty == 0) {
+            return naturalSize
+        } else {
+            return CGSize(width: naturalSize.height, height: naturalSize.width)
+        }
     }
 }

@@ -12,7 +12,6 @@ struct FullscreenCell: View {
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
     @State var availableFrame: CGRect = .zero
-    @State var videoFrame: CGRect = .zero
 
     var body: some View {
         VStack {
@@ -33,8 +32,7 @@ struct FullscreenCell: View {
                     }
                 } else {
                     videoView(player: player)
-                        .frameGetter($videoFrame)
-                        .padding(.vertical, calculatePadding(imageSize: videoFrame.size, availableSize: availableFrame.size))
+                        .padding(.vertical, calculatePadding(imageSize: viewModel.videoSize, availableSize: availableFrame.size))
                 }
             } else {
                 ProgressView()
