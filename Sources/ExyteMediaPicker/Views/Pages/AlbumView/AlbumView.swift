@@ -117,8 +117,9 @@ private extension AlbumView {
         if selectionService.mediaSelectionLimit == 1 {
             MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
                 .onTapGesture {
-                    selectionService.onSelect(assetMediaModel: assetMediaModel)
-                    shouldDismiss()
+                    if fullscreenItem == nil {
+                        fullscreenItem = assetMediaModel
+                    }
                 }
         } else {
             SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {

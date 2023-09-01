@@ -53,7 +53,6 @@ class BaseMediasProvider: MediasProviderProtocol {
                     if let media = await filterClosure(Media(source: $0)), let model = media.source as? AssetMediaModel {
                         serialQueue.sync {
                             result.append(model)
-                            print(result.count)
                             assetMediaModelsPublisher.send(result)
                         }
                     }
