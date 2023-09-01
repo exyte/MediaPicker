@@ -154,6 +154,11 @@ final class CameraViewModel: NSObject, ObservableObject {
         guard session.canAddInput(captureDeviceInput) else { return }
         session.addInput(captureDeviceInput)
 
+        guard let captureAudioDevice = selectAudioCaptureDevice() else { return }
+        guard let captureAudioDeviceInput = try? AVCaptureDeviceInput(device: captureAudioDevice) else { return }
+        guard session.canAddInput(captureAudioDeviceInput) else { return }
+        session.addInput(captureAudioDeviceInput)
+
         let defaultZoom = CGFloat(truncating: captureDevice.virtualDeviceSwitchOverVideoZoomFactors.first ?? minScale as NSNumber)
 
         let maxZoom: CGFloat
@@ -215,6 +220,15 @@ final class CameraViewModel: NSObject, ObservableObject {
         } else {
             return session.devices.first
         }
+    }
+
+    private func selectAudioCaptureDevice() -> AVCaptureDevice? {
+        let session = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInMicrophone],
+            mediaType: .audio,
+            position: .unspecified)
+
+        return session.devices.first
     }
 
 }
