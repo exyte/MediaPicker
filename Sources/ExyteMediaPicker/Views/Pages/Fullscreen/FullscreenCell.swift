@@ -7,6 +7,8 @@ import SwiftUI
 import AVKit
 
 struct FullscreenCell: View {
+    
+    @Environment(\.mediaPickerTheme) private var theme
 
     @StateObject var viewModel: FullscreenCellViewModel
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
@@ -57,7 +59,7 @@ struct FullscreenCell: View {
     }
 
     func videoView(player: AVPlayer) -> some View {
-        VideoPlayer(player: player)
+        PlayerView(player: player, bgColor: theme.main.fullscreenPhotoBackground)
             .disabled(true)
             .overlay {
                 ZStack {

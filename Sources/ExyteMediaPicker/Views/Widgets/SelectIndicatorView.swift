@@ -25,6 +25,7 @@ struct SelectIndicatorView: View {
             }
         }
         .frame(width: 24, height: 24)
+        .padding(.top, -2)
     }
 
     var checkView: some View {

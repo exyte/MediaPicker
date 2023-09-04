@@ -75,8 +75,8 @@ struct FullscreenContainer: View {
         } label: {
             Image(systemName: "xmark")
                 .resizable()
-                .tint(theme.selection.fullscreenTint)
                 .frame(width: 20, height: 20)
+                .tint(theme.selection.fullscreenTint)
         }
         .padding([.horizontal, .bottom], 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
