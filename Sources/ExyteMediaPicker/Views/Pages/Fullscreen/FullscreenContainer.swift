@@ -56,11 +56,14 @@ struct FullscreenContainer: View {
             }
         }
         .onTapGesture {
-            if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
-                selectionService.onSelect(assetMediaModel: selectedMediaModel)
+            if keyboardHeightHelper.keyboardDisplayed {
+                dismissKeyboard()
+            } else {
+                if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
+                    selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                }
             }
         }
-        .disabled(keyboardHeightHelper.keyboardDisplayed)
         .overlay(closeButton)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(
@@ -77,8 +80,9 @@ struct FullscreenContainer: View {
                 .resizable()
                 .frame(width: 20, height: 20)
                 .tint(theme.selection.fullscreenTint)
+                .padding(12)
         }
-        .padding([.horizontal, .bottom], 20)
+        .padding([.horizontal, .bottom], 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
