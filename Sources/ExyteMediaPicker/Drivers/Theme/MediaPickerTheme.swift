@@ -8,13 +8,16 @@ import SwiftUI
 public struct MediaPickerTheme {
     public let main: Main
     public let selection: Selection
+    public let cellStyle: CellStyle
     public let error: Error
 
     public init(main: MediaPickerTheme.Main = .init(),
                 selection: MediaPickerTheme.Selection = .init(),
+                cellStyle: MediaPickerTheme.CellStyle = .init(),
                 error: MediaPickerTheme.Error = .init()) {
         self.main = main
         self.selection = selection
+        self.cellStyle = cellStyle
         self.error = error
     }
 }
@@ -37,6 +40,20 @@ extension MediaPickerTheme {
             self.fullscreenPhotoBackground = fullscreenPhotoBackground
             self.cameraBackground = cameraBackground
             self.cameraSelectionBackground = cameraSelectionBackground
+        }
+    }
+    
+    public struct CellStyle {
+        public let columnsSpacing: CGFloat
+        public let rowSpacing: CGFloat
+        public let cornerRadius: CGFloat
+
+        public init(columnsSpacing: CGFloat = 1,
+                    rowSpacing: CGFloat = 1,
+                    cornerRadius: CGFloat = 0) {
+            self.columnsSpacing = columnsSpacing
+            self.rowSpacing = rowSpacing
+            self.cornerRadius = cornerRadius
         }
     }
 

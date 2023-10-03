@@ -8,15 +8,18 @@ struct MediaCell: View {
 
     @StateObject var viewModel: MediaViewModel
     
+    @Environment(\.mediaPickerTheme) private var theme
+
     var body: some View {
         ZStack {
             GeometryReader { geometry in
                 ThumbnailView(preview: viewModel.preview)
+                    .cornerRadius(theme.cellStyle.cornerRadius)
                     .onAppear {
                         viewModel.onStart(size: geometry.size)
                     }
             }
-            .aspectRatio(1, contentMode: .fill)
+            .aspectRatio(1, contentMode: .fit)
             .clipped()
             
             if let duration = viewModel.assetMediaModel.asset.formattedDuration {
