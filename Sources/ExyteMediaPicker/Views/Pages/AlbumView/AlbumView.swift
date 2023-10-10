@@ -116,6 +116,7 @@ private extension AlbumView {
     func cellView(_ assetMediaModel: AssetMediaModel) -> some View {
         if selectionService.mediaSelectionLimit == 1 {
             MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
+                .contentShape(Rectangle())
                 .onTapGesture {
                     if fullscreenItem == nil {
                         fullscreenItem = assetMediaModel
