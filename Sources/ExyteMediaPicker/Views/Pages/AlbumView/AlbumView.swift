@@ -10,6 +10,8 @@ struct AlbumView: View {
     @EnvironmentObject private var permissionsService: PermissionsService
     @Environment(\.mediaPickerTheme) private var theme
 
+    @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
+
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
     @Binding var isInFullscreen: Bool
@@ -88,6 +90,11 @@ private extension AlbumView {
             .frame(maxWidth: .infinity)
         }
         .background(theme.main.albumSelectionBackground)
+        .onTapGesture {
+            if keyboardHeightHelper.keyboardDisplayed {
+                dismissKeyboard()
+            }
+        }
         .overlay {
             if let item = fullscreenItem {
                 FullscreenContainer(
@@ -117,6 +124,9 @@ private extension AlbumView {
         if selectionService.mediaSelectionLimit == 1 {
             MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
                 .onTapGesture {
+                    if keyboardHeightHelper.keyboardDisplayed {
+                        dismissKeyboard()
+                    }
                     if fullscreenItem == nil {
                         fullscreenItem = assetMediaModel
                     }
@@ -126,6 +136,9 @@ private extension AlbumView {
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
             } content: {
                 Button {
+                    if keyboardHeightHelper.keyboardDisplayed {
+                        dismissKeyboard()
+                    }
                     if fullscreenItem == nil {
                         fullscreenItem = assetMediaModel
                     }

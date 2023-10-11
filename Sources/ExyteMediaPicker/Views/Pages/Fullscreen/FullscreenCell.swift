@@ -25,7 +25,6 @@ struct FullscreenCell: View {
                     }
                 } else {
                     imageView(image: image)
-                        .padding(.vertical, calculatePadding(imageSize: image.size, availableSize: availableFrame.size))
                 }
             } else if let player = viewModel.player {
                 if !keyboardHeightHelper.keyboardDisplayed {
@@ -34,7 +33,6 @@ struct FullscreenCell: View {
                     }
                 } else {
                     videoView(player: player)
-                        .padding(.vertical, calculatePadding(imageSize: viewModel.videoSize, availableSize: availableFrame.size))
                 }
             } else {
                 ProgressView()

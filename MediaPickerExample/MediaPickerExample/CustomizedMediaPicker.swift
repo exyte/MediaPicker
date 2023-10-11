@@ -26,11 +26,16 @@ struct CustomizedMediaPicker: View {
             isPresented: $isPresented,
             onChange: { medias = $0 },
             albumSelectionBuilder: { _, albumSelectionView, _ in
-                VStack {
-                    headerView
-                    albumSelectionView
-                    Spacer()
+                ZStack(alignment: .bottom) {
+                    VStack {
+                        headerView
+                        albumSelectionView
+                        Spacer()
+                    }
+                    .ignoresSafeArea(.keyboard)
+                    
                     footerView
+                        .background(Color.black)
                 }
                 .background(Color.black)
             },
@@ -59,6 +64,7 @@ struct CustomizedMediaPicker: View {
                 .background(Color.black)
             }
         )
+        .showLiveCameraCell()
         .albums($albums)
         .pickerMode($mediaPickerMode)
         .orientationHandler {
@@ -115,13 +121,12 @@ struct CustomizedMediaPicker: View {
 
     var footerView: some View {
         HStack {
-            Button {
-                medias = []
-                isPresented = false
-            } label: {
-                Text("Cancel")
-                    .foregroundColor(.white.opacity(0.7))
-            }
+            TextField("", text: .constant(""), prompt: Text("Add a caption").foregroundColor(.gray))
+                .padding()
+                .background {
+                    Color.white.opacity(0.2)
+                        .cornerRadius(6)
+                }
 
             Spacer(minLength: 70)
 
@@ -148,6 +153,7 @@ struct CustomizedMediaPicker: View {
             }
         }
         .padding(.horizontal)
+        .padding(.vertical, 8)
     }
 
     var albumsDropdown: some View {
