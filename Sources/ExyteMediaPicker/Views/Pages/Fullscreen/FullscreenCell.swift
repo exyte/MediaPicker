@@ -13,35 +13,27 @@ struct FullscreenCell: View {
     @StateObject var viewModel: FullscreenCellViewModel
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
-    @State var availableFrame: CGRect = .zero
-
     var body: some View {
-        VStack {
-            Spacer()
-            if let image = viewModel.image {
-                if !keyboardHeightHelper.keyboardDisplayed {
+        GeometryReader { g in
+            Group {
+                if let image = viewModel.image {
+                    let useFill = g.size.width / g.size.height > image.size.width / image.size.height
                     ZoomableScrollView {
-                        imageView(image: image)
+                        imageView(image: image, useFill: useFill)
+                    }
+                } else if let player = viewModel.player {
+                    let useFill = g.size.width / g.size.height > viewModel.videoSize.width / viewModel.videoSize.height
+                    ZoomableScrollView {
+                        videoView(player: player, useFill: useFill)
                     }
                 } else {
-                    imageView(image: image)
+                    ProgressView()
+                        .tint(.white)
                 }
-            } else if let player = viewModel.player {
-                if !keyboardHeightHelper.keyboardDisplayed {
-                    ZoomableScrollView {
-                        videoView(player: player)
-                    }
-                } else {
-                    videoView(player: player)
-                }
-            } else {
-                ProgressView()
-                    .tint(.white)
             }
-            Spacer()
+            .allowsHitTesting(!keyboardHeightHelper.keyboardDisplayed)
+            .position(x: g.frame(in: .local).midX, y: g.frame(in: .local).midY)
         }
-        .frame(width: UIScreen.main.bounds.size.width)
-        .frameGetter($availableFrame)
         .task {
             await viewModel.onStart()
         }
@@ -50,14 +42,15 @@ struct FullscreenCell: View {
         }
     }
 
-    func imageView(image: UIImage) -> some View {
+    @ViewBuilder
+    func imageView(image: UIImage, useFill: Bool) -> some View {
         Image(uiImage: image)
             .resizable()
-            .scaledToFit()
+            .aspectRatio(contentMode: useFill ? .fill : .fit)
     }
 
-    func videoView(player: AVPlayer) -> some View {
-        PlayerView(player: player, bgColor: theme.main.fullscreenPhotoBackground)
+    func videoView(player: AVPlayer, useFill: Bool) -> some View {
+        PlayerView(player: player, bgColor: theme.main.fullscreenPhotoBackground, useFill: useFill)
             .disabled(true)
             .overlay {
                 ZStack {
@@ -74,13 +67,5 @@ struct FullscreenCell: View {
                     viewModel.togglePlay()
                 }
             }
-    }
-
-    func calculatePadding(imageSize: CGSize, availableSize: CGSize) -> CGFloat {
-        let ratio = imageSize.width / imageSize.height
-        let height = UIScreen.main.bounds.size.width / ratio
-        let extra = availableSize.height - height
-        print(availableSize, extra)
-        return extra > 0 ? 0 : extra / 2 - 6
     }
 }

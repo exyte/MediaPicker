@@ -26,14 +26,10 @@ struct CustomizedMediaPicker: View {
             isPresented: $isPresented,
             onChange: { medias = $0 },
             albumSelectionBuilder: { _, albumSelectionView, _ in
-                ZStack(alignment: .bottom) {
-                    VStack {
-                        headerView
-                        albumSelectionView
-                        Spacer()
-                    }
-                    .ignoresSafeArea(.keyboard)
-                    
+                VStack {
+                    headerView
+                    albumSelectionView
+                    Spacer()
                     footerView
                         .background(Color.black)
                 }

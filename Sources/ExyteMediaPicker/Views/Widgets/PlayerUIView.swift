@@ -12,9 +12,10 @@ struct PlayerView: UIViewRepresentable {
 
     var player: AVPlayer
     var bgColor: Color
+    var useFill: Bool
 
     func makeUIView(context: Context) -> PlayerUIView {
-        PlayerUIView(player: player, bgColor: bgColor)
+        PlayerUIView(player: player, bgColor: bgColor, useFill: useFill)
     }
 
     func updateUIView(_ uiView: PlayerUIView, context: UIViewRepresentableContext<PlayerView>) {
@@ -38,9 +39,9 @@ class PlayerUIView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    init(player: AVPlayer, bgColor: Color) {
+    init(player: AVPlayer, bgColor: Color, useFill: Bool) {
         super.init(frame: .zero)
-        self.playerSetup(player: player, bgColor: bgColor)
+        self.playerSetup(player: player, bgColor: bgColor, useFill: useFill)
     }
 
     deinit {
@@ -56,11 +57,11 @@ class PlayerUIView: UIView {
 
     // MARK: Class Methods
 
-    private func playerSetup(player: AVPlayer, bgColor: Color) {
+    private func playerSetup(player: AVPlayer, bgColor: Color, useFill: Bool) {
         playerLayer.player = player
+        playerLayer.videoGravity = useFill ? .resizeAspectFill : .resizeAspect
         player.actionAtItemEnd = .none
         layer.addSublayer(playerLayer)
-        print(bgColor.description.debugDescription)
         playerLayer.backgroundColor = bgColor.cgColor
     }
 }
