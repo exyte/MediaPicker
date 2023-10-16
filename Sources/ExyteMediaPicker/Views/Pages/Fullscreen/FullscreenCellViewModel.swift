@@ -39,7 +39,7 @@ final class FullscreenCellViewModel: ObservableObject {
                 let url = await mediaModel.getURL()
                 guard let url = url else { return }
                 setupPlayer(url)
-                videoSize = getVideoSize(url)
+                videoSize = await getVideoSize(url)
             case .none:
                 break
             }
@@ -74,11 +74,12 @@ final class FullscreenCellViewModel: ObservableObject {
         isPlaying = !isPlaying
     }
 
-    func getVideoSize(_ url: URL) -> CGSize {
+    func getVideoSize(_ url: URL) async -> CGSize {
         let videoAsset = AVURLAsset(url : url)
-        let videoAssetTrack = videoAsset.tracks(withMediaType: .video).first
-        let naturalSize = videoAssetTrack?.naturalSize ?? .zero
-        let transform = videoAssetTrack?.preferredTransform
+
+        let videoAssetTrack = try? await videoAsset.loadTracks(withMediaType: .video).first
+        let naturalSize = (try? await videoAssetTrack?.load(.naturalSize)) ?? .zero
+        let transform = try? await videoAssetTrack?.load(.preferredTransform)
         if (transform?.tx == naturalSize.width && transform?.ty == naturalSize.height) || (transform?.tx == 0 && transform?.ty == 0) {
             return naturalSize
         } else {
