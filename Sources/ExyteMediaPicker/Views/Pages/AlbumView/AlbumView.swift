@@ -22,17 +22,7 @@ struct AlbumView: View {
     var selectionParamsHolder: SelectionParamsHolder
     var shouldDismiss: ()->()
 
-    @State private var fullscreenItem: AssetMediaModel? {
-        didSet {
-            if let item = fullscreenItem {
-                isInFullscreen = true
-                currentFullscreenMedia = Media(source: item)
-            } else {
-                isInFullscreen = false
-                currentFullscreenMedia = nil
-            }
-        }
-    }
+    @State private var fullscreenItem: AssetMediaModel?
 
     var body: some View {
         if let title = viewModel.title {
@@ -99,6 +89,7 @@ private extension AlbumView {
             if let item = fullscreenItem {
                 FullscreenContainer(
                     isPresented: fullscreenPresentedBinding(),
+                    currentFullscreenMedia: $currentFullscreenMedia,
                     assetMediaModels: viewModel.assetMediaModels,
                     selection: item.id,
                     selectionParamsHolder: selectionParamsHolder,
@@ -121,32 +112,26 @@ private extension AlbumView {
 
     @ViewBuilder
     func cellView(_ assetMediaModel: AssetMediaModel) -> some View {
-        if selectionService.mediaSelectionLimit == 1 {
+        let imageButton = Button {
+            if keyboardHeightHelper.keyboardDisplayed {
+                dismissKeyboard()
+            }
+            if fullscreenItem == nil {
+                fullscreenItem = assetMediaModel
+            }
+        } label: {
             MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
-                .onTapGesture {
-                    if keyboardHeightHelper.keyboardDisplayed {
-                        dismissKeyboard()
-                    }
-                    if fullscreenItem == nil {
-                        fullscreenItem = assetMediaModel
-                    }
-                }
+        }
+        .buttonStyle(MediaButtonStyle())
+        .contentShape(Rectangle())
+
+        if selectionService.mediaSelectionLimit == 1 {
+            imageButton
         } else {
             SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
             } content: {
-                Button {
-                    if keyboardHeightHelper.keyboardDisplayed {
-                        dismissKeyboard()
-                    }
-                    if fullscreenItem == nil {
-                        fullscreenItem = assetMediaModel
-                    }
-                } label: {
-                    MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel))
-                }
-                .buttonStyle(MediaButtonStyle())
-                .contentShape(Rectangle())
+                imageButton
             }
         }
     }

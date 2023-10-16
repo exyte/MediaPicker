@@ -13,6 +13,7 @@ struct FullscreenContainer: View {
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
     @Binding var isPresented: Bool
+    @Binding var currentFullscreenMedia: Media?
     let assetMediaModels: [AssetMediaModel]
     @State var selection: AssetMediaModel.ID
     var selectionParamsHolder: SelectionParamsHolder
@@ -35,6 +36,11 @@ struct FullscreenContainer: View {
                 FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: assetMediaModel))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .tag(assetMediaModel.id)
+            }
+        }
+        .onChange(of: selection) { newValue in
+            if let selectedMediaModel {
+                currentFullscreenMedia = Media(source: selectedMediaModel)
             }
         }
         .overlay(alignment: .topTrailing) {
