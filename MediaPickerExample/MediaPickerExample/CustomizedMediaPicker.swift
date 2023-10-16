@@ -17,6 +17,7 @@ struct CustomizedMediaPicker: View {
 
     @State private var mediaPickerMode = MediaPickerMode.photos
     @State private var selectedAlbum: Album?
+    @State private var currentFullscreenMedia: Media?
     @State private var showAlbumsDropDown: Bool = false
 
     let maxCount: Int = 5
@@ -31,6 +32,7 @@ struct CustomizedMediaPicker: View {
                     albumSelectionView
                     Spacer()
                     footerView
+                        .background(Color.black)
                 }
                 .background(Color.black)
             },
@@ -59,8 +61,10 @@ struct CustomizedMediaPicker: View {
                 .background(Color.black)
             }
         )
+        .showLiveCameraCell()
         .albums($albums)
         .pickerMode($mediaPickerMode)
+        .currentFullscreenMedia($currentFullscreenMedia)
         .orientationHandler {
             switch $0 {
             case .lock: appDelegate.lockOrientationToPortrait()
@@ -115,13 +119,12 @@ struct CustomizedMediaPicker: View {
 
     var footerView: some View {
         HStack {
-            Button {
-                medias = []
-                isPresented = false
-            } label: {
-                Text("Cancel")
-                    .foregroundColor(.white.opacity(0.7))
-            }
+            TextField("", text: .constant(""), prompt: Text("Add a caption").foregroundColor(.gray))
+                .padding()
+                .background {
+                    Color.white.opacity(0.2)
+                        .cornerRadius(6)
+                }
 
             Spacer(minLength: 70)
 
@@ -148,6 +151,7 @@ struct CustomizedMediaPicker: View {
             }
         }
         .padding(.horizontal)
+        .padding(.vertical, 8)
     }
 
     var albumsDropdown: some View {

@@ -25,7 +25,7 @@ struct SelectIndicatorView: View {
             }
         }
         .frame(width: 24, height: 24)
-        .padding(.top, -2)
+        .padding(.top, isFullscreen ? 11 : -2)
     }
 
     var checkView: some View {
