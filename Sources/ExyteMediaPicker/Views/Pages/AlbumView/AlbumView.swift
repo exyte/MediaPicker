@@ -47,6 +47,7 @@ private extension AlbumView {
                 }
                 if viewModel.isLoading {
                     ProgressView()
+                        .padding()
                 } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
                     Text("Empty data")
                         .font(.title3)

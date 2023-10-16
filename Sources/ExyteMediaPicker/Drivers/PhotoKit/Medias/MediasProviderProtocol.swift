@@ -11,7 +11,7 @@ protocol MediasProviderProtocol {
     func reload()
     func cancel()
 
-    var assetMediaModelsPublisher: CurrentValueSubject<[AssetMediaModel], Never> { get }
+    var assetMediaModelsPublisher: PassthroughSubject<[AssetMediaModel], Never> { get }
 }
 
 class BaseMediasProvider: MediasProviderProtocol {
@@ -21,7 +21,7 @@ class BaseMediasProvider: MediasProviderProtocol {
 
     @Binding var showingLoadingCell: Bool
 
-    var assetMediaModelsPublisher = CurrentValueSubject<[AssetMediaModel], Never>([])
+    var assetMediaModelsPublisher = PassthroughSubject<[AssetMediaModel], Never>()
 
     @Published var cancellableTask: Task<Void, Never>?
 

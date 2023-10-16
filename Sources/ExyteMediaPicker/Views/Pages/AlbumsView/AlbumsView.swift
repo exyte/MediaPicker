@@ -38,6 +38,7 @@ struct AlbumsView: View {
                 }
                 if viewModel.isLoading {
                     ProgressView()
+                        .padding()
                 } else if viewModel.albums.isEmpty {
                     Text("Empty data")
                         .font(.title3)
