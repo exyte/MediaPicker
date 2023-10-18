@@ -117,7 +117,11 @@ private extension AlbumView {
             if keyboardHeightHelper.keyboardDisplayed {
                 dismissKeyboard()
             }
-            if fullscreenItem == nil {
+            if !selectionParamsHolder.showFullscreenPreview { // select immediately
+                selectionService.onSelect(assetMediaModel: assetMediaModel)
+                shouldDismiss()
+            }
+            else if fullscreenItem == nil {
                 fullscreenItem = assetMediaModel
             }
         } label: {

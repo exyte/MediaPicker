@@ -307,6 +307,11 @@ public extension MediaPicker {
         return self
     }
 
+    func showFullscreenPreview(_ show: Bool) -> MediaPicker {
+        selectionParamsHolder.showFullscreenPreview = show
+        return self
+    }
+
     func applyFilter(_ filterClosure: @escaping FilterClosure) -> MediaPicker {
         var mediaPicker = self
         mediaPicker.filterClosure = filterClosure

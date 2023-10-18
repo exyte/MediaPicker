@@ -12,6 +12,7 @@ final class SelectionParamsHolder: ObservableObject {
     @Published var mediaType: MediaSelectionType = .photoAndVideo
     @Published var selectionStyle: MediaSelectionStyle = .checkmark
     @Published var selectionLimit: Int? // if nil - unlimited
+    @Published var showFullscreenPreview: Bool = true // if false, tap on image immediately selects this image and closes the picker
 }
 
 public enum MediaSelectionStyle {

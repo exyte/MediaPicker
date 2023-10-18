@@ -127,6 +127,7 @@ You can pass one, both or none of these when creating your `MediaPicker`. (see t
 `mediaSelectionType` - limit displayed media type: .photo, .video or both   
 `mediaSelectionStyle` - a way to display selected/unselected media state: a counter or a simple checkmark   
 `mediaSelectionLimit` - the maximum selection quantity allowed, 'nil' for unlimited selection   
+`showFullscreenPreview` - if true - tap on media opens fullscreen preview, if false - tap on image immediately selects this image and closes the picker
 
 ### Available modifiers - filtering
 `applyFilter((Media) async -> Media?)` - pass a closure to apply to each of medias individually. Closures's return type is `Media?`: return `Media` the closure gives to you if you want it to be displayed on photo grid, or `nil` if you want to exclude it. The code you apply to each media can be asyncronous (using async/await syntactics, check out `FilterMediaPicker` in example project)
