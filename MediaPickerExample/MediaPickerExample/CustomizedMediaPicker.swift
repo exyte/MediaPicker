@@ -19,6 +19,7 @@ struct CustomizedMediaPicker: View {
     @State private var selectedAlbum: Album?
     @State private var currentFullscreenMedia: Media?
     @State private var showAlbumsDropDown: Bool = false
+    @State private var videoIsBeingRecorded: Bool = false
 
     let maxCount: Int = 5
 
@@ -42,23 +43,39 @@ struct CustomizedMediaPicker: View {
                         Spacer()
                         Button("Done", action: { isPresented = false })
                     }
+                    .padding()
                     cameraSelectionView
                     HStack {
                         Button("Cancel", action: cancelClosure)
                         Spacer()
                         Button(action: addMoreClosure) {
                             Text("Take more photos")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .padding()
-                        }
-                        .background {
-                            Color("CustomGreen")
-                                .cornerRadius(16)
+                                .greenButtonStyle()
                         }
                     }
+                    .padding()
                 }
                 .background(Color.black)
+            },
+            cameraViewBuilder: { cameraSheetView, cancelClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, _, _ in
+                cameraSheetView
+                    .overlay(alignment: .topLeading) {
+                        Button("Cancel") { cancelClosure() }
+                            .foregroundColor(Color("CustomPurple"))
+                            .padding()
+                    }
+                    .overlay(alignment: .bottom) {
+                        HStack {
+                            Button("Take photo") { takePhotoClosure() }
+                                .greenButtonStyle()
+                            Button(videoIsBeingRecorded ? "Stop video capture" : "Capture video") {
+                                videoIsBeingRecorded ? stopVideoCaptureClosure() : startVideoCaptureClosure()
+                                videoIsBeingRecorded.toggle()
+                            }
+                            .greenButtonStyle()
+                        }
+                        .padding()
+                    }
             }
         )
         .showLiveCameraCell()
@@ -139,16 +156,9 @@ struct CustomizedMediaPicker: View {
                         .background(Color.white)
                         .clipShape(Circle())
                 }
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.horizontal)
-                .padding(.vertical, 15)
                 .frame(maxWidth: .infinity)
             }
-            .background {
-                Color("CustomGreen")
-                    .cornerRadius(16)
-            }
+            .greenButtonStyle()
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
@@ -168,5 +178,17 @@ struct CustomizedMediaPicker: View {
             .padding(15)
         }
         .frame(maxHeight: 300)
+    }
+}
+
+extension View {
+    func greenButtonStyle() -> some View {
+        self.font(.headline)
+            .foregroundColor(.black)
+            .padding()
+            .background {
+                Color("CustomGreen")
+                    .cornerRadius(16)
+            }
     }
 }

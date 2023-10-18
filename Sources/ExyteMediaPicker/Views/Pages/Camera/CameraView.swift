@@ -5,21 +5,62 @@
 import SwiftUI
 import Photos
 
-struct CameraView: View {
+struct CustomCameraView<CameraViewContent: View>: View {
 
+    @EnvironmentObject private var cameraSelectionService: CameraSelectionService
+
+    public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
+
+    // params
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
     let didPressCancel: () -> Void
+    var cameraViewBuilder: CameraViewClosure
 
     @StateObject private var cameraViewModel = CameraViewModel()
+
+    var body: some View {
+        cameraViewBuilder(
+            LiveCameraView(
+                session: cameraViewModel.captureSession,
+                videoGravity: .resizeAspectFill,
+                orientation: .portrait
+            ),
+            { // cancel
+                if cameraSelectionService.hasSelected {
+                    viewModel.showingExitCameraConfirmation = true
+                } else {
+                    didPressCancel()
+                }
+            },
+            { cameraViewModel.takePhoto() }, // takePhoto
+            { cameraViewModel.startVideoCapture() }, // start record video
+            { cameraViewModel.stopVideoCapture() }, // stop record video
+            { cameraViewModel.toggleFlash() }, // flash off/on
+            { cameraViewModel.flipCamera() } // camera back/front
+        )
+        .onReceive(cameraViewModel.capturedPhotoPublisher) {
+            viewModel.pickedMediaUrl = $0
+            didTakePicture()
+        }
+    }
+}
+
+struct StandardConrolsCameraView: View {
+
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @Environment(\.mediaPickerTheme) private var theme
 
-    @State var capturingPhotos = true
-    @State var videoCaptureInProgress = false
-
+    @ObservedObject var viewModel: MediaPickerViewModel
+    let didTakePicture: () -> Void
+    let didPressCancel: () -> Void
     let selectionParamsHolder: SelectionParamsHolder
+
+    @StateObject private var cameraViewModel = CameraViewModel()
+
+    @State private var capturingPhotos = true
+    @State private var videoCaptureInProgress = false
 
     var body: some View {
         VStack(spacing: 0) {

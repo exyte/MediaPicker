@@ -68,7 +68,7 @@ After making one photo, you see a preview of it and a little plus icon, by tappi
 `onChange` - a closure that returns the selected media every time the selection changes
 
 ### Init - optional view builders
-You can pass two view builders in order to add your own buttons and other elements to media picker screens. First screen you can customize is default photos grid view. Pass `albumSelectionBuilder` closure like this to replace the standard one with your own view:
+You can pass 1-3 view builders in order to add your own buttons and other elements to media picker screens. You can pass all, some or none of these when creating your `MediaPicker` (see the custom picker in the example project for usage example). First screen you can customize is default photos grid view. Pass `albumSelectionBuilder` closure like this to replace the standard one with your own view:
 ```swift
 MediaPicker(
     isPresented: $isPresented,
@@ -120,7 +120,43 @@ MediaPicker(
 - `cancelClosure` - show confirmation and return to photos grid screen if confirmed
 - `cameraSelectionView` - swipable camera photos preview collection itself
 
-You can pass one, both or none of these when creating your `MediaPicker`. (see the custom picker in the example project for usage example)
+The last one is live camera screen
+
+```swift
+MediaPicker(
+    isPresented: $isPresented,
+    onChange: { selectedMedia = $0 },
+    cameraViewBuilder: { cameraSheetView, cancelClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, toggleFlash, flipCamera in
+        cameraSheetView
+            .overlay(alignment: .topLeading) {
+                Button("Cancel") { cancelClosure() }
+                    .foregroundColor(Color("CustomPurple"))
+                    .padding()
+            }
+            .overlay(alignment: .bottom) {
+                HStack {
+                    Button("Take photo") { takePhotoClosure() }
+                        .greenButtonStyle()
+                    Button(videoIsBeingRecorded ? "Stop video capture" : "Capture video") {
+                        videoIsBeingRecorded ? stopVideoCaptureClosure() : startVideoCaptureClosure()
+                        videoIsBeingRecorded.toggle()
+                    }
+                    .greenButtonStyle()
+                }
+                .padding()
+            }
+    }
+)
+```
+
+`cameraViewBuilder` live camera capture view and a lot of closures to do with as you please:
+- `cameraSheetView` - live camera capture view
+- `cancelClosure` - if you want to display "are you sure" before closing
+- `takePhotoClosure` - takes a photo
+- `startVideoCaptureClosure` - starts video capture, you'll need a bollean varialbe to track recording state
+- `stopVideoCaptureClosure` - stops video capture
+- `toggleFlash` - flash off/on
+- `flipCamera` - camera back/front
 
 ## Available modifiers
 `showLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid     
@@ -200,7 +236,7 @@ github "Exyte/MediaPicker"
 
 ## Requirements
 
-* iOS 15+
+* iOS 16+
 * Xcode 13+ 
 
 ## Our other open source SwiftUI libraries

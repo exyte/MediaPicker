@@ -61,7 +61,6 @@ struct ContentView: View {
             )
             .showLiveCameraCell()
             .mediaSelectionLimit(1)
-            .showFullscreenPreview(false)
             .orientationHandler {
                 switch $0 {
                 case .lock: appDelegate.lockOrientationToPortrait()

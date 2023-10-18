@@ -19,7 +19,7 @@ struct MediaCell: View {
                         viewModel.onStart(size: geometry.size)
                     }
             }
-            .aspectRatio(1, contentMode: .fit)
+            .aspectRatio(1, contentMode: .fill)
             .clipped()
 
             if let duration = viewModel.assetMediaModel.asset.formattedDuration {
