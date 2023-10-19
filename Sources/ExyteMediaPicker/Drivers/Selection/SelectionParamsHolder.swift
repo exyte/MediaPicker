@@ -7,12 +7,19 @@
 
 import SwiftUI
 
-final class SelectionParamsHolder: ObservableObject {
+final public class SelectionParamsHolder: ObservableObject {
 
-    @Published var mediaType: MediaSelectionType = .photoAndVideo
-    @Published var selectionStyle: MediaSelectionStyle = .checkmark
-    @Published var selectionLimit: Int? // if nil - unlimited
-    @Published var showFullscreenPreview: Bool = true // if false, tap on image immediately selects this image and closes the picker
+    @Published public var mediaType: MediaSelectionType = .photoAndVideo
+    @Published public var selectionStyle: MediaSelectionStyle = .checkmark
+    @Published public var selectionLimit: Int? // if nil - unlimited
+    @Published public var showFullscreenPreview: Bool = true // if false, tap on image immediately selects this image and closes the picker
+
+    public init(mediaType: MediaSelectionType = .photoAndVideo, selectionStyle: MediaSelectionStyle = .checkmark, selectionLimit: Int? = nil, showFullscreenPreview: Bool = true) {
+        self.mediaType = mediaType
+        self.selectionStyle = selectionStyle
+        self.selectionLimit = selectionLimit
+        self.showFullscreenPreview = showFullscreenPreview
+    }
 }
 
 public enum MediaSelectionStyle {

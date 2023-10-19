@@ -331,6 +331,15 @@ public extension MediaPicker {
         return self
     }
 
+    func setSelectionParameters(_ params: SelectionParamsHolder?) -> MediaPicker {
+        guard let params = params else {
+            return self
+        }
+        var mediaPicker = self
+        mediaPicker.selectionParamsHolder = params
+        return mediaPicker
+    }
+
     func applyFilter(_ filterClosure: @escaping FilterClosure) -> MediaPicker {
         var mediaPicker = self
         mediaPicker.filterClosure = filterClosure
