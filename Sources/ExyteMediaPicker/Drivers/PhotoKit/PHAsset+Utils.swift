@@ -41,6 +41,7 @@ extension PHAsset {
         
         if mediaType == .image {
             let options = PHContentEditingInputRequestOptions()
+            options.isNetworkAccessAllowed = true
             options.canHandleAdjustmentData = { _ -> Bool in
                 return true
             }

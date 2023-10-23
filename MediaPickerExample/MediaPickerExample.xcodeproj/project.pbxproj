@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */; };
 		5BFF684D2AD68B990099D333 /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68432AD68B990099D333 /* MediaCell.swift */; };
 		5BFF684E2AD68B990099D333 /* FilterMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */; };
 		5BFF684F2AD68B990099D333 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BFF68452AD68B990099D333 /* Assets.xcassets */; };
@@ -15,7 +16,6 @@
 		5BFF68522AD68B990099D333 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68492AD68B990099D333 /* AppDelegate.swift */; };
 		5BFF68532AD68B990099D333 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF684A2AD68B990099D333 /* Application.swift */; };
 		5BFF68542AD68B990099D333 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF684B2AD68B990099D333 /* ContentView.swift */; };
-		5BFF68592AD68C510099D333 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BFF68582AD68C510099D333 /* ExyteMediaPicker */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,7 +28,6 @@
 		5BFF68492AD68B990099D333 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BFF684A2AD68B990099D333 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		5BFF684B2AD68B990099D333 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		5BFF68562AD68C050099D333 /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BFF68592AD68C510099D333 /* ExyteMediaPicker in Frameworks */,
+				13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,7 +45,6 @@
 		5BFF68282AD689C80099D333 = {
 			isa = PBXGroup;
 			children = (
-				5BFF68562AD68C050099D333 /* MediaPicker */,
 				5BFF68422AD68B990099D333 /* MediaPickerExample */,
 				5BFF68322AD689C80099D333 /* Products */,
 				5BFF68572AD68C510099D333 /* Frameworks */,
@@ -108,7 +106,7 @@
 			);
 			name = MediaPickerExample;
 			packageProductDependencies = (
-				5BFF68582AD68C510099D333 /* ExyteMediaPicker */,
+				13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */,
 			);
 			productName = MediaPickerExample;
 			productReference = 5BFF68312AD689C80099D333 /* MediaPickerExample.app */;
@@ -138,6 +136,9 @@
 				Base,
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
+			packageReferences = (
+				13738D1A2AE272FA005BBAD5 /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -228,7 +229,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -285,7 +286,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -382,8 +383,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		13738D1A2AE272FA005BBAD5 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		5BFF68582AD68C510099D333 /* ExyteMediaPicker */ = {
+		13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};
