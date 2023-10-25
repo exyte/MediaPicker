@@ -47,8 +47,7 @@ final class CameraSelectionService: ObservableObject {
     }
 
     func onSelect(index: Int) {
-        guard added.indices.contains(index)
-        else { return }
+        guard added.indices.contains(index) else { return }
         let media = added[index]
         if let index = selected.firstIndex(of: media) {
             selected.remove(at: index)
@@ -59,15 +58,12 @@ final class CameraSelectionService: ObservableObject {
     }
 
     func isSelected(index: Int) -> Bool {
-        guard added.indices.contains(index) 
-        else { return false }
+        guard added.indices.contains(index) else { return false }
         return selected.contains(added[index])
     }
 
     func selectedIndex(fromAddedIndex index: Int) -> Int? {
-        guard added.indices.contains(index)
-        else { return nil }
-
+        guard added.indices.contains(index) else { return nil }
         let media = added[index]
         return selected.firstIndex(of: media)
     }
