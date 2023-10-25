@@ -167,10 +167,14 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 cameraSelectionBuilder(
                     { viewModel.setPickerMode(.camera) }, // add more
                     { viewModel.onCancelCameraSelection(cameraSelectionService.hasSelected) }, // cancel
-                    CameraSelectionView()
+                    CameraSelectionView(selectionParamsHolder: selectionParamsHolder)
                 )
             } else {
-                DefaultCameraSelectionContainer(viewModel: viewModel, showingPicker: $isPresented)
+                DefaultCameraSelectionContainer(
+                    viewModel: viewModel,
+                    showingPicker: $isPresented,
+                    selectionParamsHolder: selectionParamsHolder
+                )
             }
         }
         .confirmationDialog("", isPresented: $viewModel.showingExitCameraConfirmation, titleVisibility: .hidden) {
