@@ -22,12 +22,13 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     /// To provide custom buttons layout for camera  view use actions and views provided by this closure:
     /// - live camera capture view
     /// - cancel closure
+    /// - show preview of taken photos
     /// - take photo closure
     /// - start record video closure
     /// - stop record video closure
     /// - flash off/on closure
     /// - camera back/front closure
-    public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
+    public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
 
     public typealias FilterClosure = (Media) async -> Media?
     public typealias MassFilterClosure = ([Media]) async -> [Media]

@@ -9,7 +9,7 @@ struct CustomCameraView<CameraViewContent: View>: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
 
-    public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
+    public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
 
     // params
     @ObservedObject var viewModel: MediaPickerViewModel
@@ -33,6 +33,7 @@ struct CustomCameraView<CameraViewContent: View>: View {
                     didPressCancel()
                 }
             },
+            { viewModel.setPickerMode(.cameraSelection) }, // show preview of taken photos
             { cameraViewModel.takePhoto() }, // takePhoto
             { cameraViewModel.startVideoCapture() }, // start record video
             { cameraViewModel.stopVideoCapture() }, // stop record video

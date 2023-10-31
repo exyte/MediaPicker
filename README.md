@@ -126,12 +126,17 @@ The last one is live camera screen
 MediaPicker(
     isPresented: $isPresented,
     onChange: { selectedMedia = $0 },
-    cameraViewBuilder: { cameraSheetView, cancelClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, toggleFlash, flipCamera in
+    cameraViewBuilder: { cameraSheetView, cancelClosure, showPreviewClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, toggleFlash, flipCamera in
         cameraSheetView
             .overlay(alignment: .topLeading) {
-                Button("Cancel") { cancelClosure() }
-                    .foregroundColor(Color("CustomPurple"))
-                    .padding()
+                HStack {
+                    Button("Cancel") { cancelClosure() }
+                        .foregroundColor(Color("CustomPurple"))
+                    Spacer()
+                    Button("Done") { showPreviewClosure() }
+                        .foregroundColor(Color("CustomPurple"))
+                }
+                .padding()
             }
             .overlay(alignment: .bottom) {
                 HStack {
@@ -152,7 +157,8 @@ MediaPicker(
 `cameraViewBuilder` live camera capture view and a lot of closures to do with as you please:
 - `cameraSheetView` - live camera capture view
 - `cancelClosure` - if you want to display "are you sure" before closing
-- `takePhotoClosure` - takes a photo
+- `showPreviewClosure` - shows preview of taken photos
+- `cancelClosure` - if you want to display "are you sure" before closing
 - `startVideoCaptureClosure` - starts video capture, you'll need a bollean varialbe to track recording state
 - `stopVideoCaptureClosure` - stops video capture
 - `toggleFlash` - flash off/on

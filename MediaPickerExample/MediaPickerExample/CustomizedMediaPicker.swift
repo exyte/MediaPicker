@@ -57,12 +57,17 @@ struct CustomizedMediaPicker: View {
                 }
                 .background(Color.black)
             },
-            cameraViewBuilder: { cameraSheetView, cancelClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, _, _ in
+            cameraViewBuilder: { cameraSheetView, cancelClosure, showPreviewClosure, takePhotoClosure, startVideoCaptureClosure, stopVideoCaptureClosure, _, _ in
                 cameraSheetView
                     .overlay(alignment: .topLeading) {
-                        Button("Cancel") { cancelClosure() }
-                            .foregroundColor(Color("CustomPurple"))
-                            .padding()
+                        HStack {
+                            Button("Cancel") { cancelClosure() }
+                                .foregroundColor(Color("CustomPurple"))
+                            Spacer()
+                            Button("Done") { showPreviewClosure() }
+                                .foregroundColor(Color("CustomPurple"))
+                        }
+                        .padding()
                     }
                     .overlay(alignment: .bottom) {
                         HStack {
