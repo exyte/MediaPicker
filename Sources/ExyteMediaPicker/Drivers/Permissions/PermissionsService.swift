@@ -8,8 +8,8 @@ import AVFoundation
 import Photos
 
 final class PermissionsService: ObservableObject {
-    @Published var cameraAction: CameraAction?
-    @Published var photoLibraryAction: PhotoLibraryAction?
+    @Published var cameraAction: CameraAction? = .authorize
+    @Published var photoLibraryAction: PhotoLibraryAction? = .authorize
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -25,6 +25,9 @@ final class PermissionsService: ObservableObject {
                 self?.checkCameraAuthorizationStatus()
             }
             .store(in: &subscriptions)
+
+        checkPhotoLibraryAuthorizationStatus()
+        checkCameraAuthorizationStatus()
     }
 
     func askLibraryPermissionIfNeeded() {

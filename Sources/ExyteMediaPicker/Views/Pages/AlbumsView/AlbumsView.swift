@@ -9,6 +9,7 @@ struct AlbumsView: View {
 
     @EnvironmentObject private var selectionService: SelectionService
     @EnvironmentObject private var permissionsService: PermissionsService
+    @Environment(\.mediaPickerTheme) private var theme
 
     @StateObject var viewModel: AlbumsViewModel
     @ObservedObject var mediaPickerViewModel: MediaPickerViewModel
@@ -42,6 +43,7 @@ struct AlbumsView: View {
                 } else if viewModel.albums.isEmpty {
                     Text("Empty data")
                         .font(.title3)
+                        .foregroundColor(theme.main.text)
                 } else {
                     LazyVGrid(columns: columns, spacing: 0) {
                         ForEach(viewModel.albums) { album in

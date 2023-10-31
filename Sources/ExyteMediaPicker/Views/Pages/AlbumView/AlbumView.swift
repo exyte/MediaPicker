@@ -51,6 +51,7 @@ private extension AlbumView {
                 } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
                     Text("Empty data")
                         .font(.title3)
+                        .foregroundColor(theme.main.text)
                 } else {
                     MediasGrid(viewModel.assetMediaModels) {
 #if !targetEnvironment(simulator)

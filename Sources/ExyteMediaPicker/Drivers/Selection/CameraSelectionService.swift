@@ -12,6 +12,7 @@ final class CameraSelectionService: ObservableObject {
     var mediaSelectionLimit: Int? // if nill - unlimited
     var onChange: MediaPickerCompletionClosure? = nil
 
+    @Published private(set) var added: [URLMediaModel] = []
     @Published private(set) var selected: [URLMediaModel] = []
 
     var hasSelected: Bool {
@@ -30,9 +31,14 @@ final class CameraSelectionService: ObservableObject {
     }
 
     func onSelect(media: URLMediaModel) {
-        if let index = selected.firstIndex(of: media) {
-            selected.remove(at: index)
+        if added.contains(media) {
+            if let index = selected.firstIndex(of: media) {
+                selected.remove(at: index)
+            } else if fitsSelectionLimit {
+                selected.append(media)
+            }
         } else {
+            added.append(media)
             if fitsSelectionLimit {
                 selected.append(media)
             }
@@ -40,8 +46,26 @@ final class CameraSelectionService: ObservableObject {
         onChange?(mapToMedia())
     }
 
-    func index(of media: URLMediaModel) -> Int? {
-        selected.firstIndex(of: media)
+    func onSelect(index: Int) {
+        guard added.indices.contains(index) else { return }
+        let media = added[index]
+        if let index = selected.firstIndex(of: media) {
+            selected.remove(at: index)
+        } else if fitsSelectionLimit {
+            selected.append(media)
+        }
+        onChange?(mapToMedia())
+    }
+
+    func isSelected(index: Int) -> Bool {
+        guard added.indices.contains(index) else { return false }
+        return selected.contains(added[index])
+    }
+
+    func selectedIndex(fromAddedIndex index: Int) -> Int? {
+        guard added.indices.contains(index) else { return nil }
+        let media = added[index]
+        return selected.firstIndex(of: media)
     }
 
     func mapToMedia() -> [Media] {
@@ -56,6 +80,7 @@ final class CameraSelectionService: ObservableObject {
 
     func removeAll() {
         selected.removeAll()
+        added.removeAll()
         onChange?([])
     }
 }
