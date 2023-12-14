@@ -67,10 +67,13 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var permissionService = PermissionsService()
 
     @State private var readyToShowCamera = false
-    @State private var isInFullscreen: Bool = false
     @State private var currentFullscreenMedia: Media?
 
     @State private var internalPickerMode: MediaPickerMode = .photos // a hack for slow camera dismissal
+
+    var isInFullscreen: Bool {
+        currentFullscreenMedia != nil
+    }
 
     // MARK: - Object life cycle
 
@@ -142,7 +145,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), isInFullscreen: $isInFullscreen, currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
             // has media limit of 1, and it's been selected
             isPresented = false
         }
@@ -268,8 +271,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 isPresented = false
             }
         }
+        .foregroundColor(theme.main.text)
         .padding(12)
-        .background(Color(uiColor: .systemGroupedBackground))
+        .background(theme.defaultHeader.background)
     }
 
     func cameraBinding() -> Binding<Bool> {

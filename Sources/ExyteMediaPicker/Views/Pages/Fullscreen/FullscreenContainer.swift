@@ -38,12 +38,51 @@ struct FullscreenContainer: View {
                     .tag(assetMediaModel.id)
             }
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .background {
+            theme.main.fullscreenPhotoBackground
+                .ignoresSafeArea()
+        }
+        .overlay(alignment: .top) {
+            controlsOverlay
+        }
+        .onAppear {
+            if let selectedMediaModel {
+                currentFullscreenMedia = Media(source: selectedMediaModel)
+            }
+        }
+        .onDisappear {
+            currentFullscreenMedia = nil
+        }
         .onChange(of: selection) { newValue in
             if let selectedMediaModel {
                 currentFullscreenMedia = Media(source: selectedMediaModel)
             }
         }
-        .overlay(alignment: .topTrailing) {
+        .onTapGesture {
+            if keyboardHeightHelper.keyboardDisplayed {
+                dismissKeyboard()
+            } else {
+                if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
+                    selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                }
+            }
+        }
+    }
+
+    var controlsOverlay: some View {
+        HStack {
+            Image(systemName: "xmark")
+                .resizable()
+                .frame(width: 20, height: 20)
+                .padding([.horizontal, .bottom], 20)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    isPresented = false
+                }
+
+            Spacer()
+
             if let selectedMediaModel = selectedMediaModel {
                 if selectionParamsHolder.selectionLimit == 1 {
                     Button("Select") {
@@ -61,34 +100,6 @@ struct FullscreenContainer: View {
                 }
             }
         }
-        .onTapGesture {
-            if keyboardHeightHelper.keyboardDisplayed {
-                dismissKeyboard()
-            } else {
-                if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
-                    selectionService.onSelect(assetMediaModel: selectedMediaModel)
-                }
-            }
-        }
-        .overlay(closeButton)
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .background(
-            theme.main.fullscreenPhotoBackground
-                .ignoresSafeArea()
-        )
-    }
-
-    var closeButton: some View {
-        Button {
-            isPresented = false
-        } label: {
-            Image(systemName: "xmark")
-                .resizable()
-                .frame(width: 20, height: 20)
-                .tint(theme.selection.fullscreenTint)
-                .padding(12)
-        }
-        .padding([.horizontal, .bottom], 8)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .foregroundStyle(theme.selection.fullscreenTint)
     }
 }

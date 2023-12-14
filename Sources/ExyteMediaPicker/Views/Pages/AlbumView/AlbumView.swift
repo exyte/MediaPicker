@@ -14,7 +14,6 @@ struct AlbumView: View {
 
     @StateObject var viewModel: AlbumViewModel
     @Binding var showingCamera: Bool
-    @Binding var isInFullscreen: Bool
     @Binding var currentFullscreenMedia: Media?
 
     var shouldShowCamera: Bool
