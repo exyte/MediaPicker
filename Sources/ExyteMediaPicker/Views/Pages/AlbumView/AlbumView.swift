@@ -119,7 +119,9 @@ private extension AlbumView {
             }
             if !selectionParamsHolder.showFullscreenPreview { // select immediately
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
-                shouldDismiss()
+                if selectionService.mediaSelectionLimit == 1 {
+                    shouldDismiss()
+                }
             }
             else if fullscreenItem == nil {
                 fullscreenItem = assetMediaModel
@@ -130,7 +132,7 @@ private extension AlbumView {
         .buttonStyle(MediaButtonStyle())
         .contentShape(Rectangle())
 
-        if selectionService.mediaSelectionLimit == 1 || !selectionParamsHolder.showFullscreenPreview {
+        if selectionService.mediaSelectionLimit == 1 {
             imageButton
         } else {
             SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
