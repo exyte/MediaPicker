@@ -130,7 +130,7 @@ private extension AlbumView {
         .buttonStyle(MediaButtonStyle())
         .contentShape(Rectangle())
 
-        if selectionService.mediaSelectionLimit == 1 {
+        if selectionService.mediaSelectionLimit == 1 || !selectionParamsHolder.showFullscreenPreview {
             imageButton
         } else {
             SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
