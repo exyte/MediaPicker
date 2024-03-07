@@ -119,7 +119,9 @@ private extension AlbumView {
             }
             if !selectionParamsHolder.showFullscreenPreview { // select immediately
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
-                shouldDismiss()
+                if selectionService.mediaSelectionLimit == 1 {
+                    shouldDismiss()
+                }
             }
             else if fullscreenItem == nil {
                 fullscreenItem = assetMediaModel
