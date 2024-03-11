@@ -12,30 +12,44 @@ final class PermissionsService: ObservableObject {
     @Published var photoLibraryAction: PhotoLibraryAction? = .authorize
 
     private var subscriptions = Set<AnyCancellable>()
+    private var pickerMode: MediaPickerMode?
 
-    init() {
-        photoLibraryChangePermissionPublisher
-            .sink { [weak self] in
-                self?.checkPhotoLibraryAuthorizationStatus()
+    func askLibraryPermissionIfNeeded() {
+        guard let pickerMode, pickerMode != .camera && pickerMode != .cameraSelection else { return }
+
+        checkPhotoLibraryAuthorizationStatus()
+    }
+
+    func askPermissions(pickerMode: MediaPickerMode, showingLiveCameraCell: Bool) {
+        if pickerMode == .camera || pickerMode == .cameraSelection {
+            askCameraPermission()
+        } else {
+            photoLibraryChangePermissionPublisher
+                .sink { [weak self] in
+                    self?.checkPhotoLibraryAuthorizationStatus()
+                }
+                .store(in: &subscriptions)
+            checkPhotoLibraryAuthorizationStatus()
+
+            if showingLiveCameraCell {
+                askCameraPermission()
             }
-            .store(in: &subscriptions)
+        }
+        self.pickerMode = pickerMode
+    }
 
+    private func askCameraPermission() {
         cameraChangePermissionPublisher
             .sink { [weak self] in
                 self?.checkCameraAuthorizationStatus()
             }
             .store(in: &subscriptions)
-
-        checkPhotoLibraryAuthorizationStatus()
         checkCameraAuthorizationStatus()
-    }
-
-    func askLibraryPermissionIfNeeded() {
-        checkPhotoLibraryAuthorizationStatus()
     }
 
     /// photoLibraryChangePermissionPublisher gets called multiple times even when nothing changed in photo library, so just use this one to make sure the closure runs exactly once
     static func requestPermission(_ permissionGrantedClosure: @escaping ()->()) {
+
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized || status == .limited {
                 permissionGrantedClosure()

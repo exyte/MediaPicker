@@ -18,6 +18,7 @@ public struct AlbumSelectionView: View {
     let selectionParamsHolder: SelectionParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
+    var pickerMode: MediaPickerMode
     var shouldDismiss: ()->()
 
     @State private var showingLoadingCell = false
@@ -27,7 +28,7 @@ public struct AlbumSelectionView: View {
         case .photos:
             AlbumView(
                 viewModel: AlbumViewModel(
-                    mediasProvider: AllPhotosProvider(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
+                    mediasProvider: AllPhotosProvider(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell), pickerMode: pickerMode
                 ),
                 showingCamera: $showingCamera,
                 currentFullscreenMedia: $currentFullscreenMedia,
@@ -55,7 +56,7 @@ public struct AlbumSelectionView: View {
             if let albumModel = viewModel.getAlbumModel(album) {
                 AlbumView(
                     viewModel: AlbumViewModel(
-                        mediasProvider: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell)
+                        mediasProvider: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: $showingLoadingCell), pickerMode: pickerMode
                     ),
                     showingCamera: $showingCamera,
                     currentFullscreenMedia: $currentFullscreenMedia,
