@@ -7,8 +7,8 @@ import SwiftUI
 
 struct CameraStubView: View {
 
-    @Binding var isPresented: Bool
-    
+    let didPressCancel: () -> Void
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
@@ -22,7 +22,7 @@ struct CameraStubView: View {
                     .font(.title3)
                     .multilineTextAlignment(.center)
                 Button("Close") {
-                    isPresented = false
+                    didPressCancel()
                 }
                 .padding()
             }
@@ -32,7 +32,9 @@ struct CameraStubView: View {
 
 struct CameraStubView_Preview: PreviewProvider {
     static var previews: some View {
-        CameraStubView(isPresented: .constant(true))
+        CameraStubView {
+            debugPrint("close")
+        }
     }
 }
 

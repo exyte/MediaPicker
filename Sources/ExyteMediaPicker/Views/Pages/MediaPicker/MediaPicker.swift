@@ -297,7 +297,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @ViewBuilder
     func cameraSheet(didTakePicture: @escaping ()->(), didPressCancel: @escaping ()->()) -> some View {
 #if targetEnvironment(simulator)
-        CameraStubView(isPresented: cameraBinding())
+        CameraStubView {
+            didPressCancel()
+        }
 #elseif os(iOS)
         if let cameraViewBuilder = cameraViewBuilder {
             CustomCameraView<CameraViewContent>(viewModel: viewModel, didTakePicture: didTakePicture, didPressCancel: didPressCancel, cameraViewBuilder: cameraViewBuilder)
