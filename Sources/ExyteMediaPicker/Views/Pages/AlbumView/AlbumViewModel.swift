@@ -14,10 +14,12 @@ final class AlbumViewModel: ObservableObject {
     let mediasProvider: MediasProviderProtocol
 
     private var mediaCancellable: AnyCancellable?
-    
-    init(mediasProvider: MediasProviderProtocol) {
+
+    init(mediasProvider: MediasProviderProtocol, pickerMode: MediaPickerMode) {
         self.mediasProvider = mediasProvider
-        onStart()
+        if pickerMode != .camera && pickerMode != .cameraSelection {
+            onStart()
+        }
     }
     
     func onStart() {

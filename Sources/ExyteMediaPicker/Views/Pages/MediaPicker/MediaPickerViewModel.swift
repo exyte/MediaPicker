@@ -20,9 +20,13 @@ final class MediaPickerViewModel: ObservableObject {
     var shouldUpdatePickerMode: (MediaPickerMode)->() = {_ in}
 
     let defaultAlbumsProvider = DefaultAlbumsProvider()
-    private let watcher = PhotoLibraryChangePermissionWatcher()
+    private var watcher: PhotoLibraryChangePermissionWatcher?
     private var albumsCancellable: AnyCancellable?
-    
+
+    func createAlbumsWatcher() {
+        watcher = PhotoLibraryChangePermissionWatcher()
+    }
+
     func onStart() {
         defaultAlbumsProvider.reload()
         albumsCancellable = defaultAlbumsProvider.albums.sink { [weak self] albums in

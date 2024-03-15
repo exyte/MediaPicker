@@ -109,6 +109,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
         .onAppear {
+            permissionService.askPermissions(pickerMode: pickerMode?.wrappedValue ?? .photos,
+                                             showingLiveCameraCell: showingLiveCameraCell)
             permissionService.askLibraryPermissionIfNeeded()
 
             selectionService.onChange = onChange
@@ -120,6 +122,11 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             viewModel.shouldUpdatePickerMode = { mode in
                 pickerMode?.wrappedValue = mode
             }
+
+            guard let pickerMode = pickerMode?.wrappedValue,
+                  pickerMode != .camera && pickerMode != .cameraSelection else { return }
+            
+            viewModel.createAlbumsWatcher()
             viewModel.onStart()
         }
         .onChange(of: viewModel.albums) {
@@ -145,7 +152,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, showingLiveCameraCell: showingLiveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, pickerMode: pickerMode?.wrappedValue ?? .photos) {
             // has media limit of 1, and it's been selected
             isPresented = false
         }
