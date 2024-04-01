@@ -337,7 +337,7 @@ public extension MediaPicker {
         return self
     }
 
-    func showFullscreenPreview(_ show: Bool) -> MediaPicker {
+    func showFullscreenPreview(_ show: Bool = true) -> MediaPicker {
         selectionParamsHolder.showFullscreenPreview = show
         return self
     }
