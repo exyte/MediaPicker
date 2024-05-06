@@ -19,7 +19,7 @@ final class DefaultAlbumsProvider: AlbumsProviderProtocol {
     var mediaSelectionType: MediaSelectionType = .photoAndVideo
 
     func reload() {
-        PermissionsService.requestPermission { [ weak self] in
+        PermissionsService.requestPhotoLibraryPermission { [ weak self] in
             self?.reloadInternal()
         }
     }

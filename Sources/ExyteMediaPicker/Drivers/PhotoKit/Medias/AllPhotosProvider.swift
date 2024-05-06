@@ -12,7 +12,7 @@ import SwiftUI
 final class AllPhotosProvider: BaseMediasProvider {
 
     override func reload() {
-        PermissionsService.requestPermission { [ weak self] in
+        PermissionsService.requestPhotoLibraryPermission { [ weak self] in
             self?.reloadInternal()
         }
     }
