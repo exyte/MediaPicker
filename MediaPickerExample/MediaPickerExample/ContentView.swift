@@ -39,10 +39,11 @@ struct ContentView: View {
                 }
 
                 if !medias.isEmpty {
+                    let size = UIScreen.main.bounds.width / 3 - 2
                     Section {
                         LazyVGrid(columns: columns, spacing: 1) {
                             ForEach(medias) { media in
-                                MediaCell(viewModel: MediaCellViewModel(media: media))
+                                MediaCell(viewModel: MediaCellViewModel(media: media), size: size)
                                     .aspectRatio(1, contentMode: .fill)
                             }
                         }
@@ -59,7 +60,6 @@ struct ContentView: View {
                 isPresented: $showDefaultMediaPicker,
                 onChange: { medias = $0 }
             )
-            .showLiveCameraCell()
             .mediaSelectionLimit(1)
             .orientationHandler {
                 switch $0 {

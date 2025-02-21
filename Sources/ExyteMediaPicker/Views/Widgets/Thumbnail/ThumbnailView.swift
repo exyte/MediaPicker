@@ -8,19 +8,18 @@ struct ThumbnailView: View {
 
 #if os(iOS)
     let preview: UIImage?
+    let size: CGFloat
 #else
     // FIXME: Create preview for image/video for other platforms
 #endif
     
     var body: some View {
         if let preview = preview {
-            GeometryReader { proxy in
-                Image(uiImage: preview)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: proxy.size.width, height: proxy.size.height)
-                    .clipped()
-            }
+            Image(uiImage: preview)
+                .resizable()
+                .scaledToFill()
+                .frame(width: size, height: size)
+                .clipped()
         } else {
             ThumbnailPlaceholder()
         }

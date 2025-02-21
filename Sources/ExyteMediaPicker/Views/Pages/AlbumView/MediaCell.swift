@@ -6,21 +6,20 @@ import SwiftUI
 
 struct MediaCell: View {
 
-    @StateObject var viewModel: MediaViewModel
-    
     @Environment(\.mediaPickerTheme) private var theme
+
+    @StateObject var viewModel: MediaViewModel
+    var size: CGFloat
 
     var body: some View {
         ZStack {
-            GeometryReader { geometry in
-                ThumbnailView(preview: viewModel.preview)
-                    .cornerRadius(theme.cellStyle.cornerRadius)
-                    .onAppear {
-                        viewModel.onStart(size: geometry.size)
-                    }
-            }
-            .aspectRatio(1, contentMode: .fill)
-            .clipped()
+            ThumbnailView(preview: viewModel.preview, size: size)
+                .cornerRadius(theme.cellStyle.cornerRadius)
+                .onAppear {
+                    viewModel.onStart(size: size)
+                }
+                .aspectRatio(1, contentMode: .fill)
+                .clipped()
 
             if let duration = viewModel.assetMediaModel.asset.formattedDuration {
                 VStack {

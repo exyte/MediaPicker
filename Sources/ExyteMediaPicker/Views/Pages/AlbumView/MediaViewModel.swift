@@ -22,10 +22,12 @@ class MediaViewModel: ObservableObject {
     // FIXME: Create preview for image/video for other platforms
 #endif
     
-    func onStart(size: CGSize) {
+    func onStart(size: CGFloat) {
         requestID = assetMediaModel.asset
-            .image(size: size) {
-                self.preview = $0
+            .image(size: CGSize(width: size, height: size)) { image in
+                DispatchQueue.main.async {
+                    self.preview = image
+                }
             }
     }
     
