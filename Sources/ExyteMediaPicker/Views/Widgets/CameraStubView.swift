@@ -26,6 +26,7 @@ struct CameraStubView: View {
                 }
                 .padding()
             }
+            .foregroundStyle(.black)
         }
     }
 }

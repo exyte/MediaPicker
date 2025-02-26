@@ -104,7 +104,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                     cameraSelectionContainer
                 }
         }
-        .background(theme.main.albumSelectionBackground.ignoresSafeArea())
+        .background(theme.main.pickerBackground.ignoresSafeArea())
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
         .environmentObject(permissionService)
@@ -192,7 +192,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @ViewBuilder
     var cameraContainer: some View {
         ZStack {
-            Color.black
+            theme.main.cameraBackground
                 .ignoresSafeArea(.all)
                 .onAppear {
                     DispatchQueue.main.async {
@@ -274,7 +274,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 isPresented = false
             }
         }
-        .foregroundColor(theme.main.text)
+        .foregroundColor(theme.main.pickerText)
         .padding(12)
         .background(theme.defaultHeader.background)
     }

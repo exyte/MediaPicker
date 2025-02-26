@@ -27,15 +27,13 @@ public struct MediasGrid<Data, Camera, Content, LoadingCell>: View where Data: R
     }
 
     public var body: some View {
-        GeometryReader { g in
-            let columnWidth = calculateColumnWidth(g.size.width)
-            LazyVGrid(columns: columns, spacing: theme.cellStyle.rowSpacing) {
-                camera()
-                ForEach(data) { item in
-                    content(item, columnWidth)
-                }
-                loadingCell()
+        let columnWidth = calculateColumnWidth(UIScreen.main.bounds.width)
+        LazyVGrid(columns: columns, spacing: theme.cellStyle.rowSpacing) {
+            camera()
+            ForEach(data) { item in
+                content(item, columnWidth)
             }
+            loadingCell()
         }
     }
 

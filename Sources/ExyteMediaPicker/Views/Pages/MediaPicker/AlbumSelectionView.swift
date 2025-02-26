@@ -18,7 +18,7 @@ public struct AlbumSelectionView: View {
     let selectionParamsHolder: SelectionParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
-    var shouldDismiss: ()->()
+    var dismiss: ()->()
 
     @State private var showingLoadingCell = false
 
@@ -34,7 +34,7 @@ public struct AlbumSelectionView: View {
                 shouldShowCamera: showingLiveCameraCell,
                 shouldShowLoadingCell: showingLoadingCell,
                 selectionParamsHolder: selectionParamsHolder,
-                shouldDismiss: shouldDismiss
+                dismiss: dismiss
             )
         case .albums:
             AlbumsView(
@@ -62,7 +62,7 @@ public struct AlbumSelectionView: View {
                     shouldShowCamera: false,
                     shouldShowLoadingCell: showingLoadingCell,
                     selectionParamsHolder: selectionParamsHolder,
-                    shouldDismiss: shouldDismiss
+                    dismiss: dismiss
                 )
                 .id(album.id)
             }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Bundle+.swift
 //  
 //
 //  Created by Alex.M on 07.07.2022.
@@ -19,7 +19,7 @@ private final class BundleToken {
     private init() {}
 }
 
-extension Bundle {
+public extension Bundle {
     static var current: Bundle {
         BundleToken.bundle
     }

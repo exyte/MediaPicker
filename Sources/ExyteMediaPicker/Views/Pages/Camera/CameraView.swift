@@ -50,7 +50,6 @@ struct CustomCameraView<CameraViewContent: View>: View {
 struct StandardConrolsCameraView: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @Environment(\.mediaPickerTheme) private var theme
 
     @ObservedObject var viewModel: MediaPickerViewModel
@@ -73,10 +72,8 @@ struct StandardConrolsCameraView: View {
                         didPressCancel()
                     }
                 }
-                .foregroundColor(.white)
-                .padding(.top, safeAreaInsets.top)
-                .padding(.leading)
-                .padding(.bottom)
+                .foregroundColor(theme.main.cameraText)
+                .padding(12, 16)
 
                 Spacer()
             }
@@ -112,15 +109,17 @@ struct StandardConrolsCameraView: View {
                         Spacer()
                         Text("\(cameraSelectionService.selected.count)")
                             .font(.system(size: 15))
+                            .foregroundStyle(theme.main.cameraText)
                             .padding(8)
                             .overlay(Circle()
-                                .stroke(Color.white, lineWidth: 2))
+                                .stroke(theme.main.cameraText, lineWidth: 2))
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(theme.main.cameraText)
                     .padding(.horizontal, 12)
                 }
                 else if selectionParamsHolder.mediaType.allowsVideo {
                     photoVideoToggle
+                        .padding(.bottom, 8)
                 }
 
                 HStack(spacing: 40) {
@@ -146,7 +145,7 @@ struct StandardConrolsCameraView: View {
                 }
             }
             .padding(.top, 24)
-            .padding(.bottom, safeAreaInsets.bottom + 50)
+            .padding(.bottom, 50)
         }
         .background(theme.main.cameraBackground)
         .onEnteredBackground(perform: cameraViewModel.stopSession)

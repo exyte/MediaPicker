@@ -27,25 +27,89 @@ public struct MediaPickerTheme {
 
 extension MediaPickerTheme {
     public struct Main {
-        public let text: Color
-        public let albumSelectionBackground: Color
+        public let pickerText: Color
+        public let pickerBackground: Color
         public let fullscreenPhotoBackground: Color
+        public let cameraText: Color
         public let cameraBackground: Color
+        public let cameraSelectionText: Color
         public let cameraSelectionBackground: Color
 
-        public init(text: Color = Color(uiColor: .label),
-                    albumSelectionBackground: Color = Color(uiColor: .systemGroupedBackground),
-                    fullscreenPhotoBackground: Color = Color(uiColor: .systemGroupedBackground),
-                    cameraBackground: Color = .black,
-                    cameraSelectionBackground: Color = .black) {
-            self.text = text
-            self.albumSelectionBackground = albumSelectionBackground
+        public init(
+            pickerText: Color = Color("pickerText", bundle: .current),
+            pickerBackground: Color = Color("pickerBG", bundle: .current),
+            fullscreenPhotoBackground: Color = Color("pickerBG", bundle: .current),
+            cameraText: Color = Color("cameraText", bundle: .current),
+            cameraBackground: Color = Color("cameraBG", bundle: .current),
+            cameraSelectionText: Color = Color("cameraText", bundle: .current),
+            cameraSelectionBackground: Color = Color("cameraBG", bundle: .current)
+        ) {
+            self.pickerText = pickerText
+            self.pickerBackground = pickerBackground
             self.fullscreenPhotoBackground = fullscreenPhotoBackground
+            self.cameraText = cameraText
             self.cameraBackground = cameraBackground
+            self.cameraSelectionText = cameraSelectionText
             self.cameraSelectionBackground = cameraSelectionBackground
         }
     }
-    
+
+    public struct Selection {
+        public let cellEmptyBorder: Color
+        public let cellEmptyBackground: Color
+        public let cellSelectedBorder: Color
+        public let cellSelectedBackground: Color
+        public let cellSelectedCheckmark: Color
+        public let fullscreenEmptyBorder: Color
+        public let fullscreenEmptyBackground: Color
+        public let fullscreenSelectedBorder: Color
+        public let fullscreenSelectedBackground: Color
+        public let fullscreenSelectedCheckmark: Color
+
+        public init(
+            cellEmptyBorder: Color = .white,
+            cellEmptyBackground: Color = .black.opacity(0.25),
+            cellSelectedBorder: Color = .white,
+            cellSelectedBackground: Color = Color("selection", bundle: .current),
+            cellSelectedCheckmark: Color = .white,
+            fullscreenEmptyBorder: Color = Color("selection", bundle: .current),
+            fullscreenEmptyBackground: Color = .clear,
+            fullscreenSelectedBorder: Color = Color("selection", bundle: .current),
+            fullscreenSelectedBackground: Color = Color("selection", bundle: .current),
+            fullscreenSelectedCheckmark: Color = .white
+        ) {
+            self.cellEmptyBorder = cellEmptyBorder
+            self.cellEmptyBackground = cellEmptyBackground
+            self.cellSelectedBorder = cellSelectedBorder
+            self.cellSelectedBackground = cellSelectedBackground
+            self.cellSelectedCheckmark = cellSelectedCheckmark
+            self.fullscreenEmptyBorder = fullscreenEmptyBorder
+            self.fullscreenEmptyBackground = fullscreenEmptyBackground
+            self.fullscreenSelectedBorder = fullscreenSelectedBorder
+            self.fullscreenSelectedBackground = fullscreenSelectedBackground
+            self.fullscreenSelectedCheckmark = fullscreenSelectedCheckmark
+        }
+
+        public init(
+            accent: Color,
+            tint: Color = .white,
+            background: Color = .black.opacity(0.25)
+        ) {
+            self.init(
+                cellEmptyBorder: tint,
+                cellEmptyBackground: background,
+                cellSelectedBorder: tint,
+                cellSelectedBackground: accent,
+                cellSelectedCheckmark: tint,
+                fullscreenEmptyBorder: accent,
+                fullscreenEmptyBackground: .clear,
+                fullscreenSelectedBorder: accent,
+                fullscreenSelectedBackground: accent,
+                fullscreenSelectedCheckmark: tint
+            )
+        }
+    }
+
     public struct CellStyle {
         public let columnsSpacing: CGFloat
         public let rowSpacing: CGFloat
@@ -60,32 +124,12 @@ extension MediaPickerTheme {
         }
     }
 
-    public struct Selection {
-        public let emptyTint: Color
-        public let emptyBackground: Color
-        public let selectedTint: Color
-        public let selectedBackground: Color
-        public let fullscreenTint: Color
-
-        public init(emptyTint: Color = .white,
-                    emptyBackground: Color = .clear,
-                    selectedTint: Color = .blue,
-                    selectedBackground: Color = .white,
-                    fullscreenTint: Color = .blue) {
-            self.emptyTint = emptyTint
-            self.emptyBackground = emptyBackground
-            self.selectedTint = selectedTint
-            self.selectedBackground = selectedBackground
-            self.fullscreenTint = fullscreenTint
-        }
-    }
-
     public struct Error {
         public let background: Color
         public let tint: Color
 
         public init(background: Color = .red.opacity(0.7),
-                    tint: Color = .white) {
+                    tint: Color = Color("cameraText", bundle: .current)) {
             self.background = background
             self.tint = tint
         }
@@ -94,11 +138,11 @@ extension MediaPickerTheme {
     public struct DefaultHeader {
         public let background: Color
 
-        public init(background: Color = Color(uiColor: .systemGroupedBackground),
-                    segmentTintColor: Color = .white,
-                    selectedSegmentTintColor: Color = .white,
-                    selectedText: Color = .black,
-                    unselectedText: Color = .black) {
+        public init(background: Color = Color("pickerBG", bundle: .current),
+                    segmentTintColor: Color = Color("pickerBG", bundle: .current),
+                    selectedSegmentTintColor: Color = Color("pickerBG", bundle: .current),
+                    selectedText: Color = Color("pickerText", bundle: .current),
+                    unselectedText: Color = Color("pickerText", bundle: .current)) {
             self.background = background
 
             UISegmentedControl.appearance().backgroundColor = UIColor(segmentTintColor)

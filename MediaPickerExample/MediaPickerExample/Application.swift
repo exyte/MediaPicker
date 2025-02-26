@@ -16,6 +16,7 @@ struct Application: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appDelegate)
+                .preferredColorScheme(.dark)
         }
     }
 }

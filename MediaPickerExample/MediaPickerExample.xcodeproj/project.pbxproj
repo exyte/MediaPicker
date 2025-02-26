@@ -8,9 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */; };
+		5B2A1A0F2D6DD583000A2E81 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */; };
+		5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */; };
 		5B4D33E12D689AF900E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */; };
 		5B4D33E42D689FA100E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */; };
 		5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */; };
+		5B9275C72D6F2DC700833284 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B9275C62D6F2DC700833284 /* ExyteMediaPicker */; };
+		5BC670572D6C8B250023E666 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BC670562D6C8B250023E666 /* ExyteMediaPicker */; };
+		5BC6705A2D6C8B810023E666 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BC670592D6C8B810023E666 /* ExyteMediaPicker */; };
 		5BFF684D2AD68B990099D333 /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68432AD68B990099D333 /* MediaCell.swift */; };
 		5BFF684E2AD68B990099D333 /* FilterMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */; };
 		5BFF684F2AD68B990099D333 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BFF68452AD68B990099D333 /* Assets.xcassets */; };
@@ -38,9 +43,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B9275C72D6F2DC700833284 /* ExyteMediaPicker in Frameworks */,
+				5B2A1A0F2D6DD583000A2E81 /* ExyteMediaPicker in Frameworks */,
 				5B4D33E42D689FA100E6C069 /* ExyteMediaPicker in Frameworks */,
 				5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */,
 				13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */,
+				5BC6705A2D6C8B810023E666 /* ExyteMediaPicker in Frameworks */,
+				5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */,
+				5BC670572D6C8B250023E666 /* ExyteMediaPicker in Frameworks */,
 				5B4D33E12D689AF900E6C069 /* ExyteMediaPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,6 +126,11 @@
 				5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */,
 				5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */,
 				5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */,
+				5BC670562D6C8B250023E666 /* ExyteMediaPicker */,
+				5BC670592D6C8B810023E666 /* ExyteMediaPicker */,
+				5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */,
+				5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */,
+				5B9275C62D6F2DC700833284 /* ExyteMediaPicker */,
 			);
 			productName = MediaPickerExample;
 			productReference = 5BFF68312AD689C80099D333 /* MediaPickerExample.app */;
@@ -146,7 +161,7 @@
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
 			packageReferences = (
-				5B4D33E52D68A66600E6C069 /* XCLocalSwiftPackageReference "../../MediaPicker" */,
+				5B9275C52D6F2DC700833284 /* XCLocalSwiftPackageReference "../../MediaPicker" */,
 			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
@@ -324,6 +339,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -356,6 +372,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -393,7 +410,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5B4D33E52D68A66600E6C069 /* XCLocalSwiftPackageReference "../../MediaPicker" */ = {
+		5B9275C52D6F2DC700833284 /* XCLocalSwiftPackageReference "../../MediaPicker" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../MediaPicker;
 		};
@@ -401,6 +418,14 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};
@@ -413,6 +438,18 @@
 			productName = ExyteMediaPicker;
 		};
 		5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5B9275C62D6F2DC700833284 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5BC670562D6C8B250023E666 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5BC670592D6C8B810023E666 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};

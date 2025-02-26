@@ -19,7 +19,7 @@ struct AlbumView: View {
     var shouldShowCamera: Bool
     var shouldShowLoadingCell: Bool
     var selectionParamsHolder: SelectionParamsHolder
-    var shouldDismiss: ()->()
+    var dismiss: ()->()
 
     @State private var fullscreenItem: AssetMediaModel?
 
@@ -50,7 +50,7 @@ private extension AlbumView {
                 } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
                     Text("Empty data")
                         .font(.title3)
-                        .foregroundColor(theme.main.text)
+                        .foregroundColor(theme.main.pickerText)
                 } else {
                     MediasGrid(viewModel.assetMediaModels) {
 #if !targetEnvironment(simulator)
@@ -80,7 +80,7 @@ private extension AlbumView {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(theme.main.albumSelectionBackground)
+        .background(theme.main.pickerBackground)
         .onTapGesture {
             if keyboardHeightHelper.keyboardDisplayed {
                 dismissKeyboard()
@@ -94,7 +94,7 @@ private extension AlbumView {
                     assetMediaModels: viewModel.assetMediaModels,
                     selection: item.id,
                     selectionParamsHolder: selectionParamsHolder,
-                    shouldDismiss: shouldDismiss
+                    dismiss: dismiss
                 )
             }
         }
@@ -120,7 +120,7 @@ private extension AlbumView {
             if !selectionParamsHolder.showFullscreenPreview { // select immediately
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
                 if selectionService.mediaSelectionLimit == 1 {
-                    shouldDismiss()
+                    dismiss()
                 }
             }
             else if fullscreenItem == nil {

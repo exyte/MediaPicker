@@ -44,18 +44,16 @@ struct AlbumsView: View {
                 } else if viewModel.albums.isEmpty {
                     Text("Empty data")
                         .font(.title3)
-                        .foregroundColor(theme.main.text)
+                        .foregroundColor(theme.main.pickerText)
                 } else {
-                    GeometryReader { g in
-                        let columnWidth = calculateColumnWidth(g.size.width)
-                        LazyVGrid(columns: columns, spacing: 0) {
-                            ForEach(viewModel.albums) { album in
-                                AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
-                                    .padding(cellPadding)
-                                    .onTapGesture {
-                                        mediaPickerViewModel.setPickerMode(.album(album.toAlbum()))
-                                    }
-                            }
+                    let columnWidth = calculateColumnWidth(UIScreen.main.bounds.width)
+                    LazyVGrid(columns: columns, spacing: 0) {
+                        ForEach(viewModel.albums) { album in
+                            AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
+                                .padding(cellPadding)
+                                .onTapGesture {
+                                    mediaPickerViewModel.setPickerMode(.album(album.toAlbum()))
+                                }
                         }
                     }
                 }

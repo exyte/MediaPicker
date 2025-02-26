@@ -13,27 +13,28 @@ import _AVKit_SwiftUI
 struct MediaCell: View {
 
     @StateObject var viewModel: MediaCellViewModel
-    var size: CGFloat
 
     var body: some View {
-        VStack {
-            if let url = viewModel.imageUrl {
-                AsyncImage(url: url) { phase in
-                    if case let .success(image) = phase {
-                        image
-                            .resizable()
-                            .scaledToFill()
+        GeometryReader { g in
+            VStack {
+                if let url = viewModel.imageUrl {
+                    AsyncImage(url: url) { phase in
+                        if case let .success(image) = phase {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        }
                     }
+                } else if let player = viewModel.player {
+                    VideoPlayer(player: player).onTapGesture {
+                        viewModel.togglePlay()
+                    }
+                } else {
+                    ProgressView()
                 }
-            } else if let player = viewModel.player {
-                VideoPlayer(player: player).onTapGesture {
-                    viewModel.togglePlay()
-                }
-            } else {
-                ProgressView()
             }
+            .frame(width: g.size.width, height: g.size.height)
         }
-        .frame(width: size, height: size)
         .clipped()
         .task {
             await viewModel.onStart()

@@ -13,27 +13,24 @@ struct FullscreenCell: View {
     @StateObject var viewModel: FullscreenCellViewModel
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
+    var size: CGSize
+
     var body: some View {
-        GeometryReader { g in
-            Group {
-                if let image = viewModel.image {
-                    let useFill = g.size.width / g.size.height > image.size.width / image.size.height
-                    ZoomableScrollView {
-                        imageView(image: image, useFill: useFill)
-                    }
-                } else if let player = viewModel.player {
-                    let useFill = g.size.width / g.size.height > viewModel.videoSize.width / viewModel.videoSize.height
-                    ZoomableScrollView {
-                        videoView(player: player, useFill: useFill)
-                    }
-                } else {
-                    ProgressView()
-                        .tint(.white)
+        Group {
+            if let image = viewModel.image {
+                ZoomableScrollView {
+                    imageView(image: image, useFill: false)
                 }
+            } else if let player = viewModel.player {
+                ZoomableScrollView {
+                    videoView(player: player, useFill: false)
+                }
+            } else {
+                ProgressView()
+                    .tint(.white)
             }
-            .allowsHitTesting(!keyboardHeightHelper.keyboardDisplayed)
-            .position(x: g.frame(in: .local).midX, y: g.frame(in: .local).midY)
         }
+        .allowsHitTesting(!keyboardHeightHelper.keyboardDisplayed)
         .task {
             await viewModel.onStart()
         }
@@ -56,10 +53,13 @@ struct FullscreenCell: View {
                 ZStack {
                     Color.clear
                     if !viewModel.isPlaying {
+                        Circle().styled(.black.opacity(0.2))
+                            .frame(width: 70, height: 70)
                         Image(systemName: "play.fill")
                             .resizable()
-                            .frame(width: 50, height: 50)
                             .foregroundColor(.white.opacity(0.8))
+                            .frame(width: 30, height: 30)
+                            .padding(.leading, 4)
                     }
                 }
                 .contentShape(Rectangle())

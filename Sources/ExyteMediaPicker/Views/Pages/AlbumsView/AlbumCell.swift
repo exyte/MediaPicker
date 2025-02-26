@@ -22,13 +22,13 @@ struct AlbumCell: View {
                         }
                 }
                 .clipped()
-                .foregroundColor(theme.main.albumSelectionBackground)
-            
+                .foregroundColor(theme.main.pickerBackground)
+
             if let title = viewModel.album.title {
                 Text(title)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(theme.main.text)
+                    .foregroundColor(theme.main.pickerText)
             }
         }
         .onDisappear {

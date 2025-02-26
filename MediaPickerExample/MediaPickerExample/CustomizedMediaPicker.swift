@@ -97,15 +97,15 @@ struct CustomizedMediaPicker: View {
         .mediaSelectionLimit(maxCount)
         .mediaPickerTheme(
             main: .init(
-                albumSelectionBackground: .black,
+                pickerBackground: .black,
                 fullscreenPhotoBackground: .black
             ),
             selection: .init(
-                emptyTint: .white,
-                emptyBackground: .black.opacity(0.25),
-                selectedTint: Color("CustomPurple"),
-                fullscreenTint: .white
-            )
+                cellSelectedBorder: .customPurple,
+                cellSelectedBackground: .customPurple,
+                fullscreenEmptyBorder: .customPurple,
+                fullscreenSelectedBorder: .customPurple,
+                fullscreenSelectedBackground: .customPurple)
         )
         .overlay(alignment: .topLeading) {
             if showAlbumsDropDown {
