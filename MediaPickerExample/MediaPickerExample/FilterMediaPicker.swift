@@ -19,18 +19,18 @@ struct FilterMediaPicker: View {
             isPresented: $isPresented,
             onChange: { medias = $0 }
         )
-        .applyFilter { await isMostlyBlueAndGreen($0) }
+        .applyFilter { await isMostlyRed($0) }
     }
 
-    private func isMostlyBlueAndGreen(_ media: Media) async -> Media? {
+    private func isMostlyRed(_ media: Media) async -> Media? {
         guard let data = await media.getThumbnailData() else { return nil }
         guard let uiImage = UIImage(data: data) else { return nil }
 
         let color = uiImage.averageColor
         var red: CGFloat = 0.0, green: CGFloat = 0.0, blue: CGFloat = 0.0, alpha: CGFloat = 0.0
         color?.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        if blue > red, green > red {
-           return media
+        if red > blue, red > green {
+            return media
         } else {
             return nil
         }

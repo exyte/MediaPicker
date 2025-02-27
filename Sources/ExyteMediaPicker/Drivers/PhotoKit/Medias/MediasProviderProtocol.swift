@@ -48,6 +48,7 @@ class BaseMediasProvider: MediasProviderProtocol {
                 var result = [AssetMediaModel]()
                 await assets.asyncForEach {
                     if cancellableTask?.isCancelled ?? false {
+                        showLoading(false)
                         return
                     }
                     if let media = await filterClosure(Media(source: $0)), let model = media.source as? AssetMediaModel {
@@ -57,6 +58,7 @@ class BaseMediasProvider: MediasProviderProtocol {
                         }
                     }
                 }
+                assetMediaModelsPublisher.send(result)
                 showLoading(false)
             }
         } else if let massFilterClosure = massFilterClosure {
