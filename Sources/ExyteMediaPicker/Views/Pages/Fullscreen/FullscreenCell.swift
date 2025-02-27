@@ -63,9 +63,11 @@ struct FullscreenCell: View {
                     }
                 }
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    viewModel.togglePlay()
-                }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        viewModel.togglePlay()
+                    }
+                )
             }
     }
 }

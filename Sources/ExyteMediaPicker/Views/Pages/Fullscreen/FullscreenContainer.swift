@@ -121,6 +121,9 @@ struct FullscreenContainer: View {
                 } else {
                     SelectionIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
                         .padding(.horizontal, 20)
+                        .onTapGesture {
+                            selectionService.onSelect(assetMediaModel: selectedMediaModel) // for video selection, since tap on video is toggle play
+                        }
                 }
             }
         }
