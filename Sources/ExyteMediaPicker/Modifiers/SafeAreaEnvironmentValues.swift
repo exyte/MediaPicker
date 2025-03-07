@@ -23,7 +23,8 @@ extension UIApplication {
     }
 }
 
-private struct SafeAreaInsetsKey: EnvironmentKey {
+@MainActor
+private struct SafeAreaInsetsKey: @preconcurrency EnvironmentKey {
     static var defaultValue: EdgeInsets {
         UIApplication.shared.keyWindow?.safeAreaInsets.swiftUiInsets ?? EdgeInsets()
     }

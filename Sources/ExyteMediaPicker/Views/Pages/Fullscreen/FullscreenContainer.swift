@@ -4,18 +4,20 @@
 
 import Foundation
 import SwiftUI
+import AnchoredPopup
 
 struct FullscreenContainer: View {
 
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
+    @Environment(\.safeAreaInsets) private var safeArea
 
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
-    @Binding var isPresented: Bool
     @Binding var currentFullscreenMedia: Media?
+    @Binding var selection: AssetMediaModel.ID?
+    let animationID: String
     let assetMediaModels: [AssetMediaModel]
-    @State var selection: AssetMediaModel.ID?
     var selectionParamsHolder: SelectionParamsHolder
     var dismiss: ()->()
 
@@ -34,11 +36,10 @@ struct FullscreenContainer: View {
         VStack {
             controlsOverlay
             GeometryReader { g in
-                let size = g.size
-                contentView(size)
+                contentView(g.size)
             }
         }
-        .ignoresSafeArea()
+        .safeAreaPadding(.top, safeArea.top)
         .background {
             theme.main.fullscreenPhotoBackground
                 .ignoresSafeArea()
@@ -106,7 +107,8 @@ struct FullscreenContainer: View {
                 .padding(20, 16)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    isPresented = false
+                    selection = nil
+                    AnchoredPopup.launchShrinkingAnimation(id: animationID)
                 }
 
             Spacer()

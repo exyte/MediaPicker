@@ -45,6 +45,7 @@ struct MediaCell: View {
     }
 }
 
+@MainActor
 final class MediaCellViewModel: ObservableObject {
 
     let media: Media
@@ -64,12 +65,12 @@ final class MediaCellViewModel: ObservableObject {
         let url = await media.getURL()
         guard let url = url else { return }
 
-        DispatchQueue.main.async {
-            switch self.media.type {
+        DispatchQueue.main.async { [weak self, media] in
+            switch media.type {
             case .image:
-                self.imageUrl = url
+                self?.imageUrl = url
             case .video:
-                self.player = AVPlayer(url: url)
+                self?.player = AVPlayer(url: url)
             }
         }
     }

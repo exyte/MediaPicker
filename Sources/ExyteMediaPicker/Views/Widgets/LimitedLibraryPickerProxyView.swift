@@ -8,7 +8,7 @@ import PhotosUI
 
 struct LimitedLibraryPickerProxyView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
-    var didDismiss: ()->()
+    var didDismiss: @Sendable ()->()
     
     func makeUIViewController(context: Context) -> UIViewController {
         let controller = UIViewController()
@@ -27,11 +27,11 @@ struct LimitedLibraryPickerProxyView: UIViewControllerRepresentable {
         Coordinator(isPresented: $isPresented, didDismiss: didDismiss)
     }
     
-    class Coordinator: NSObject {
-        private var isPresented: Binding<Bool>
-        var didDismiss: ()->()
-        
-        init(isPresented: Binding<Bool>, didDismiss: @escaping ()->()) {
+    final class Coordinator: NSObject, Sendable {
+        private let isPresented: Binding<Bool>
+        let didDismiss: @Sendable ()->()
+
+        init(isPresented: Binding<Bool>, didDismiss: @escaping @Sendable ()->()) {
             self.isPresented = isPresented
             self.didDismiss = didDismiss
         }

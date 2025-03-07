@@ -145,10 +145,12 @@ extension MediaPickerTheme {
                     unselectedText: Color = Color("pickerText", bundle: .current)) {
             self.background = background
 
-            UISegmentedControl.appearance().backgroundColor = UIColor(segmentTintColor)
-            UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(selectedSegmentTintColor)
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(selectedText)], for: .selected)
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(unselectedText)], for: .normal)
+            DispatchQueue.main.async {
+                UISegmentedControl.appearance().backgroundColor = UIColor(segmentTintColor)
+                UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(selectedSegmentTintColor)
+                UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(selectedText)], for: .selected)
+                UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(unselectedText)], for: .normal)
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ final class MediaPickerViewModel: ObservableObject {
     
     func onStart() {
         defaultAlbumsProvider.reload()
-        albumsCancellable = defaultAlbumsProvider.albums.sink { [weak self] albums in
+        albumsCancellable = defaultAlbumsProvider.$albums.sink { [weak self] albums in
             self?.albums = albums
         }
     }

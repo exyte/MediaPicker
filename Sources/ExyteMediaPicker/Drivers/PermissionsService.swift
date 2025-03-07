@@ -7,6 +7,7 @@ import Combine
 import AVFoundation
 import Photos
 
+@MainActor
 final class PermissionsService: ObservableObject {
     @Published var cameraAction: CameraAction? = .authorize
     @Published var photoLibraryAction: PhotoLibraryAction? = .authorize
@@ -14,13 +15,19 @@ final class PermissionsService: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
 
     init() {
-        photoLibraryChangePermissionPublisher
+        NotificationCenter.default
+            .publisher(for: photoLibraryChangePermissionNotification)
+            .map { _ in }
+            .share()
             .sink { [weak self] in
                 self?.checkPhotoLibraryAuthorizationStatus()
             }
             .store(in: &subscriptions)
 
-        cameraChangePermissionPublisher
+        NotificationCenter.default
+            .publisher(for: cameraChangePermissionNotification)
+            .map { _ in }
+            .share()
             .sink { [weak self] in
                 self?.checkCameraAuthorizationStatus()
             }
@@ -29,16 +36,20 @@ final class PermissionsService: ObservableObject {
 
     /// photoLibraryChangePermissionPublisher gets called multiple times even when nothing changed in photo library, so just use this one to make sure the closure runs exactly once
     static func requestPhotoLibraryPermission(_ permissionGrantedClosure: @escaping ()->()) {
-        PHPhotoLibrary.requestAuthorization { status in
+        Task {
+            let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
             if status == .authorized || status == .limited {
-                permissionGrantedClosure()
+                DispatchQueue.main.async {
+                    permissionGrantedClosure()
+                }
             }
         }
     }
 
     func requestCameraPermission() {
-        AVCaptureDevice.requestAccess(for: .video) { [weak self] _ in
-            self?.checkCameraAuthorizationStatus()
+        Task {
+            await AVCaptureDevice.requestAccess(for: .video)
+            checkCameraAuthorizationStatus()
         }
     }
 

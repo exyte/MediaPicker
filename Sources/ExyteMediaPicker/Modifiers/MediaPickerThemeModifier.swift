@@ -5,15 +5,8 @@
 import Foundation
 import SwiftUI
 
-struct MediaPickerThemeKey: EnvironmentKey {
-    static var defaultValue: MediaPickerTheme = MediaPickerTheme()
-}
-
 extension EnvironmentValues {
-    public var mediaPickerTheme: MediaPickerTheme {
-        get { self[MediaPickerThemeKey.self] }
-        set { self[MediaPickerThemeKey.self] = newValue }
-    }
+    @Entry var mediaPickerTheme = MediaPickerTheme()
 }
 
 public extension View {

@@ -10,7 +10,7 @@ public enum MediaType {
     case video
 }
 
-public struct Media: Identifiable, Equatable {
+public struct Media: Identifiable, Equatable, Sendable {
     public var id = UUID()
     internal let source: MediaModelProtocol
 

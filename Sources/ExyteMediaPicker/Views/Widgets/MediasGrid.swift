@@ -5,13 +5,14 @@
 import Foundation
 import SwiftUI
 
-public struct MediasGrid<Data, Camera, Content, LoadingCell>: View where Data: RandomAccessCollection, Data.Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
+public struct MediasGrid<Element, Camera, Content, LoadingCell>: View
+where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
 
-    public let data: Data
+    public let data: [Element]
     public let camera: () -> Camera
-    public let content: (Data.Element, _ size: CGFloat) -> Content
+    public let content: (Element, _ index: Int, _ size: CGFloat) -> Content
     public let loadingCell: () -> LoadingCell
-    
+
     @Environment(\.mediaPickerTheme) private var theme
 
     let minColumnWidth: CGFloat = 100
@@ -19,7 +20,10 @@ public struct MediasGrid<Data, Camera, Content, LoadingCell>: View where Data: R
         [GridItem(.adaptive(minimum: minColumnWidth), spacing: theme.cellStyle.columnsSpacing, alignment: .top)]
     }
 
-    public init(_ data: Data, @ViewBuilder camera: @escaping () -> Camera, @ViewBuilder content: @escaping (Data.Element, CGFloat) -> Content, @ViewBuilder loadingCell: @escaping () -> LoadingCell) {
+    public init(_ data: [Element],
+                @ViewBuilder camera: @escaping () -> Camera,
+                @ViewBuilder content: @escaping (Element, Int, CGFloat) -> Content,
+                @ViewBuilder loadingCell: @escaping () -> LoadingCell) {
         self.data = data
         self.camera = camera
         self.content = content
@@ -30,8 +34,8 @@ public struct MediasGrid<Data, Camera, Content, LoadingCell>: View where Data: R
         let columnWidth = calculateColumnWidth(UIScreen.main.bounds.width)
         LazyVGrid(columns: columns, spacing: theme.cellStyle.rowSpacing) {
             camera()
-            ForEach(data) { item in
-                content(item, columnWidth)
+            ForEach(data.indices, id: \.self) { index in
+                content(data[index], index, columnWidth)
             }
             loadingCell()
         }

@@ -88,3 +88,7 @@ final class FullscreenCellViewModel: ObservableObject {
         }
     }
 }
+
+extension AVAssetTrack: @unchecked Sendable {
+
+}

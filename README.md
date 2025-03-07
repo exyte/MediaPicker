@@ -242,8 +242,8 @@ github "Exyte/MediaPicker"
 
 ## Requirements
 
-* iOS 16+
-* Xcode 13+ 
+* iOS 17+
+* Xcode 15+ 
 
 ## Our other open source SwiftUI libraries
 [PopupView](https://github.com/exyte/PopupView) - Toasts and popups library    

@@ -80,7 +80,7 @@ struct DefaultCameraSelectionContainer: View {
                     viewModel.onCancelCameraSelection(cameraSelectionService.hasSelected)
                 }
                 .foregroundColor(theme.main.cameraText)
-                .padding(12, 16)
+                .padding(12, 18)
             }
             .overlay(alignment: .bottom) {
                 HStack {

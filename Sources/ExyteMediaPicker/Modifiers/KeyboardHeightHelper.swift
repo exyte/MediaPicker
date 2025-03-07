@@ -9,7 +9,7 @@ import SwiftUI
 
 class KeyboardHeightHelper: ObservableObject {
 
-    static var shared = KeyboardHeightHelper()
+    @MainActor static let shared = KeyboardHeightHelper()
 
     @Published var keyboardHeight: CGFloat = 0
     @Published var keyboardDisplayed: Bool = false

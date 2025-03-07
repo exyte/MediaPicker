@@ -22,7 +22,7 @@ class AlbumCellViewModel: ObservableObject {
     // FIXME: Create preview for image/video for other platforms
 #endif
     
-    func fetchPreview(size: CGSize) {
+    @MainActor func fetchPreview(size: CGSize) {
         guard preview == nil else { return }
         
         requestID = album.preview?.asset

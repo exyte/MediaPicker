@@ -11,9 +11,9 @@ final class AlbumMediasProvider: BaseMediasProvider {
 
     let album: AlbumModel
 
-    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure? = nil, massFilterClosure: MediaPicker.MassFilterClosure? = nil, showingLoadingCell: Binding<Bool>) {
+    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure? = nil, massFilterClosure: MediaPicker.MassFilterClosure? = nil) {
         self.album = album
-        super.init(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure, showingLoadingCell: showingLoadingCell)
+        super.init(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure)
     }
 
     override func reload() {
@@ -23,13 +23,17 @@ final class AlbumMediasProvider: BaseMediasProvider {
     }
 
     func reloadInternal() {
+        isLoading = true
+        defer {
+            isLoading = false
+        }
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
         let fetchResult = PHAsset.fetchAssets(in: album.source, options: fetchOptions)
         if fetchResult.count == 0 {
-            assetMediaModelsPublisher.send([])
+            assetMediaModels = []
         }
 
         let assets = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: selectionParamsHolder.mediaType)

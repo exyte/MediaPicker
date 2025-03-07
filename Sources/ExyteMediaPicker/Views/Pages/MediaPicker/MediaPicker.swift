@@ -30,8 +30,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     /// - camera back/front closure
     public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
 
-    public typealias FilterClosure = (Media) async -> Media?
-    public typealias MassFilterClosure = ([Media]) async -> [Media]
+    public typealias FilterClosure = @Sendable (Media) async -> Media?
+    public typealias MassFilterClosure = @Sendable ([Media]) async -> [Media]
 
     // MARK: - Parameters
 
@@ -157,11 +157,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             albumSelectionBuilder(ModeSwitcher(selection: modeBinding()), albumSelectionView, isInFullscreen)
         } else {
             VStack(spacing: 0) {
-                if !isInFullscreen {
-                    defaultHeaderView
-                } else {
-                    Color.clear.frame(height: 15)
-                }
+                defaultHeaderView
                 albumSelectionView
             }
         }

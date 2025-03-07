@@ -12,21 +12,6 @@ let photoLibraryChangeLimitedPhotosNotification = Notification.Name(rawValue: "P
 
 let cameraChangePermissionNotification = Notification.Name(rawValue: "cameraChangePermissionNotification")
 
-let photoLibraryChangePermissionPublisher = NotificationCenter.default
-    .publisher(for: photoLibraryChangePermissionNotification)
-    .map { _ in }
-    .share()
-
-let photoLibraryChangeLimitedPhotosPublisher = NotificationCenter.default
-    .publisher(for: photoLibraryChangeLimitedPhotosNotification)
-    .map { _ in }
-    .share()
-
-let cameraChangePermissionPublisher = NotificationCenter.default
-    .publisher(for: cameraChangePermissionNotification)
-    .map { _ in }
-    .share()
-
 final class PhotoLibraryChangePermissionWatcher: NSObject, PHPhotoLibraryChangeObserver {
     override init() {
         super.init()

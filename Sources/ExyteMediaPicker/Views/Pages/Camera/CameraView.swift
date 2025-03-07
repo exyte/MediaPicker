@@ -51,6 +51,7 @@ struct StandardConrolsCameraView: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @Environment(\.mediaPickerTheme) private var theme
+    @Environment(\.safeAreaInsets) private var safeArea
 
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
@@ -73,10 +74,11 @@ struct StandardConrolsCameraView: View {
                     }
                 }
                 .foregroundColor(theme.main.cameraText)
-                .padding(12, 16)
+                .padding(12, 18)
 
                 Spacer()
             }
+            .safeAreaPadding(.top, safeArea.top)
 
             LiveCameraView(
                 session: cameraViewModel.captureSession,

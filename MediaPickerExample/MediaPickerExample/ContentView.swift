@@ -54,7 +54,7 @@ struct ContentView: View {
         }
 
         // MARK: - Default media picker
-        .sheet(isPresented: $showDefaultMediaPicker) {
+        .fullScreenCover(isPresented: $showDefaultMediaPicker) {
             MediaPicker(
                 isPresented: $showDefaultMediaPicker,
                 onChange: { medias = $0 }

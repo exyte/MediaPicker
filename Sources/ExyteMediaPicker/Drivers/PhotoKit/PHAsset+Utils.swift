@@ -140,6 +140,7 @@ extension CGImage {
 #if os(iOS)
 extension PHAsset {
 
+    @MainActor
     func image(size: CGSize, resultClosure: @escaping (UIImage?)->()) -> PHImageRequestID {
         let requestSize = CGSize(width: size.width * UIScreen.main.scale, height: size.height * UIScreen.main.scale)
 
