@@ -4,7 +4,6 @@
 
 import Foundation
 import SwiftUI
-import Combine
 import Photos
 
 final class SelectionService: ObservableObject {
@@ -62,26 +61,6 @@ final class SelectionService: ObservableObject {
     func updateSelection(with models: [AssetMediaModel]) {
         selected = selected.filter {
             models.contains($0)
-        }
-    }
-}
-
-private extension SelectionService {
-
-    func findAsset(identifier: String) -> Future<PHAsset?, Never> {
-        Future { promise in
-            let options = PHFetchOptions()
-            let photos = PHAsset.fetchAssets(with: options)
-
-            var result: PHAsset?
-
-            photos.enumerateObjects { (asset, _, stop) in
-                if asset.localIdentifier == identifier {
-                    result = asset
-                    stop.pointee = true
-                }
-            }
-            promise(.success(result))
         }
     }
 }

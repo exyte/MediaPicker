@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import Combine
 
 public enum MediaType {
     case image

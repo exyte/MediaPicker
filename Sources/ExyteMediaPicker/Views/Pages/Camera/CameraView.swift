@@ -40,9 +40,11 @@ struct CustomCameraView<CameraViewContent: View>: View {
             { cameraViewModel.toggleFlash() }, // flash off/on
             { cameraViewModel.flipCamera() } // camera back/front
         )
-        .onReceive(cameraViewModel.capturedPhotoPublisher) {
-            viewModel.pickedMediaUrl = $0
-            didTakePicture()
+        .onReceive(cameraViewModel.$capturedPhoto) {
+            if let photo = $0 {
+                viewModel.pickedMediaUrl = photo
+                didTakePicture()
+            }
         }
     }
 }
@@ -152,9 +154,11 @@ struct StandardConrolsCameraView: View {
         .background(theme.main.cameraBackground)
         .onEnteredBackground(perform: cameraViewModel.stopSession)
         .onEnteredForeground(perform: cameraViewModel.startSession)
-        .onReceive(cameraViewModel.capturedPhotoPublisher) {
-            viewModel.pickedMediaUrl = $0
-            didTakePicture()
+        .onReceive(cameraViewModel.$capturedPhoto) {
+            if let photo = $0 {
+                viewModel.pickedMediaUrl = photo
+                didTakePicture()
+            }
         }
     }
 

@@ -52,7 +52,6 @@ public struct AlbumSelectionView: View {
                     viewModel: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure),
                     showingCamera: $showingCamera,
                     currentFullscreenMedia: $currentFullscreenMedia,
-                    title: album.title,
                     shouldShowCamera: false,
                     selectionParamsHolder: selectionParamsHolder,
                     dismiss: dismiss

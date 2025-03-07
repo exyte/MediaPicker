@@ -3,7 +3,6 @@
 //
 
 import SwiftUI
-import Combine
 
 public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: View, CameraViewContent: View>: View {
 

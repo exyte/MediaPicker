@@ -7,7 +7,6 @@
 
 import Foundation
 import AVFoundation
-import Combine
 import UIKit
 import SwiftUI
 
@@ -22,15 +21,14 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     @Published private(set) var flashEnabled = false
     @Published private(set) var snapOverlay = false
+    @Published private(set) var capturedPhoto: URL?
 
     let captureSession = AVCaptureSession()
-    var capturedPhotoPublisher: AnyPublisher<URL, Never> { capturedPhotoSubject.eraseToAnyPublisher() }
 
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureMovieFileOutput()
     private let motionManager = MotionManager()
     private let sessionQueue = DispatchQueue(label: "LiveCameraQueue")
-    private let capturedPhotoSubject = PassthroughSubject<URL, Never>()
     private var captureDevice: CaptureDevice?
     private var lastPhotoActualOrientation: UIDeviceOrientation?
 
@@ -254,12 +252,12 @@ extension CameraViewModel: AVCapturePhotoCaptureDelegate {
             orientation: photoOrientation
         ).jpegData(compressionQuality: 0.8) else { return }
 
-        capturedPhotoSubject.send(FileManager.storeToTempDir(data: data))
+        capturedPhoto = FileManager.storeToTempDir(data: data)
     }
 }
 
 extension CameraViewModel: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        capturedPhotoSubject.send(outputFileURL)
+        capturedPhoto = outputFileURL
     }
 }

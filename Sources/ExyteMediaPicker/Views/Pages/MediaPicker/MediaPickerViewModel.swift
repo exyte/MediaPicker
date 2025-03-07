@@ -4,7 +4,6 @@
 
 import Foundation
 import SwiftUI
-import Combine
 
 @MainActor
 final class MediaPickerViewModel: ObservableObject {
@@ -14,20 +13,17 @@ final class MediaPickerViewModel: ObservableObject {
     @Published var pickedMediaUrl: URL?
 #endif
 
+    @Published private(set) var defaultAlbumsProvider = DefaultAlbumsProvider()
     @Published private(set) var internalPickerMode: MediaPickerMode = .photos
-    @Published private(set) var albums: [AlbumModel] = []
+
+    var albums: [AlbumModel] {
+        defaultAlbumsProvider.albums
+    }
 
     var shouldUpdatePickerMode: (MediaPickerMode)->() = {_ in}
 
-    let defaultAlbumsProvider = DefaultAlbumsProvider()
-    private let watcher = PhotoLibraryChangePermissionWatcher()
-    private var albumsCancellable: AnyCancellable?
-    
     func onStart() {
         defaultAlbumsProvider.reload()
-        albumsCancellable = defaultAlbumsProvider.$albums.sink { [weak self] albums in
-            self?.albums = albums
-        }
     }
 
     func getAlbumModel(_ album: Album) -> AlbumModel? {

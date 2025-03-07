@@ -17,7 +17,6 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    var title: String?
     var shouldShowCamera: Bool
     var selectionParamsHolder: SelectionParamsHolder
     var dismiss: ()->()
@@ -29,18 +28,13 @@ struct AlbumView: View {
     }
 
     var body: some View {
-        VStack {
-            if let title = title {
-                Text(title)
+        content
+            .onAppear {
+                viewModel.reload()
             }
-            content
-        }
-        .onAppear {
-            viewModel.reload()
-        }
-        .onDisappear {
-            viewModel.cancel()
-        }
+            .onDisappear {
+                viewModel.cancel()
+            }
     }
 
     @ViewBuilder

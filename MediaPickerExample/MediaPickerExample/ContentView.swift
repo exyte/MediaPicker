@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ExyteMediaPicker
-import Combine
 
 struct ContentView: View {
 
