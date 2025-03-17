@@ -5,7 +5,7 @@
 import Foundation
 import SwiftUI
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     @Entry var mediaPickerTheme = MediaPickerTheme()
 }
 
