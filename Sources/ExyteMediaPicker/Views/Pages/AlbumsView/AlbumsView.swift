@@ -7,11 +7,11 @@ import SwiftUI
 struct AlbumsView: View {
 
     @EnvironmentObject private var selectionService: SelectionService
-    @EnvironmentObject private var permissionsService: PermissionsService
     @Environment(\.mediaPickerTheme) private var theme
 
     @StateObject var viewModel: AlbumsViewModel
     @ObservedObject var mediaPickerViewModel: MediaPickerViewModel
+    @ObservedObject var permissionsService = PermissionsService.shared
 
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
@@ -34,9 +34,8 @@ struct AlbumsView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if let action = permissionsService.photoLibraryAction {
-                    PermissionsActionView(action: .library(action))
-                }
+                PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
+
                 if viewModel.isLoading {
                     ProgressView()
                         .padding()

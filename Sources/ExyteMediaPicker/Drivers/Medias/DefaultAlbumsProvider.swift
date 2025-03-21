@@ -20,12 +20,14 @@ final class DefaultAlbumsProvider: ObservableObject {
     func reload() {
         cancelReload()
 
-        PermissionsService.requestPhotoLibraryPermission { [weak self] in
+        PermissionsService.shared.requestPhotoLibraryPermission { [weak self] in
             guard let self = self else { return }
-            self.reloadTask = Task {
-                self.isLoading = true
-                await self.reloadInternal()
-                self.isLoading = false
+            DispatchQueue.main.async {
+                self.reloadTask = Task {
+                    self.isLoading = true
+                    await self.reloadInternal()
+                    self.isLoading = false
+                }
             }
         }
     }

@@ -15,11 +15,7 @@ public struct LiveCameraView: UIViewRepresentable {
     var orientation: UIDeviceOrientation = UIDevice.current.orientation
 
     public func makeUIView(context: Context) -> LiveVideoCaptureView {
-        NotificationCenter.default.post(
-            name: cameraChangePermissionNotification,
-            object: nil)
-
-        return LiveVideoCaptureView(
+        LiveVideoCaptureView(
             session: session,
             videoGravity: videoGravity,
             orientation: orientation

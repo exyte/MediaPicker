@@ -30,5 +30,6 @@ struct PermissionsErrorView: View {
         .background(theme.error.background)
         .cornerRadius(5)
         .padding(.horizontal, 20)
+        .padding(.bottom, 6)
     }
 }

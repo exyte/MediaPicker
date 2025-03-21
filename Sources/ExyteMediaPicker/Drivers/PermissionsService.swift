@@ -9,39 +9,25 @@ import Photos
 
 @MainActor
 final class PermissionsService: ObservableObject {
-    @Published var cameraAction: CameraAction? = .authorize
-    @Published var photoLibraryAction: PhotoLibraryAction? = .authorize
 
-    private var subscriptions = Set<AnyCancellable>()
+    static var shared = PermissionsService()
 
-    init() {
-        NotificationCenter.default
-            .publisher(for: photoLibraryChangePermissionNotification)
-            .map { _ in }
-            .share()
-            .sink { [weak self] in
-                self?.checkPhotoLibraryAuthorizationStatus()
-            }
-            .store(in: &subscriptions)
-
-        NotificationCenter.default
-            .publisher(for: cameraChangePermissionNotification)
-            .map { _ in }
-            .share()
-            .sink { [weak self] in
-                self?.checkCameraAuthorizationStatus()
-            }
-            .store(in: &subscriptions)
-    }
+    @Published var cameraPermissionStatus: CameraPermissionStatus = .unknown
+    @Published var photoLibraryPermissionStatus: PhotoLibraryPermissionStatus = .unknown
 
     /// photoLibraryChangePermissionPublisher gets called multiple times even when nothing changed in photo library, so just use this one to make sure the closure runs exactly once
-    static func requestPhotoLibraryPermission(_ permissionGrantedClosure: @escaping ()->()) {
+    func requestPhotoLibraryPermission(_ permissionGrantedClosure: @Sendable @escaping ()->()) {
         Task {
+            let currentStatus = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+            if currentStatus == .authorized || currentStatus == .limited {
+                permissionGrantedClosure()
+                return
+            }
+
             let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+            updatePhotoLibraryAuthorizationStatus()
             if status == .authorized || status == .limited {
-                DispatchQueue.main.async {
-                    permissionGrantedClosure()
-                }
+                permissionGrantedClosure()
             }
         }
     }
@@ -49,69 +35,66 @@ final class PermissionsService: ObservableObject {
     func requestCameraPermission() {
         Task {
             await AVCaptureDevice.requestAccess(for: .video)
-            checkCameraAuthorizationStatus()
+            updateCameraAuthorizationStatus()
         }
     }
 
-    func checkPhotoLibraryAuthorizationStatus() {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    func updatePhotoLibraryAuthorizationStatus() {
+        let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
         
-        var result: PhotoLibraryAction?
+        let result: PhotoLibraryPermissionStatus
         switch status {
-        case .restricted:
-            // TODO: Make sure that access can't change when status == .restricted
-            result = .unavailable
-        case .notDetermined, .denied:
-            result = .authorize
         case .authorized:
-            // Do nothing
-            break
+            result = .authorized
         case .limited:
-            result = .selectMore
-        @unknown default:
+            result = .limited
+        case .restricted, .denied:
+            result = .unavailable
+        case .notDetermined:
+            result = .unknown
+        default:
             result = .unknown
         }
 
         DispatchQueue.main.async { [weak self] in
-            self?.photoLibraryAction = result
+            self?.photoLibraryPermissionStatus = result
         }
     }
 
-    func checkCameraAuthorizationStatus() {
+    func updateCameraAuthorizationStatus() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
 
-        var result: CameraAction?
+        let result: CameraPermissionStatus
 #if targetEnvironment(simulator)
         result = .unavailable
 #else
         switch status {
-        case .restricted:
-            result = .unavailable
-        case .notDetermined, .denied:
-            result = .authorize
         case .authorized:
-            // Do nothing
-            break
-        @unknown default:
+            result = .authorized
+        case .restricted, .denied:
+            result = .unavailable
+        case .notDetermined:
+            result = .unknown
+        default:
             result = .unknown
         }
 #endif
         DispatchQueue.main.async { [weak self] in
-            self?.cameraAction = result
+            self?.cameraPermissionStatus = result
         }
     }
 }
 
 extension PermissionsService {
-    enum CameraAction {
-        case authorize
+    enum CameraPermissionStatus {
+        case authorized
         case unavailable
         case unknown
     }
 
-    enum PhotoLibraryAction {
-        case selectMore
-        case authorize
+    enum PhotoLibraryPermissionStatus {
+        case limited
+        case authorized
         case unavailable
         case unknown
     }

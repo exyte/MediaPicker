@@ -26,15 +26,6 @@ class BaseMediasProvider: ObservableObject {
         self.selectionParamsHolder = selectionParamsHolder
         self.filterClosure = filterClosure
         self.massFilterClosure = massFilterClosure
-
-        cancellable = NotificationCenter.default
-            .publisher(for: photoLibraryChangeLimitedPhotosNotification)
-            .map { _ in }
-            .share()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                self?.reload()
-            }
     }
 
     func filterAndPublish(assets: [AssetMediaModel]) {

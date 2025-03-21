@@ -8,10 +8,10 @@ import AnchoredPopup
 struct AlbumView: View {
 
     @EnvironmentObject private var selectionService: SelectionService
-    @EnvironmentObject private var permissionsService: PermissionsService
     @Environment(\.mediaPickerTheme) private var theme
 
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
+    @ObservedObject var permissionsService = PermissionsService.shared
 
     @StateObject var viewModel: BaseMediasProvider
     @Binding var showingCamera: Bool
@@ -40,13 +40,11 @@ struct AlbumView: View {
     @ViewBuilder
     var content: some View {
         ScrollView {
-            VStack {
-                if let action = permissionsService.photoLibraryAction {
-                    PermissionsActionView(action: .library(action))
-                }
+            VStack(spacing: 0) {
+                PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
-                if shouldShowCamera, let action = permissionsService.cameraAction {
-                    PermissionsActionView(action: .camera(action))
+                if shouldShowCamera {
+                    PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
                 }
 
                 if viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
@@ -75,7 +73,7 @@ struct AlbumView: View {
     var mediasGrid: some View {
         MediasGrid(viewModel.assetMediaModels) {
 #if !targetEnvironment(simulator)
-            if shouldShowCamera && permissionsService.cameraAction == nil {
+            if shouldShowCamera && permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {
                     showingCamera = true
                 }

@@ -63,7 +63,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var viewModel = MediaPickerViewModel()
     @StateObject private var selectionService = SelectionService()
     @StateObject private var cameraSelectionService = CameraSelectionService()
-    @StateObject private var permissionService = PermissionsService()
 
     @State private var readyToShowCamera = false
     @State private var currentFullscreenMedia: Media?
@@ -106,12 +105,15 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .background(theme.main.pickerBackground.ignoresSafeArea())
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
-        .environmentObject(permissionService)
         .onAppear {
+            PermissionsService.shared.updatePhotoLibraryAuthorizationStatus()
+#if !targetEnvironment(simulator)
             if showingLiveCameraCell {
-                permissionService.requestCameraPermission()
+                PermissionsService.shared.requestCameraPermission()
+            } else {
+                PermissionsService.shared.updateCameraAuthorizationStatus()
             }
-            permissionService.checkPhotoLibraryAuthorizationStatus()
+#endif
 
             selectionService.onChange = onChange
             selectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
@@ -124,18 +126,18 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             }
             viewModel.onStart()
         }
-        .onChange(of: viewModel.albums) {
-            self.albums = $0.map { $0.toAlbum() }
+        .onChange(of: viewModel.albums) { _ , albums in
+            self.albums = albums.map { $0.toAlbum() }
         }
-        .onChange(of: pickerMode?.wrappedValue) { mode in
+        .onChange(of: pickerMode?.wrappedValue) { _ , mode in
             if let mode = mode {
                 viewModel.setPickerMode(mode)
             }
         }
-        .onChange(of: viewModel.internalPickerMode) { newValue in
+        .onChange(of: viewModel.internalPickerMode) { _ , newValue in
             internalPickerMode = newValue
         }
-        .onChange(of: currentFullscreenMedia) { currentFullscreenMedia in
+        .onChange(of: currentFullscreenMedia) { 
             _currentFullscreenMediaBinding.wrappedValue = currentFullscreenMedia
         }
         .onAppear {
@@ -309,7 +311,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             }
         }
         .onAppear {
-            permissionService.requestCameraPermission()
+            PermissionsService.shared.requestCameraPermission()
         }
 #endif
     }
