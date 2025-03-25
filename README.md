@@ -12,8 +12,8 @@
 ![](https://img.shields.io/github/v/tag/exyte/MediaPicker?label=Version)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fexyte%2FMediaPicker%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/exyte/MediaPicker)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fexyte%2FMediaPicker%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/exyte/MediaPicker)
-[![SPM Compatible](https://img.shields.io/badge/SwiftPM-Compatible-brightgreen.svg)](https://swiftpackageindex.com/exyte/MediaPicker)
-[![Cocoapods Compatible](https://img.shields.io/badge/cocoapods-Deprecated%20after%202.2.3-yellow.svg)](https://cocoapods.org/pods/ExyteMediaPicker)
+[![SPM](https://img.shields.io/badge/SPM-Compatible-brightgreen.svg)](https://swiftpackageindex.com/exyte/MediaPicker)
+[![Cocoapods](https://img.shields.io/badge/Cocoapods-Deprecated%20after%202.2.3-yellow.svg)](https://cocoapods.org/pods/ExyteMediaPicker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/licenses/MIT)
 
 # Features
@@ -214,7 +214,7 @@ Here is an example of how you can customize colors and elements to create a cust
 
 To try out the MediaPicker examples:
 - Clone the repo `https://github.com/exyte/MediaPicker.git`
-- Open `Examples/Examples.xcworkspace` in the Xcode
+- Open `MediaPickerExample.xcodeproj` in the Xcode
 - Run it!
 
 ## Installation
@@ -225,18 +225,6 @@ To try out the MediaPicker examples:
 dependencies: [
     .package(url: "https://github.com/exyte/ExyteMediaPicker.git")
 ]
-```
-
-### CocoaPods
-
-```ruby
-pod 'ExyteMediaPicker'
-```
-
-### Carthage
-
-```ogdl
-github "Exyte/MediaPicker"
 ```
 
 ## Requirements

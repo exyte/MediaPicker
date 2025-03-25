@@ -15,11 +15,6 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
 
     @Environment(\.mediaPickerTheme) private var theme
 
-    let minColumnWidth: CGFloat = 100
-    private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: minColumnWidth), spacing: theme.cellStyle.columnsSpacing, alignment: .top)]
-    }
-
     public init(_ data: [Element],
                 @ViewBuilder camera: @escaping () -> Camera,
                 @ViewBuilder content: @escaping (Element, Int, CGFloat) -> Content,
@@ -31,7 +26,7 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
     }
 
     public var body: some View {
-        let columnWidth = calculateColumnWidth(UIScreen.main.bounds.width)
+        let (columnWidth, columns) = calculateColumnWidth(spacing: theme.cellStyle.columnsSpacing)
         LazyVGrid(columns: columns, spacing: theme.cellStyle.rowSpacing) {
             camera()
             ForEach(data.indices, id: \.self) { index in
@@ -39,11 +34,5 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
             }
             loadingCell()
         }
-    }
-
-    func calculateColumnWidth(_ gridWidth: CGFloat) -> CGFloat {
-        let wholeCount = CGFloat(Int(gridWidth / minColumnWidth))
-        let noSpaces = gridWidth - theme.cellStyle.columnsSpacing * (wholeCount - 1)
-        return noSpaces / wholeCount
     }
 }

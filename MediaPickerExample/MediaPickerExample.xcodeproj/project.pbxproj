@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -34,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5B4DBAA62D92E4A80067A006 /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ../MediaPicker; sourceTree = SOURCE_ROOT; };
 		5BFF68312AD689C80099D333 /* MediaPickerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaPickerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BFF68432AD68B990099D333 /* MediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCell.swift; sourceTree = "<group>"; };
 		5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterMediaPicker.swift; sourceTree = "<group>"; };
@@ -75,9 +76,9 @@
 		5BFF68282AD689C80099D333 = {
 			isa = PBXGroup;
 			children = (
+				5B4DBAA62D92E4A80067A006 /* MediaPicker */,
 				5BFF68422AD68B990099D333 /* MediaPickerExample */,
 				5BFF68322AD689C80099D333 /* Products */,
-				5BFF68572AD68C510099D333 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,13 +111,6 @@
 				5BFF68472AD68B990099D333 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		5BFF68572AD68C510099D333 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,7 +176,6 @@
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
 			packageReferences = (
-				5B0BE93E2D7AFCFE0011FCDB /* XCLocalSwiftPackageReference "../../MediaPicker" */,
 			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
@@ -366,7 +359,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exyte.MediaPickerExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.exyte.MediaPickerExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -403,7 +396,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exyte.MediaPickerExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.exyte.MediaPickerExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -437,13 +430,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		5B0BE93E2D7AFCFE0011FCDB /* XCLocalSwiftPackageReference "../../MediaPicker" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../MediaPicker;
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */ = {

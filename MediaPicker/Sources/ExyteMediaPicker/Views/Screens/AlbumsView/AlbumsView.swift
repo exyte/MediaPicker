@@ -21,11 +21,6 @@ struct AlbumsView: View {
     let massFilterClosure: MediaPicker.MassFilterClosure?
 
     @State private var showingLoadingCell = false
-
-    let minColumnWidth = 100.0
-    private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: minColumnWidth), spacing: 0, alignment: .top)]
-    }
     
     private var cellPadding: EdgeInsets {
         EdgeInsets(top: 2, leading: 2, bottom: 8, trailing: 2)
@@ -44,7 +39,7 @@ struct AlbumsView: View {
                         .font(.title3)
                         .foregroundColor(theme.main.pickerText)
                 } else {
-                    let columnWidth = calculateColumnWidth(UIScreen.main.bounds.width)
+                    let (columnWidth, columns) = calculateColumnWidth(spacing: 0)
                     LazyVGrid(columns: columns, spacing: 0) {
                         ForEach(viewModel.albums) { album in
                             AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
@@ -64,10 +59,5 @@ struct AlbumsView: View {
         .onDisappear {
             viewModel.onStop()
         }
-    }
-
-    func calculateColumnWidth(_ gridWidth: CGFloat) -> CGFloat {
-        let wholeCount = CGFloat(Int(gridWidth / minColumnWidth))
-        return gridWidth / wholeCount
     }
 }
