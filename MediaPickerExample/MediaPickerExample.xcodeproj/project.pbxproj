@@ -16,6 +16,7 @@
 		5B32A6692D79BA3100DF5348 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B32A6682D79BA3100DF5348 /* ExyteMediaPicker */; };
 		5B32A66C2D79BC6D00DF5348 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B32A66B2D79BC6D00DF5348 /* ExyteMediaPicker */; };
 		5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */; };
+		5B4D04FB2D92F9F1005262A1 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */; };
 		5B4D33E12D689AF900E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */; };
 		5B4D33E42D689FA100E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */; };
 		5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */; };
@@ -60,6 +61,7 @@
 				5BFD73DA2D70840200BD0F67 /* ExyteMediaPicker in Frameworks */,
 				5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */,
 				5B0BE93A2D7AF6470011FCDB /* ExyteMediaPicker in Frameworks */,
+				5B4D04FB2D92F9F1005262A1 /* ExyteMediaPicker in Frameworks */,
 				13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */,
 				5BC6705A2D6C8B810023E666 /* ExyteMediaPicker in Frameworks */,
 				5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */,
@@ -147,6 +149,7 @@
 				5B0BE93C2D7AF6940011FCDB /* ExyteMediaPicker */,
 				5B0BE93F2D7AFCFE0011FCDB /* ExyteMediaPicker */,
 				5B4DBAD52D92F7D20067A006 /* ExyteMediaPicker */,
+				5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */,
 			);
 			productName = MediaPickerExample;
 			productReference = 5BFF68312AD689C80099D333 /* MediaPickerExample.app */;
@@ -177,7 +180,7 @@
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
 			packageReferences = (
-				5B4DBAD42D92F7D20067A006 /* XCLocalSwiftPackageReference "../../@MediaPicker" */,
+				5B4D04F92D92F9F1005262A1 /* XCLocalSwiftPackageReference "../../MediaPicker" */,
 			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
@@ -434,9 +437,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5B4DBAD42D92F7D20067A006 /* XCLocalSwiftPackageReference "../../@MediaPicker" */ = {
+		5B4D04F92D92F9F1005262A1 /* XCLocalSwiftPackageReference "../../MediaPicker" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../@MediaPicker";
+			relativePath = ../../MediaPicker;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -474,6 +477,10 @@
 			productName = ExyteMediaPicker;
 		};
 		5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExyteMediaPicker;
+		};
+		5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};
