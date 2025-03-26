@@ -215,7 +215,7 @@ Here is an example of how you can customize colors and elements to create a cust
 To try out the MediaPicker examples:
 - Clone the repo `https://github.com/exyte/MediaPicker.git`
 - Open `MediaPickerExample.xcodeproj` in the Xcode
-- Run it!
+- Try it!
 
 ## Installation
 
