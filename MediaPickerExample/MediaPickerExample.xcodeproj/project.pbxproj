@@ -3,28 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */; };
-		5B0BE9372D7AF6030011FCDB /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0BE9362D7AF6030011FCDB /* ExyteMediaPicker */; };
-		5B0BE93A2D7AF6470011FCDB /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0BE9392D7AF6470011FCDB /* ExyteMediaPicker */; };
-		5B0BE93D2D7AF6940011FCDB /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0BE93C2D7AF6940011FCDB /* ExyteMediaPicker */; };
-		5B0BE9402D7AFCFE0011FCDB /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0BE93F2D7AFCFE0011FCDB /* ExyteMediaPicker */; };
-		5B2A1A0F2D6DD583000A2E81 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */; };
-		5B32A6692D79BA3100DF5348 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B32A6682D79BA3100DF5348 /* ExyteMediaPicker */; };
-		5B32A66C2D79BC6D00DF5348 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B32A66B2D79BC6D00DF5348 /* ExyteMediaPicker */; };
-		5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */; };
-		5B4D04FB2D92F9F1005262A1 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */; };
-		5B4D33E12D689AF900E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */; };
-		5B4D33E42D689FA100E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */; };
-		5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */; };
-		5B4DBAD62D92F7D20067A006 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4DBAD52D92F7D20067A006 /* ExyteMediaPicker */; };
-		5B9275C72D6F2DC700833284 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B9275C62D6F2DC700833284 /* ExyteMediaPicker */; };
-		5BC670572D6C8B250023E666 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BC670562D6C8B250023E666 /* ExyteMediaPicker */; };
-		5BC6705A2D6C8B810023E666 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BC670592D6C8B810023E666 /* ExyteMediaPicker */; };
-		5BFD73DA2D70840200BD0F67 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5BFD73D92D70840200BD0F67 /* ExyteMediaPicker */; };
+		5B2068782D9BE32700485134 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B2068772D9BE32700485134 /* ExyteMediaPicker */; };
 		5BFF684D2AD68B990099D333 /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68432AD68B990099D333 /* MediaCell.swift */; };
 		5BFF684E2AD68B990099D333 /* FilterMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */; };
 		5BFF684F2AD68B990099D333 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BFF68452AD68B990099D333 /* Assets.xcassets */; };
@@ -36,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5B2068742D9BE17100485134 /* MediaPicker */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaPicker; path = ..; sourceTree = "<group>"; };
+		5B2068752D9BE32400485134 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5BFF68312AD689C80099D333 /* MediaPickerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaPickerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BFF68432AD68B990099D333 /* MediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCell.swift; sourceTree = "<group>"; };
 		5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterMediaPicker.swift; sourceTree = "<group>"; };
@@ -52,35 +37,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B9275C72D6F2DC700833284 /* ExyteMediaPicker in Frameworks */,
-				5B0BE9372D7AF6030011FCDB /* ExyteMediaPicker in Frameworks */,
-				5B32A6692D79BA3100DF5348 /* ExyteMediaPicker in Frameworks */,
-				5B0BE93D2D7AF6940011FCDB /* ExyteMediaPicker in Frameworks */,
-				5B2A1A0F2D6DD583000A2E81 /* ExyteMediaPicker in Frameworks */,
-				5B4D33E42D689FA100E6C069 /* ExyteMediaPicker in Frameworks */,
-				5BFD73DA2D70840200BD0F67 /* ExyteMediaPicker in Frameworks */,
-				5B4D33E72D68A66600E6C069 /* ExyteMediaPicker in Frameworks */,
-				5B0BE93A2D7AF6470011FCDB /* ExyteMediaPicker in Frameworks */,
-				5B4D04FB2D92F9F1005262A1 /* ExyteMediaPicker in Frameworks */,
-				13738D1C2AE272FA005BBAD5 /* ExyteMediaPicker in Frameworks */,
-				5BC6705A2D6C8B810023E666 /* ExyteMediaPicker in Frameworks */,
-				5B4C32F82D6F2080009844B6 /* ExyteMediaPicker in Frameworks */,
-				5B32A66C2D79BC6D00DF5348 /* ExyteMediaPicker in Frameworks */,
-				5B0BE9402D7AFCFE0011FCDB /* ExyteMediaPicker in Frameworks */,
-				5BC670572D6C8B250023E666 /* ExyteMediaPicker in Frameworks */,
-				5B4DBAD62D92F7D20067A006 /* ExyteMediaPicker in Frameworks */,
-				5B4D33E12D689AF900E6C069 /* ExyteMediaPicker in Frameworks */,
+				5B2068782D9BE32700485134 /* ExyteMediaPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B2068762D9BE32700485134 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5BFF68282AD689C80099D333 = {
 			isa = PBXGroup;
 			children = (
+				5B2068742D9BE17100485134 /* MediaPicker */,
 				5BFF68422AD68B990099D333 /* MediaPickerExample */,
 				5BFF68322AD689C80099D333 /* Products */,
+				5B2068762D9BE32700485134 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +72,7 @@
 		5BFF68422AD68B990099D333 /* MediaPickerExample */ = {
 			isa = PBXGroup;
 			children = (
+				5B2068752D9BE32400485134 /* Info.plist */,
 				5BFF684A2AD68B990099D333 /* Application.swift */,
 				5BFF68492AD68B990099D333 /* AppDelegate.swift */,
 				5BFF684B2AD68B990099D333 /* ContentView.swift */,
@@ -132,24 +110,7 @@
 			);
 			name = MediaPickerExample;
 			packageProductDependencies = (
-				13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */,
-				5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */,
-				5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */,
-				5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */,
-				5BC670562D6C8B250023E666 /* ExyteMediaPicker */,
-				5BC670592D6C8B810023E666 /* ExyteMediaPicker */,
-				5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */,
-				5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */,
-				5B9275C62D6F2DC700833284 /* ExyteMediaPicker */,
-				5BFD73D92D70840200BD0F67 /* ExyteMediaPicker */,
-				5B32A6682D79BA3100DF5348 /* ExyteMediaPicker */,
-				5B32A66B2D79BC6D00DF5348 /* ExyteMediaPicker */,
-				5B0BE9362D7AF6030011FCDB /* ExyteMediaPicker */,
-				5B0BE9392D7AF6470011FCDB /* ExyteMediaPicker */,
-				5B0BE93C2D7AF6940011FCDB /* ExyteMediaPicker */,
-				5B0BE93F2D7AFCFE0011FCDB /* ExyteMediaPicker */,
-				5B4DBAD52D92F7D20067A006 /* ExyteMediaPicker */,
-				5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */,
+				5B2068772D9BE32700485134 /* ExyteMediaPicker */,
 			);
 			productName = MediaPickerExample;
 			productReference = 5BFF68312AD689C80099D333 /* MediaPickerExample.app */;
@@ -180,7 +141,6 @@
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
 			packageReferences = (
-				5B4D04F92D92F9F1005262A1 /* XCLocalSwiftPackageReference "../../MediaPicker" */,
 			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
@@ -280,7 +240,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = "";
 			};
 			name = Debug;
 		};
@@ -336,7 +296,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -352,6 +312,7 @@
 				DEVELOPMENT_TEAM = FZXCM5CJ7P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaPickerExample/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Grant access to camera to be able to take photos and videos";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Grant access to microphone to be able to take videos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Grant access to photo library to be able to select photos";
@@ -360,7 +321,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -373,7 +334,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -389,6 +350,7 @@
 				DEVELOPMENT_TEAM = FZXCM5CJ7P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaPickerExample/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Grant access to camera to be able to take photos and videos";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Grant access to microphone to be able to take videos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Grant access to photo library to be able to select photos";
@@ -397,7 +359,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -410,7 +372,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -438,83 +400,8 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		5B4D04F92D92F9F1005262A1 /* XCLocalSwiftPackageReference "../../MediaPicker" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../MediaPicker;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		13738D1B2AE272FA005BBAD5 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B0BE9362D7AF6030011FCDB /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B0BE9392D7AF6470011FCDB /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B0BE93C2D7AF6940011FCDB /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B0BE93F2D7AFCFE0011FCDB /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B2A1A0E2D6DD583000A2E81 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B32A6682D79BA3100DF5348 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B32A66B2D79BC6D00DF5348 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4C32F72D6F2080009844B6 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4D04FA2D92F9F1005262A1 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4D33E02D689AF900E6C069 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4D33E32D689FA100E6C069 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4D33E62D68A66600E6C069 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B4DBAD52D92F7D20067A006 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5B9275C62D6F2DC700833284 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5BC670562D6C8B250023E666 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5BC670592D6C8B810023E666 /* ExyteMediaPicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ExyteMediaPicker;
-		};
-		5BFD73D92D70840200BD0F67 /* ExyteMediaPicker */ = {
+		5B2068772D9BE32700485134 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};

@@ -3,8 +3,14 @@
 //
 
 import Foundation
-import AVKit
+@preconcurrency import AVKit
 import UIKit.UIImage
+
+#if compiler(>=6.0)
+extension AVAssetTrack: @retroactive @unchecked Sendable { }
+#else
+extension AVAssetTrack: @unchecked Sendable { }
+#endif
 
 @MainActor
 final class FullscreenCellViewModel: ObservableObject {
@@ -86,8 +92,4 @@ final class FullscreenCellViewModel: ObservableObject {
             return CGSize(width: naturalSize.height, height: naturalSize.width)
         }
     }
-}
-
-extension AVAssetTrack: @unchecked Sendable {
-
 }

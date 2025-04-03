@@ -90,7 +90,7 @@ struct AlbumView: View {
                 .aspectRatio(1, contentMode: .fit)
             }
         }
-        .onChange(of: viewModel.assetMediaModels) { newValue in
+        .onChange(of: viewModel.assetMediaModels) { _ , newValue in
             selectionService.updateSelection(with: newValue)
         }
     }
@@ -127,6 +127,11 @@ struct AlbumView: View {
                     $0.closeOnTap(false)
                         .animation(.easeIn(duration: 0.2))
                 }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        fullscreenItem = assetMediaModel.id
+                    }
+                )
         }
         .buttonStyle(MediaButtonStyle())
         .contentShape(Rectangle())

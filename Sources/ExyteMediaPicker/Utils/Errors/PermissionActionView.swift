@@ -67,10 +67,11 @@ private extension PermissionActionView {
         PermissionsErrorView(
             text: text,
             action: {
-                guard let url = URL(string: UIApplication.openSettingsURLString)
-                else { return }
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url)
+                DispatchQueue.main.async {
+                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                    if UIApplication.shared.canOpenURL(url) {
+                        UIApplication.shared.open(url)
+                    }
                 }
             }
         )

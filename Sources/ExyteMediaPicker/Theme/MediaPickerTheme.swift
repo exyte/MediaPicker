@@ -5,7 +5,7 @@
 import Foundation
 import SwiftUI
 
-public struct MediaPickerTheme {
+public struct MediaPickerTheme: Sendable {
     public let main: Main
     public let selection: Selection
     public let cellStyle: CellStyle
@@ -26,7 +26,7 @@ public struct MediaPickerTheme {
 }
 
 extension MediaPickerTheme {
-    public struct Main {
+    public struct Main: Sendable {
         public let pickerText: Color
         public let pickerBackground: Color
         public let fullscreenPhotoBackground: Color
@@ -54,7 +54,7 @@ extension MediaPickerTheme {
         }
     }
 
-    public struct Selection {
+    public struct Selection: Sendable {
         public let cellEmptyBorder: Color
         public let cellEmptyBackground: Color
         public let cellSelectedBorder: Color
@@ -110,7 +110,7 @@ extension MediaPickerTheme {
         }
     }
 
-    public struct CellStyle {
+    public struct CellStyle: Sendable {
         public let columnsSpacing: CGFloat
         public let rowSpacing: CGFloat
         public let cornerRadius: CGFloat
@@ -124,7 +124,7 @@ extension MediaPickerTheme {
         }
     }
 
-    public struct Error {
+    public struct Error: Sendable {
         public let background: Color
         public let tint: Color
 
@@ -135,7 +135,7 @@ extension MediaPickerTheme {
         }
     }
 
-    public struct DefaultHeader {
+    public struct DefaultHeader: Sendable {
         public let background: Color
 
         public init(background: Color = Color("pickerBG", bundle: .current),

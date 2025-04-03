@@ -8,11 +8,12 @@
 import SwiftUI
 import AVFoundation
 
+@MainActor
 public struct LiveCameraView: UIViewRepresentable {
 
     let session: AVCaptureSession
-    var videoGravity: AVLayerVideoGravity = .resizeAspect
-    var orientation: UIDeviceOrientation = UIDevice.current.orientation
+    let videoGravity: AVLayerVideoGravity
+    let orientation: UIDeviceOrientation
 
     public func makeUIView(context: Context) -> LiveVideoCaptureView {
         LiveVideoCaptureView(
@@ -22,10 +23,7 @@ public struct LiveCameraView: UIViewRepresentable {
         )
     }
 
-    public func updateUIView(_ uiView: LiveVideoCaptureView, context: Context) {
-        uiView.updateOrientation(orientation)
-    }
-
+    public func updateUIView(_ uiView: LiveVideoCaptureView, context: Context) { }
 }
 
 public final class LiveVideoCaptureView: UIView {
@@ -56,12 +54,5 @@ public final class LiveVideoCaptureView: UIView {
         super.init(frame: frame)
         self.session = session
         videoLayer.videoGravity = videoGravity
-        updateOrientation(orientation)
     }
-
-    func updateOrientation(_ orientation: UIDeviceOrientation) {
-        guard let connection = videoLayer.connection, connection.isVideoOrientationSupported else { return }
-        connection.videoOrientation = AVCaptureVideoOrientation(orientation)
-    }
-
 }

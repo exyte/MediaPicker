@@ -44,7 +44,7 @@ struct SelectionIndicatorView: View {
                     selected ? selectedBackground : emptyBackground,
                     border: selected ? selectedBorder : emptyBorder, 2
                 )
-                if let index {
+                if index != nil {
                     Image(systemName: "checkmark")
                         .resizable()
                         .foregroundColor(selectedCheckmark)

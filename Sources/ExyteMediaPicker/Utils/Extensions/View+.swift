@@ -9,7 +9,9 @@ import SwiftUI
 
 extension View {
     func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        DispatchQueue.main.async {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
 }
 
@@ -27,5 +29,14 @@ extension View {
     func padding(_ horizontal: CGFloat, _ vertical: CGFloat) -> some View {
         self.padding(.horizontal, horizontal)
             .padding(.vertical, vertical)
+    }
+
+    @ViewBuilder
+    func applyIf<T: View>(_ condition: Bool, apply: (Self) -> T) -> some View {
+        if condition {
+            apply(self)
+        } else {
+            self
+        }
     }
 }

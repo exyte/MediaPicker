@@ -5,10 +5,12 @@
 import SwiftUI
 
 struct LiveCameraCell: View {
+    
+    @Environment(\.scenePhase) private var scenePhase
 
     let action: () -> Void
     
-    @StateObject private var liveCameraViewModel = LiveCameraViewModel()
+    @StateObject private var cameraViewModel = CameraViewModel()
     @State private var orientation = UIDevice.current.orientation
     
     var body: some View {
@@ -16,7 +18,7 @@ struct LiveCameraCell: View {
             action()
         } label: {
             LiveCameraView(
-                session: liveCameraViewModel.captureSession,
+                session: cameraViewModel.captureSession,
                 videoGravity: .resizeAspectFill,
                 orientation: orientation
             )
@@ -25,8 +27,15 @@ struct LiveCameraCell: View {
                     .foregroundColor(.white)
             )
         }
-        .onEnteredBackground(perform: liveCameraViewModel.stopSession)
-        .onEnteredForeground(perform: liveCameraViewModel.startSession)
+        .onChange(of: scenePhase) {
+            Task {
+                if scenePhase == .background {
+                    await cameraViewModel.stopSession()
+                } else if scenePhase == .active {
+                    await cameraViewModel.startSession()
+                }
+            }
+        }
         .onRotate { orientation = $0 }
     }
 }

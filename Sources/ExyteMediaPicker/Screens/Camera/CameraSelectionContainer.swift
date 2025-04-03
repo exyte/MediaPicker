@@ -20,7 +20,7 @@ public struct CameraSelectionView: View {
             if #available(iOS 17.0, *) {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 0) {
-                        ForEach(0..<cameraSelectionService.added.count) { index in
+                        ForEach(0..<cameraSelectionService.added.count, id: \.self) { index in
                             if let mediaModel = cameraSelectionService.added[safe: index] {
                                 FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel), size: size)
                                     .frame(width: size.width, height: size.height)

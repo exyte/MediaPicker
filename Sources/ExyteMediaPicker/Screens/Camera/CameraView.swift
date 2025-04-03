@@ -34,17 +34,15 @@ struct CustomCameraView<CameraViewContent: View>: View {
                 }
             },
             { viewModel.setPickerMode(.cameraSelection) }, // show preview of taken photos
-            { cameraViewModel.takePhoto() }, // takePhoto
-            { cameraViewModel.startVideoCapture() }, // start record video
-            { cameraViewModel.stopVideoCapture() }, // stop record video
-            { cameraViewModel.toggleFlash() }, // flash off/on
-            { cameraViewModel.flipCamera() } // camera back/front
+            { Task { await cameraViewModel.takePhoto() } }, // takePhoto
+            { Task { await cameraViewModel.startVideoCapture() } }, // start record video
+            { Task { await cameraViewModel.stopVideoCapture() } }, // stop record video
+            { Task { await cameraViewModel.toggleFlash() } }, // flash off/on
+            { Task { await cameraViewModel.flipCamera() } } // camera back/front
         )
-        .onReceive(cameraViewModel.$capturedPhoto) {
-            if let photo = $0 {
-                viewModel.pickedMediaUrl = photo
-                didTakePicture()
-            }
+        .onChange(of: cameraViewModel.capturedPhoto) { _ , newValue in
+            viewModel.pickedMediaUrl = newValue
+            didTakePicture()
         }
     }
 }
@@ -53,7 +51,7 @@ struct StandardConrolsCameraView: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @Environment(\.mediaPickerTheme) private var theme
-    @Environment(\.safeAreaInsets) private var safeArea
+    @Environment(\.scenePhase) private var scenePhase
 
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
@@ -80,7 +78,7 @@ struct StandardConrolsCameraView: View {
 
                 Spacer()
             }
-            .safeAreaPadding(.top, safeArea.top)
+            .safeAreaPadding(.top, UIApplication.safeArea.top)
 
             LiveCameraView(
                 session: cameraViewModel.captureSession,
@@ -92,11 +90,13 @@ struct StandardConrolsCameraView: View {
                     Rectangle()
                 }
             }
-            .gesture(
-                MagnificationGesture()
-                    .onChanged(cameraViewModel.zoomChanged(_:))
-                    .onEnded(cameraViewModel.zoomEnded(_:))
-            )
+            .applyIf(cameraViewModel.zoomAllowed) {
+                $0.gesture(
+                    MagnificationGesture()
+                        .onChanged(cameraViewModel.zoomChanged(_:))
+                        .onEnded(cameraViewModel.zoomEnded(_:))
+                )
+            }
 
             VStack(spacing: 10) {
                 if cameraSelectionService.hasSelected {
@@ -127,8 +127,8 @@ struct StandardConrolsCameraView: View {
                 }
 
                 HStack(spacing: 40) {
-                    Button {
-                        cameraViewModel.toggleFlash()
+                    AsyncButton {
+                        await cameraViewModel.toggleFlash()
                     } label: {
                         Image(cameraViewModel.flashEnabled ? "FlashOn" : "FlashOff", bundle: .current)
                     }
@@ -141,8 +141,8 @@ struct StandardConrolsCameraView: View {
                         stopVideoCaptureButton
                     }
 
-                    Button {
-                        cameraViewModel.flipCamera()
+                    AsyncButton {
+                        await cameraViewModel.flipCamera()
                     } label: {
                         Image("FlipCamera", bundle: .current)
                     }
@@ -152,10 +152,17 @@ struct StandardConrolsCameraView: View {
             .padding(.bottom, 50)
         }
         .background(theme.main.cameraBackground)
-        .onEnteredBackground(perform: cameraViewModel.stopSession)
-        .onEnteredForeground(perform: cameraViewModel.startSession)
-        .onReceive(cameraViewModel.$capturedPhoto) {
-            if let photo = $0 {
+        .onChange(of: scenePhase) {
+            Task {
+                if scenePhase == .background {
+                    await cameraViewModel.stopSession()
+                } else if scenePhase == .active {
+                    await cameraViewModel.startSession()
+                }
+            }
+        }
+        .onChange(of: cameraViewModel.capturedPhoto) { _ , newValue in
+            if let photo = newValue {
                 viewModel.pickedMediaUrl = photo
                 didTakePicture()
             }
@@ -183,7 +190,9 @@ struct StandardConrolsCameraView: View {
                 .frame(width: 72, height: 72)
 
             Button {
-                cameraViewModel.takePhoto()
+                Task {
+                    await cameraViewModel.takePhoto()
+                }
             } label: {
                 Circle()
                     .foregroundColor(.white)
@@ -198,8 +207,8 @@ struct StandardConrolsCameraView: View {
                 .stroke(Color.white.opacity(0.4), lineWidth: 6)
                 .frame(width: 72, height: 72)
 
-            Button {
-                cameraViewModel.startVideoCapture()
+            AsyncButton {
+                await cameraViewModel.startVideoCapture()
                 videoCaptureInProgress = true
             } label: {
                 Circle()
@@ -215,8 +224,8 @@ struct StandardConrolsCameraView: View {
                 .stroke(Color.white.opacity(0.4), lineWidth: 6)
                 .frame(width: 72, height: 72)
 
-            Button {
-                cameraViewModel.stopVideoCapture()
+            AsyncButton {
+                await cameraViewModel.stopVideoCapture()
                 videoCaptureInProgress = false
             } label: {
                 RoundedRectangle(cornerRadius: 10)

@@ -10,7 +10,6 @@ struct FullscreenContainer: View {
 
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
-    @Environment(\.safeAreaInsets) private var safeArea
 
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
@@ -39,7 +38,7 @@ struct FullscreenContainer: View {
                 contentView(g.size)
             }
         }
-        .safeAreaPadding(.top, safeArea.top)
+        .safeAreaPadding(.top, UIApplication.safeArea.top)
         .background {
             theme.main.fullscreenPhotoBackground
                 .ignoresSafeArea()
@@ -52,7 +51,7 @@ struct FullscreenContainer: View {
         .onDisappear {
             currentFullscreenMedia = nil
         }
-        .onChange(of: selection) { newValue in
+        .onChange(of: selection) {
             if let selectedMediaModel {
                 currentFullscreenMedia = Media(source: selectedMediaModel)
             }

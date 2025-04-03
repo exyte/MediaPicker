@@ -9,7 +9,7 @@ import SwiftUI
 
 protocol MediaModelProtocol: Sendable {
     var mediaType: MediaType? { get }
-    var duration: CGFloat? { get }
+    var duration: CGFloat? { get async }
 
     func getURL() async -> URL?
     func getThumbnailURL() async -> URL?

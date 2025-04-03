@@ -26,7 +26,15 @@ extension URLMediaModel: MediaModelProtocol {
     }
 
     var duration: CGFloat? {
-        CMTimeGetSeconds(AVURLAsset(url: url).duration)
+        get async {
+            let asset = AVURLAsset(url: url)
+            do {
+                let duration = try await asset.load(.duration)
+                return CGFloat(CMTimeGetSeconds(duration))
+            } catch {
+                return nil
+            }
+        }
     }
 
     func getURL() async -> URL? {

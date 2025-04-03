@@ -21,15 +21,3 @@ extension UIImage.Orientation {
 
     static var `default`: UIImage.Orientation { .right }
 }
-
-extension AVCaptureVideoOrientation {
-
-    init(_ orientation: UIDeviceOrientation) {
-        switch orientation {
-        case .landscapeLeft: self = .landscapeRight
-        case .landscapeRight: self = .landscapeLeft
-        default: self = .portrait
-        }
-    }
-
-}

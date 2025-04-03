@@ -25,7 +25,9 @@ public extension Media {
     }
 
     var duration: CGFloat? {
-        source.duration
+        get async {
+            await source.duration
+        }
     }
 
     func getURL() async -> URL? {

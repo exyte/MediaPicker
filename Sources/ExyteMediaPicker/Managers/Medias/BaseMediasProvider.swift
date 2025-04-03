@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import Combine
 import Photos
 import SwiftUI
 
@@ -20,7 +19,6 @@ class BaseMediasProvider: ObservableObject {
 
     private var timerTask: Task<Void, Never>?
     private var cancellableTask: Task<Void, Never>?
-    private var cancellable: AnyCancellable?
 
     init(selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure?, massFilterClosure: MediaPicker.MassFilterClosure?) {
         self.selectionParamsHolder = selectionParamsHolder

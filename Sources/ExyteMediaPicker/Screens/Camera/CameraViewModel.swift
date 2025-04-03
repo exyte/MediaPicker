@@ -9,8 +9,15 @@ import Foundation
 import AVFoundation
 import UIKit
 import SwiftUI
+import Combine
 
-final class CameraViewModel: NSObject, ObservableObject {
+#if compiler(>=6.0)
+extension AVCaptureSession: @retroactive @unchecked Sendable { }
+#else
+extension AVCaptureSession: @unchecked Sendable { }
+#endif
+
+final actor CameraViewModel: NSObject, ObservableObject {
 
     struct CaptureDevice {
         let device: AVCaptureDevice
@@ -19,16 +26,16 @@ final class CameraViewModel: NSObject, ObservableObject {
         let maxZoom: CGFloat
     }
 
-    @Published private(set) var flashEnabled = false
-    @Published private(set) var snapOverlay = false
-    @Published private(set) var capturedPhoto: URL?
+    @MainActor @Published private(set) var flashEnabled = false
+    @MainActor @Published private(set) var snapOverlay = false
+    @MainActor @Published private(set) var zoomAllowed = false
+    @MainActor @Published private(set) var capturedPhoto: URL?
 
     let captureSession = AVCaptureSession()
 
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureMovieFileOutput()
     private let motionManager = MotionManager()
-    private let sessionQueue = DispatchQueue(label: "LiveCameraQueue")
     private var captureDevice: CaptureDevice?
     private var lastPhotoActualOrientation: UIDeviceOrientation?
 
@@ -37,44 +44,49 @@ final class CameraViewModel: NSObject, ObservableObject {
     private let dualCameraMaxScale: CGFloat = 8
     private let tripleCameraMaxScale: CGFloat = 12
     private var lastScale: CGFloat = 1
-    private var zoomAllowed: Bool { captureDevice?.position == .back }
 
     override init() {
         super.init()
-        sessionQueue.async { [weak self] in
-            self?.configureSession()
-            self?.captureSession.startRunning()
+        Task {
+            await configureSession()
+            captureSession.startRunning()
         }
-    }
-
-    deinit {
-        captureSession.stopRunning()
     }
 
     func startSession() {
-        sessionQueue.async { [weak self] in
-            self?.captureSession.startRunning()
-        }
+        captureSession.startRunning()
     }
 
     func stopSession() {
-        sessionQueue.async { [weak self] in
-            self?.captureSession.stopRunning()
+        captureSession.stopRunning()
+    }
+
+    func setCapturedPhoto(_ photo: URL?) {
+        DispatchQueue.main.async {
+            self.capturedPhoto = photo
         }
     }
 
-    func takePhoto() {
+    func takePhoto() async {
         let settings = AVCapturePhotoSettings()
-        settings.flashMode = flashEnabled ? .on : .off
+        settings.flashMode = await flashEnabled ? .on : .off
         photoOutput.capturePhoto(with: settings, delegate: self)
         lastPhotoActualOrientation = motionManager.orientation
 
-        withAnimation(.linear(duration: 0.1)) { snapOverlay = true }
-        withAnimation(.linear(duration: 0.1).delay(0.1)) { snapOverlay = false }
+        withAnimation(.linear(duration: 0.1)) {
+            DispatchQueue.main.async {
+                self.snapOverlay = true
+            }
+        }
+        withAnimation(.linear(duration: 0.1).delay(0.1)) {
+            DispatchQueue.main.async {
+                self.snapOverlay = false
+            }
+        }
     }
 
-    func startVideoCapture() {
-        setVideoTorchMode(flashEnabled ? .on : .off)
+    func startVideoCapture() async {
+        setVideoTorchMode(await flashEnabled ? .on : .off)
 
         let videoUrl = FileManager.getTempUrl()
         videoOutput.startRecording(to: videoUrl, recordingDelegate: self)
@@ -94,34 +106,39 @@ final class CameraViewModel: NSObject, ObservableObject {
     }
 
     func flipCamera() {
-        sessionQueue.async { [weak self] in
-            guard let session = self?.captureSession, let input = session.inputs.first else {
-                return
-            }
-
-            let newPosition: AVCaptureDevice.Position = self?.captureDevice?.position == .back ? .front : .back
-
-            session.beginConfiguration()
-            session.removeInput(input)
-            self?.addInput(to: session, for: newPosition)
-            session.commitConfiguration()
+        let session = captureSession
+        guard let input = session.inputs.first else {
+            return
         }
+        let newPosition: AVCaptureDevice.Position = captureDevice?.position == .back ? .front : .back
+
+        session.beginConfiguration()
+        session.removeInput(input)
+        addInput(to: session, for: newPosition)
+        session.commitConfiguration()
     }
 
     func toggleFlash() {
-        flashEnabled.toggle()
+        DispatchQueue.main.async {
+            self.flashEnabled.toggle()
+        }
     }
 
-    func zoomChanged(_ scale: CGFloat) {
-        if !zoomAllowed { return }
-        zoomCamera(resolveScale(scale))
+    nonisolated func zoomChanged(_ scale: CGFloat) {
+        Task {
+            await zoomCamera(await resolveScale(scale))
+        }
     }
 
-    func zoomEnded(_ scale: CGFloat) {
-        if !zoomAllowed { return }
+    nonisolated func zoomEnded(_ scale: CGFloat) {
+        Task {
+            await setLastScale(await resolveScale(scale))
+            await zoomCamera(lastScale)
+        }
+    }
 
-        lastScale = resolveScale(scale)
-        zoomCamera(lastScale)
+    private func setLastScale(_ scale: CGFloat) {
+        self.lastScale = scale
     }
 
     private func resolveScale(_ gestureScale: CGFloat) -> CGFloat {
@@ -148,6 +165,10 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     private func addInput(to session: AVCaptureSession, for position: AVCaptureDevice.Position = .back) {
         guard let captureDevice = selectCaptureDevice(for: position) else { return }
+        let zoomAllowed = captureDevice.position == .back
+        Task { @MainActor in
+            self.zoomAllowed = zoomAllowed
+        }
         guard let captureDeviceInput = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         guard session.canAddInput(captureDeviceInput) else { return }
         session.addInput(captureDeviceInput)
@@ -189,12 +210,15 @@ final class CameraViewModel: NSObject, ObservableObject {
         guard session.canAddOutput(videoOutput) else { return }
         session.addOutput(videoOutput)
 
-        updateOutputOrientation()
+        updateOutputOrientation(photoOutput)
+        updateOutputOrientation(videoOutput)
     }
 
-    private func updateOutputOrientation() {
-        guard let connection = photoOutput.connection(with: .video), connection.isVideoOrientationSupported else { return }
-        connection.videoOrientation = .portrait
+    private func updateOutputOrientation(_ output: AVCaptureOutput) {
+        guard let connection = output.connection(with: .video) else { return }
+        if connection.isVideoRotationAngleSupported(0) {
+            connection.videoRotationAngle = 0
+        }
     }
 
     private func selectCaptureDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
@@ -222,42 +246,45 @@ final class CameraViewModel: NSObject, ObservableObject {
 
     private func selectAudioCaptureDevice() -> AVCaptureDevice? {
         let session = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInMicrophone],
+            deviceTypes: [.microphone],
             mediaType: .audio,
             position: .unspecified)
 
         return session.devices.first
     }
-
 }
 
 extension CameraViewModel: AVCapturePhotoCaptureDelegate {
-    func photoOutput(
+    nonisolated func photoOutput(
         _ output: AVCapturePhotoOutput,
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
         guard let cgImage = photo.cgImageRepresentation() else { return }
 
-        let photoOrientation: UIImage.Orientation
-        if let orientation = lastPhotoActualOrientation {
-            photoOrientation = UIImage.Orientation(orientation)
-        } else {
-            photoOrientation = UIImage.Orientation.default
+        Task {
+            let photoOrientation: UIImage.Orientation
+            if let orientation = await lastPhotoActualOrientation {
+                photoOrientation = UIImage.Orientation(orientation)
+            } else {
+                photoOrientation = UIImage.Orientation.default
+            }
+
+            guard let data = UIImage(
+                cgImage: cgImage,
+                scale: 1,
+                orientation: photoOrientation
+            ).jpegData(compressionQuality: 0.8) else { return }
+
+            await setCapturedPhoto(FileManager.storeToTempDir(data: data))
         }
-
-        guard let data = UIImage(
-            cgImage: cgImage,
-            scale: 1,
-            orientation: photoOrientation
-        ).jpegData(compressionQuality: 0.8) else { return }
-
-        capturedPhoto = FileManager.storeToTempDir(data: data)
     }
 }
 
 extension CameraViewModel: AVCaptureFileOutputRecordingDelegate {
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        capturedPhoto = outputFileURL
+    nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        Task {
+            await setCapturedPhoto(outputFileURL)
+        }
     }
 }
