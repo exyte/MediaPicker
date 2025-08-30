@@ -90,13 +90,19 @@ struct StandardConrolsCameraView: View {
                     Rectangle()
                 }
             }
-            .applyIf(cameraViewModel.zoomAllowed) {
-                $0.gesture(
-                    MagnificationGesture()
-                        .onChanged(cameraViewModel.zoomChanged(_:))
-                        .onEnded(cameraViewModel.zoomEnded(_:))
-                )
-            }
+            .gesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        if cameraViewModel.zoomAllowed {
+                            cameraViewModel.zoomChanged(value)
+                        }
+                    }
+                    .onEnded { value in
+                        if cameraViewModel.zoomAllowed {
+                            cameraViewModel.zoomEnded(value)
+                        }
+                    }
+            )
 
             VStack(spacing: 10) {
                 if cameraSelectionService.hasSelected {

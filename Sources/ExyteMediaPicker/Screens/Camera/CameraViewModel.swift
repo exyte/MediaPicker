@@ -107,7 +107,9 @@ final actor CameraViewModel: NSObject, ObservableObject {
 
     func flipCamera() {
         let session = captureSession
-        guard let input = session.inputs.first else {
+        guard let input = session.inputs
+            .compactMap({ $0 as? AVCaptureDeviceInput })
+            .first(where: { $0.device.hasMediaType(.video) }) else {
             return
         }
         let newPosition: AVCaptureDevice.Position = captureDevice?.position == .back ? .front : .back
@@ -173,10 +175,13 @@ final actor CameraViewModel: NSObject, ObservableObject {
         guard session.canAddInput(captureDeviceInput) else { return }
         session.addInput(captureDeviceInput)
 
-        guard let captureAudioDevice = selectAudioCaptureDevice() else { return }
-        guard let captureAudioDeviceInput = try? AVCaptureDeviceInput(device: captureAudioDevice) else { return }
-        guard session.canAddInput(captureAudioDeviceInput) else { return }
-        session.addInput(captureAudioDeviceInput)
+        let hasAudioInput = session.inputs.contains { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.audio) == true }
+        if !hasAudioInput {
+            guard let captureAudioDevice = selectAudioCaptureDevice() else { return }
+            guard let captureAudioDeviceInput = try? AVCaptureDeviceInput(device: captureAudioDevice) else { return }
+            guard session.canAddInput(captureAudioDeviceInput) else { return }
+            session.addInput(captureAudioDeviceInput)
+        }
 
         let defaultZoom = CGFloat(truncating: captureDevice.virtualDeviceSwitchOverVideoZoomFactors.first ?? minScale as NSNumber)
 
