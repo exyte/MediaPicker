@@ -2,8 +2,8 @@
 //  Created by Alex.M on 27.05.2022.
 //
 
-import SwiftUI
 import AnchoredPopup
+import SwiftUI
 
 struct AlbumView: View {
 
@@ -19,7 +19,7 @@ struct AlbumView: View {
 
     var shouldShowCamera: Bool
     var selectionParamsHolder: SelectionParamsHolder
-    var dismiss: ()->()
+    var dismiss: () -> Void
 
     @State private var fullscreenItem: AssetMediaModel.ID?
 
@@ -41,23 +41,31 @@ struct AlbumView: View {
     var content: some View {
         ScrollView {
             VStack(spacing: 0) {
-                PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
+                PermissionActionView(
+                    type: .library(
+                        permissionsService.photoLibraryPermissionStatus
+                    )
+                )
 
                 if shouldShowCamera {
-                    PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
+                    PermissionActionView(
+                        type: .camera(permissionsService.cameraPermissionStatus)
+                    )
                 }
 
                 if viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
                     ProgressView()
                         .padding()
-                } else if !viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
+                } else if !viewModel.isLoading,
+                    viewModel.assetMediaModels.isEmpty
+                {
                     Text("Empty data")
                         .font(.title3)
                         .foregroundColor(theme.main.pickerText)
                 } else {
                     mediasGrid
                 }
-                
+
                 Spacer()
             }
             .frame(maxWidth: .infinity)
@@ -72,13 +80,15 @@ struct AlbumView: View {
 
     var mediasGrid: some View {
         MediasGrid(viewModel.assetMediaModels) {
-#if !targetEnvironment(simulator)
-            if shouldShowCamera && permissionsService.cameraPermissionStatus == .authorized {
-                LiveCameraCell {
-                    showingCamera = true
+            #if !targetEnvironment(simulator)
+                if shouldShowCamera
+                    && permissionsService.cameraPermissionStatus == .authorized
+                {
+                    LiveCameraCell {
+                        showingCamera = true
+                    }
                 }
-            }
-#endif
+            #endif
         } content: { assetMediaModel, index, cellSize in
             cellView(assetMediaModel, index, cellSize)
         } loadingCell: {
@@ -90,50 +100,56 @@ struct AlbumView: View {
                 .aspectRatio(1, contentMode: .fit)
             }
         }
-        .onChange(of: viewModel.assetMediaModels) { _ , newValue in
+        .onChange(of: viewModel.assetMediaModels) { _, newValue in
             selectionService.updateSelection(with: newValue)
         }
     }
 
     @ViewBuilder
-    func cellView(_ assetMediaModel: AssetMediaModel, _ index: Int, _ size: CGFloat) -> some View {
+    func cellView(
+        _ assetMediaModel: AssetMediaModel,
+        _ index: Int,
+        _ size: CGFloat
+    ) -> some View {
         let imageButton = Button {
             if keyboardHeightHelper.keyboardDisplayed {
                 dismissKeyboard()
             }
-            if !selectionParamsHolder.showFullscreenPreview { // select immediately
+            if !selectionParamsHolder.showFullscreenPreview {  // select immediately
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
                 if selectionService.mediaSelectionLimit == 1 {
                     dismiss()
                 }
-            }
-            else if fullscreenItem == nil {
+            } else if fullscreenItem == nil {
                 fullscreenItem = assetMediaModel.id
             }
         } label: {
             let id = "fullscreen_photo_\(index)"
-            MediaCell(viewModel: MediaViewModel(assetMediaModel: assetMediaModel), size: size)
-                .applyIf(selectionParamsHolder.showFullscreenPreview) {
-                    $0.useAsPopupAnchor(id: id) {
-                        FullscreenContainer(
-                            currentFullscreenMedia: $currentFullscreenMedia,
-                            selection: $fullscreenItem,
-                            animationID: id,
-                            assetMediaModels: viewModel.assetMediaModels,
-                            selectionParamsHolder: selectionParamsHolder,
-                            dismiss: dismiss
-                        )
-                        .environmentObject(selectionService)
-                    } customize: {
-                        $0.closeOnTap(false)
-                            .animation(.easeIn(duration: 0.2))
-                    }
-                    .simultaneousGesture(
-                        TapGesture().onEnded {
-                            fullscreenItem = assetMediaModel.id
-                        }
+            MediaCell(
+                viewModel: MediaViewModel(assetMediaModel: assetMediaModel),
+                size: size
+            )
+            .applyIf(selectionParamsHolder.showFullscreenPreview) {
+                $0.useAsPopupAnchor(id: id) {
+                    FullscreenContainer(
+                        currentFullscreenMedia: $currentFullscreenMedia,
+                        selection: $fullscreenItem,
+                        animationID: id,
+                        assetMediaModels: viewModel.assetMediaModels,
+                        selectionParamsHolder: selectionParamsHolder,
+                        dismiss: dismiss
                     )
+                    .environmentObject(selectionService)
+                } customize: {
+                    $0.closeOnTap(false)
+                        .animation(.easeIn(duration: 0.2))
                 }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        fullscreenItem = assetMediaModel.id
+                    }
+                )
+            }
         }
         .buttonStyle(MediaButtonStyle())
         .contentShape(Rectangle())
@@ -141,7 +157,14 @@ struct AlbumView: View {
         if selectionService.mediaSelectionLimit == 1 {
             imageButton
         } else {
-            SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParamsHolder: selectionParamsHolder) {
+            SelectableView(
+                selected: selectionService.index(of: assetMediaModel),
+                isFullscreen: false,
+                canSelect: selectionService.canSelect(
+                    assetMediaModel: assetMediaModel
+                ),
+                selectionParamsHolder: selectionParamsHolder
+            ) {
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
             } content: {
                 imageButton

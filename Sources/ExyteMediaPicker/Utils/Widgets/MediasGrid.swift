@@ -15,10 +15,12 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
 
     @Environment(\.mediaPickerTheme) private var theme
 
-    public init(_ data: [Element],
-                @ViewBuilder camera: @escaping () -> Camera,
-                @ViewBuilder content: @escaping (Element, Int, CGFloat) -> Content,
-                @ViewBuilder loadingCell: @escaping () -> LoadingCell) {
+    public init(
+        _ data: [Element],
+        @ViewBuilder camera: @escaping () -> Camera,
+        @ViewBuilder content: @escaping (Element, Int, CGFloat) -> Content,
+        @ViewBuilder loadingCell: @escaping () -> LoadingCell
+    ) {
         self.data = data
         self.camera = camera
         self.content = content
@@ -26,7 +28,9 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
     }
 
     public var body: some View {
-        let (columnWidth, columns) = calculateColumnWidth(spacing: theme.cellStyle.columnsSpacing)
+        let (columnWidth, columns) = calculateColumnWidth(
+            spacing: theme.cellStyle.columnsSpacing
+        )
         LazyVGrid(columns: columns, spacing: theme.cellStyle.rowSpacing) {
             camera()
             ForEach(data.indices, id: \.self) { index in
