@@ -341,6 +341,11 @@ public extension MediaPicker {
         selectionParamsHolder.selectionLimit = limit
         return self
     }
+    
+    func liveCameraStyle(_ style: LiveCameraStyle) -> MediaPicker {
+        selectionParamsHolder.liveCameraStyle = style
+        return self
+    }
 
     func showFullscreenPreview(_ show: Bool) -> MediaPicker {
         selectionParamsHolder.showFullscreenPreview = show

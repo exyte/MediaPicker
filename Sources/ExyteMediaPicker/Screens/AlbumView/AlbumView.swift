@@ -90,12 +90,12 @@ struct AlbumView: View {
     var mediasGrid: some View {
         MediasGrid(
             viewModel.assetMediaModels,
+            liveCameraStyle: selectionParamsHolder.liveCameraStyle,
             showingLiveCameraCell: canShowLiveCameraCell
         ) {
             if canShowLiveCameraCell {
                 LiveCameraCell {
                     showingCamera = true
-
                 }
             }
 
