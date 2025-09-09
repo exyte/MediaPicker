@@ -78,17 +78,26 @@ struct AlbumView: View {
         }
     }
 
+    private var canShowLiveCameraCell: Bool {
+        #if targetEnvironment(simulator)
+            return false
+        #else
+            return shouldShowCamera
+                && permissionsService.cameraPermissionStatus == .authorized
+        #endif
+    }
+
     var mediasGrid: some View {
-        MediasGrid(viewModel.assetMediaModels) {
-            #if !targetEnvironment(simulator)
-                if shouldShowCamera
-                    && permissionsService.cameraPermissionStatus == .authorized
-                {
-                    LiveCameraCell {
-                        showingCamera = true
-                    }
+        MediasGrid(
+            viewModel.assetMediaModels,
+            showingLiveCameraCell: canShowLiveCameraCell
+        ) {
+            if canShowLiveCameraCell {
+                LiveCameraCell {
+                    showingCamera = true
                 }
-            #endif
+            }
+
         } content: { assetMediaModel, index, cellSize in
             cellView(assetMediaModel, index, cellSize)
         } loadingCell: {
@@ -121,6 +130,7 @@ struct AlbumView: View {
                     dismiss()
                 }
             } else if fullscreenItem == nil {
+
                 fullscreenItem = assetMediaModel.id
             }
         } label: {
@@ -138,6 +148,7 @@ struct AlbumView: View {
                         assetMediaModels: viewModel.assetMediaModels,
                         selectionParamsHolder: selectionParamsHolder,
                         dismiss: dismiss
+
                     )
                     .environmentObject(selectionService)
                 } customize: {
