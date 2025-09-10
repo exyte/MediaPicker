@@ -5,7 +5,14 @@
 import AnchoredPopup
 import SwiftUI
 
+public enum LiveCameraCellStyle {
+    case none
+    case small
+    case prominant
+}
+
 struct AlbumView: View {
+    
 
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
@@ -17,7 +24,7 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    var shouldShowCamera: Bool
+    var liveCameraCell: LiveCameraCellStyle
     var selectionParamsHolder: SelectionParamsHolder
     var dismiss: () -> Void
 
@@ -47,7 +54,7 @@ struct AlbumView: View {
                     )
                 )
 
-                if shouldShowCamera {
+                if liveCameraCell != .none {
                     PermissionActionView(
                         type: .camera(permissionsService.cameraPermissionStatus)
                     )
@@ -77,23 +84,25 @@ struct AlbumView: View {
             }
         }
     }
-
-    private var canShowLiveCameraCell: Bool {
+    
+    private func getLiveCameraCell() -> LiveCameraCellStyle {
         #if targetEnvironment(simulator)
-            return false
+        return .none
         #else
-            return shouldShowCamera
-                && permissionsService.cameraPermissionStatus == .authorized
+        return if permissionsService.cameraPermissionStatus != .authorized {
+            .none
+        } else {
+            liveCameraCell
+        }
         #endif
     }
 
     var mediasGrid: some View {
         MediasGrid(
             viewModel.assetMediaModels,
-            liveCameraStyle: selectionParamsHolder.liveCameraStyle,
-            showingLiveCameraCell: canShowLiveCameraCell
+            liveCameraCell: getLiveCameraCell(),
         ) {
-            if canShowLiveCameraCell {
+            if getLiveCameraCell() != .none {
                 LiveCameraCell {
                     showingCamera = true
                 }
