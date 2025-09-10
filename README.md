@@ -164,8 +164,7 @@ MediaPicker(
 - `flipCamera` - camera back/front
 
 ## Available modifiers
-`showLiveCameraCell` - show live camera feed cell in the top left corner of the gallery grid
-`liveCameraStyle` - shows the live camera either as a square or portrait (2 cell height), type .square, .portrait defaults to .square     
+`liveCameraCell` - show live camera feed cell in the top left corner of the gallery grid, type .none, .small, .prominant (2 cell height) defaults to .small
 `mediaSelectionType` - limit displayed media type: .photo, .video or both   
 `mediaSelectionStyle` - a way to display selected/unselected media state: a counter or a simple checkmark   
 `mediaSelectionLimit` - the maximum selection quantity allowed, 'nil' for unlimited selection   
