@@ -2,6 +2,12 @@
 //  Created by Alex.M on 27.05.2022.
 //
 
+public enum LiveCameraCellStyle {
+    case none
+    case small
+    case prominant
+}
+
 import SwiftUI
 import AnchoredPopup
 
@@ -17,7 +23,7 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    var shouldShowCamera: Bool
+    var liveCameraCell: LiveCameraCellStyle
     var selectionParamsHolder: SelectionParamsHolder
     var dismiss: ()->()
 
@@ -43,7 +49,7 @@ struct AlbumView: View {
             VStack(spacing: 0) {
                 PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
-                if shouldShowCamera {
+                if liveCameraCell != .none {
                     PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
                 }
 
@@ -69,11 +75,23 @@ struct AlbumView: View {
             }
         }
     }
+    
+    private func getLiveCameraCell() -> LiveCameraCellStyle {
+        #if targetEnvironment(simulator)
+        return .none
+        #else
+        return if permissionsService.cameraPermissionStatus != .authorized {
+            .none
+        } else {
+            liveCameraCell
+        }
+        #endif
+    }
 
     var mediasGrid: some View {
-        MediasGrid(viewModel.assetMediaModels) {
+        MediasGrid(viewModel.assetMediaModels, liveCameraCell: getLiveCameraCell()) {
 #if !targetEnvironment(simulator)
-            if shouldShowCamera && permissionsService.cameraPermissionStatus == .authorized {
+            if getLiveCameraCell() != .none && permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {
                     showingCamera = true
                 }
