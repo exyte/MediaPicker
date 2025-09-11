@@ -49,7 +49,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @Binding private var currentFullscreenMediaBinding: Media?
 
     private var pickerMode: Binding<MediaPickerMode>?
-    private var liveCameraCell: LiveCameraCellStyle = LiveCameraCellStyle.none
     private var didPressCancelCamera: (() -> Void)?
     private var orientationHandler: MediaPickerOrientationHandler = {_ in}
     private var filterClosure: FilterClosure?
@@ -108,7 +107,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .onAppear {
             PermissionsService.shared.updatePhotoLibraryAuthorizationStatus()
 #if !targetEnvironment(simulator)
-            if liveCameraCell != .none {
+            if selectionParamsHolder.liveCameraCell != .none {
                 PermissionsService.shared.requestCameraPermission()
             } else {
                 PermissionsService.shared.updateCameraAuthorizationStatus()
@@ -149,7 +148,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, liveCameraCell: liveCameraCell, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
             // has media limit of 1, and it's been selected
             isPresented = false
         }
@@ -322,9 +321,8 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 public extension MediaPicker {
 
     func liveCameraCell(_ style: LiveCameraCellStyle = .small) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.liveCameraCell = style
-        return mediaPicker
+        selectionParamsHolder.liveCameraCell = style
+        return self
     }
 
     func mediaSelectionType(_ type: MediaSelectionType) -> MediaPicker {
