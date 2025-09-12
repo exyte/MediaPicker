@@ -4,8 +4,8 @@
 
 public enum LiveCameraCellStyle {
     case none
-    case small
-    case prominant
+    case small // 1 cell in photos grid
+    case prominant // 2 cell height
 }
 
 import SwiftUI
