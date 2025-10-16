@@ -58,7 +58,6 @@ struct ContentView: View {
                 isPresented: $showDefaultMediaPicker,
                 onChange: { medias = $0 }
             )
-            //.showLiveCameraCell()
             .mediaSelectionType(.photoAndVideo)
             .mediaSelectionStyle(.count)
             .orientationHandler {

@@ -14,8 +14,8 @@ public struct AlbumSelectionView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    let liveCameraCell: LiveCameraCellStyle
     let selectionParamsHolder: SelectionParamsHolder
+    let mediaPickerParamsHolder: MediaPickerParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
     var dismiss: ()->()
@@ -27,8 +27,8 @@ public struct AlbumSelectionView: View {
                 viewModel: AllMediasProvider(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure),
                 showingCamera: $showingCamera,
                 currentFullscreenMedia: $currentFullscreenMedia,
-                liveCameraCell: liveCameraCell,
                 selectionParamsHolder: selectionParamsHolder,
+                mediaPickerParamsHolder: mediaPickerParamsHolder,
                 dismiss: dismiss
             )
         case .albums:
@@ -40,6 +40,7 @@ public struct AlbumSelectionView: View {
                 showingCamera: $showingCamera,
                 currentFullscreenMedia: $currentFullscreenMedia,
                 selectionParamsHolder: selectionParamsHolder,
+                mediaPickerParamsHolder: mediaPickerParamsHolder,
                 filterClosure: filterClosure,
                 massFilterClosure: massFilterClosure
             )
@@ -49,11 +50,11 @@ public struct AlbumSelectionView: View {
         case .album(let album):
             if let albumModel = viewModel.getAlbumModel(album) {
                 AlbumView(
-                    viewModel: AlbumMediasProvider(album: albumModel, selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure),
+                    viewModel: AlbumMediasProvider(album: albumModel, selectionParamsHolder: SelectionParamsHolder(), filterClosure: filterClosure, massFilterClosure: massFilterClosure),
                     showingCamera: $showingCamera,
                     currentFullscreenMedia: $currentFullscreenMedia,
-                    liveCameraCell: .none,
                     selectionParamsHolder: selectionParamsHolder,
+                    mediaPickerParamsHolder: MediaPickerParamsHolder(liveCameraCell: .none),
                     dismiss: dismiss
                 )
                 .id(album.id)

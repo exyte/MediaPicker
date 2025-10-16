@@ -83,7 +83,7 @@ struct CustomizedMediaPicker: View {
                     }
             }
         )
-        .liveCameraCell(.small)
+        .liveCameraCell(.prominant)
         .albums($albums)
         .pickerMode($mediaPickerMode)
         .currentFullscreenMedia($currentFullscreenMedia)
