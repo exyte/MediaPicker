@@ -23,8 +23,8 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    var liveCameraCell: LiveCameraCellStyle
     var selectionParamsHolder: SelectionParamsHolder
+    var mediaPickerParamsHolder: MediaPickerParamsHolder
     var dismiss: ()->()
 
     @State private var fullscreenItem: AssetMediaModel.ID?
@@ -49,7 +49,7 @@ struct AlbumView: View {
             VStack(spacing: 0) {
                 PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
-                if liveCameraCell != .none {
+                if mediaPickerParamsHolder.liveCameraCell != .none {
                     PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
                 }
 
@@ -83,7 +83,7 @@ struct AlbumView: View {
         return if permissionsService.cameraPermissionStatus != .authorized {
             .none
         } else {
-            liveCameraCell
+            mediaPickerParamsHolder.liveCameraCell
         }
         #endif
     }

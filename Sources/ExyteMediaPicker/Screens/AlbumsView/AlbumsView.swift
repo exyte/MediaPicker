@@ -17,6 +17,7 @@ struct AlbumsView: View {
     @Binding var currentFullscreenMedia: Media?
 
     let selectionParamsHolder: SelectionParamsHolder
+    let mediaPickerParamsHolder: MediaPickerParamsHolder
     let filterClosure: MediaPicker.FilterClosure?
     let massFilterClosure: MediaPicker.MassFilterClosure?
 
