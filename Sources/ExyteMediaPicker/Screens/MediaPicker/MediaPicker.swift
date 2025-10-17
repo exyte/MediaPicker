@@ -328,9 +328,8 @@ public extension MediaPicker {
 
     @available(*, deprecated, message: "use liveCameraCell instead")
     func showLiveCameraCell(_ show: Bool = true) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.liveCameraCell = show ? .small : .none
-        return mediaPicker
+        mediaPickerParamsHolder.liveCameraCell = show ? .small : .none
+        return self
     }
 
     func mediaSelectionType(_ type: MediaSelectionType) -> MediaPicker {
