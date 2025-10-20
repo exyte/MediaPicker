@@ -352,7 +352,10 @@ public extension MediaPicker {
         return self
     }
 
-    func setMediaPickerParameters(_ params: MediaPickerParamsHolder) -> MediaPicker {
+    func setMediaPickerParameters(_ params: MediaPickerParamsHolder?) -> MediaPicker {
+        guard let params = params else {
+            return self
+        }
         var mediaPicker = self
         mediaPicker.mediaPickerParamsHolder = params
         return mediaPicker
