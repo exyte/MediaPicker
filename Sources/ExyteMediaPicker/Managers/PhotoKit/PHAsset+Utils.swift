@@ -102,28 +102,33 @@ extension PHAsset {
 
     func getThumbnailURL() async -> URL? {
         guard let url = await getURL() else { return nil }
-        if mediaType == .image {
-            return url
-        }
-
-        let asset: AVAsset = AVAsset(url: url)
-        if let thumbnailData = asset.generateThumbnail() {
+        switch mediaType {
+        case .image:
+            guard let image = UIImage.from(url: url),
+                let thumbnailData = image.generateThumbnail()
+            else { return nil }
             return FileManager.storeToTempDir(data: thumbnailData)
+        case .video:
+            let asset = AVAsset(url: url)
+            guard let thumbnailData = asset.generateThumbnail() else { return nil }
+            return FileManager.storeToTempDir(data: thumbnailData)
+        default: return nil
         }
-
-        return nil
     }
 
     func getThumbnailData() async -> Data? {
-        if mediaType == .image {
-            return try? await self.getData()
-        }
-        else if mediaType == .video {
+        switch mediaType {
+        case .image:
+            guard let data = try? await getData(),
+                let image = UIImage(data: data)
+            else { return nil }
+            return image.generateThumbnail()
+        case .video:
             guard let url = await getURL() else { return nil }
             let asset: AVAsset = AVAsset(url: url)
             return asset.generateThumbnail()
+        default: return nil
         }
-        return nil
     }
 }
 
@@ -216,6 +221,32 @@ extension AVAsset {
             print(error)
         }
         return nil
+    }
+}
+
+extension UIImage {
+
+    enum ThumbnailQuality {
+        case low
+        case medium
+        case high
+
+        var compressionValue: CGFloat {
+            switch self {
+            case .low: return 0.3
+            case .medium: return 0.6
+            case .high: return 0.8
+            }
+        }
+    }
+
+    static func from(url: URL) -> UIImage? {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+
+    func generateThumbnail(quality: ThumbnailQuality = .medium) -> Data? {
+        jpegData(compressionQuality: quality.compressionValue)
     }
 }
 
