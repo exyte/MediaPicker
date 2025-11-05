@@ -44,7 +44,7 @@ extension URLMediaModel: MediaModelProtocol {
     func getThumbnailURL() async -> URL? {
         switch mediaType {
         case .image:
-            return url
+            return await url.getThumbnailURL()
         case .video:
             return await url.getThumbnailURL()
         case .none:
@@ -59,7 +59,7 @@ extension URLMediaModel: MediaModelProtocol {
     func getThumbnailData() async -> Data? {
         switch mediaType {
         case .image:
-            return try? Data(contentsOf: url)
+            return await url.getThumbnailData()
         case .video:
             return await url.getThumbnailData()
         case .none:
