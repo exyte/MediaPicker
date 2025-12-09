@@ -115,6 +115,7 @@ struct FullscreenContainer: View {
             if let selectedMediaModel = selectedMediaModel {
                 if selectionParamsHolder.selectionLimit == 1 {
                     Button("Select") {
+                        AnchoredPopup.launchShrinkingAnimation(id: animationID)
                         selectionService.onSelect(assetMediaModel: selectedMediaModel)
                         dismiss()
                     }
