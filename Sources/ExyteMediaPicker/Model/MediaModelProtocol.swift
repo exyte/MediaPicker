@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol MediaModelProtocol: Sendable {
+public protocol MediaModelProtocol: Sendable {
     var mediaType: MediaType? { get }
     var duration: CGFloat? { get async }
 
