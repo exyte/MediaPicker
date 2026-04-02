@@ -38,7 +38,6 @@ public struct AlbumSelectionView: View {
                 ),
                 mediaPickerViewModel: viewModel,
                 showingCamera: $showingCamera,
-                currentFullscreenMedia: $currentFullscreenMedia,
                 selectionParamsHolder: selectionParamsHolder,
                 mediaPickerParamsHolder: mediaPickerParamsHolder,
                 filterClosure: filterClosure,

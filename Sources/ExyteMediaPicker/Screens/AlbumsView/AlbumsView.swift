@@ -14,7 +14,6 @@ struct AlbumsView: View {
     @ObservedObject var permissionsService = PermissionsService.shared
 
     @Binding var showingCamera: Bool
-    @Binding var currentFullscreenMedia: Media?
 
     let selectionParamsHolder: SelectionParamsHolder
     let mediaPickerParamsHolder: MediaPickerParamsHolder
