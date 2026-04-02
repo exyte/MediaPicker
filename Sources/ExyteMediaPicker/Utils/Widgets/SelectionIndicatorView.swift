@@ -13,7 +13,7 @@ struct SelectionIndicatorView: View {
     var index: Int?
     var isFullscreen: Bool
     var canSelect: Bool
-    var selectionParamsHolder: SelectionParamsHolder
+    var selectionParameters: SelectionParameters
 
     var size: CGFloat { isFullscreen ? 26 : 24 }
 
@@ -25,7 +25,7 @@ struct SelectionIndicatorView: View {
 
     var body: some View {
         Group {
-            switch selectionParamsHolder.selectionStyle {
+            switch selectionParameters.selectionStyle {
             case .checkmark:
                 checkView
             case .count:

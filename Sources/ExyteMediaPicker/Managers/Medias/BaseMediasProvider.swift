@@ -8,9 +8,7 @@ import SwiftUI
 
 @MainActor
 class BaseMediasProvider: ObservableObject {
-    var selectionParamsHolder: SelectionParamsHolder
-    var filterClosure: MediaPicker.FilterClosure?
-    var massFilterClosure: MediaPicker.MassFilterClosure?
+    var mediaPickerParams: MediaPickerCutomizationParameters
 
     @Published var assetMediaModels = [AssetMediaModel]()
     private var privateAssetMediaModels: [AssetMediaModel] = []
@@ -20,10 +18,8 @@ class BaseMediasProvider: ObservableObject {
     private var timerTask: Task<Void, Never>?
     private var cancellableTask: Task<Void, Never>?
 
-    init(selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure?, massFilterClosure: MediaPicker.MassFilterClosure?) {
-        self.selectionParamsHolder = selectionParamsHolder
-        self.filterClosure = filterClosure
-        self.massFilterClosure = massFilterClosure
+    init(mediaPickerParams: MediaPickerCutomizationParameters) {
+        self.mediaPickerParams = mediaPickerParams
     }
 
     func filterAndPublish(assets: [AssetMediaModel]) {
@@ -32,7 +28,7 @@ class BaseMediasProvider: ObservableObject {
             isLoading = false
         }
 
-        if let filterClosure = filterClosure {
+        if let filterClosure = mediaPickerParams.filterClosure {
             startPublishing()
 
             cancellableTask = Task { [weak self] in
@@ -66,7 +62,7 @@ class BaseMediasProvider: ObservableObject {
                     self?.assetMediaModels = self?.privateAssetMediaModels ?? []
                 }
             }
-        } else if let massFilterClosure = massFilterClosure {
+        } else if let massFilterClosure = mediaPickerParams.massFilterClosure {
             cancellableTask = Task { [weak self] in
                 let result = await massFilterClosure(assets.map { Media(source: $0) })
                 self?.assetMediaModels = result.compactMap { $0.source as? AssetMediaModel }

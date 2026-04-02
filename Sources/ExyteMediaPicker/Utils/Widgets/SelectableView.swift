@@ -9,14 +9,14 @@ struct SelectableView<Content>: View where Content: View {
     var selected: Int?
     var isFullscreen: Bool
     var canSelect: Bool
-    var selectionParamsHolder: SelectionParamsHolder
+    var selectionParameters: SelectionParameters
     var onSelect: () -> Void
     @ViewBuilder var content: () -> Content
     
     var body: some View {
         content()
             .overlay(alignment: .topTrailing) {
-                SelectionIndicatorView(index: selected, isFullscreen: isFullscreen, canSelect: canSelect, selectionParamsHolder: selectionParamsHolder)
+                SelectionIndicatorView(index: selected, isFullscreen: isFullscreen, canSelect: canSelect, selectionParameters: selectionParameters)
                     .padding([.bottom, .leading], 10) // extend tappable area where possible
                     .contentShape(Rectangle())
                     .onTapGesture {

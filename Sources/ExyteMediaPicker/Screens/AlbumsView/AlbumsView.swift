@@ -13,12 +13,7 @@ struct AlbumsView: View {
     @ObservedObject var mediaPickerViewModel: MediaPickerViewModel
     @ObservedObject var permissionsService = PermissionsService.shared
 
-    @Binding var showingCamera: Bool
-
-    let selectionParamsHolder: SelectionParamsHolder
-    let mediaPickerParamsHolder: MediaPickerParamsHolder
-    let filterClosure: MediaPicker.FilterClosure?
-    let massFilterClosure: MediaPicker.MassFilterClosure?
+    var mediaPickerParams: MediaPickerCutomizationParameters
 
     @State private var showingLoadingCell = false
     

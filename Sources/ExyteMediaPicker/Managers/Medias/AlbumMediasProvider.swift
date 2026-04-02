@@ -10,9 +10,9 @@ final class AlbumMediasProvider: BaseMediasProvider {
 
     let album: AlbumModel
 
-    init(album: AlbumModel, selectionParamsHolder: SelectionParamsHolder, filterClosure: MediaPicker.FilterClosure? = nil, massFilterClosure: MediaPicker.MassFilterClosure? = nil) {
+    init(album: AlbumModel, mediaPickerParams: MediaPickerCutomizationParameters) {
         self.album = album
-        super.init(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure)
+        super.init(mediaPickerParams: mediaPickerParams)
     }
 
     override func reload() {
@@ -37,7 +37,7 @@ final class AlbumMediasProvider: BaseMediasProvider {
             assetMediaModels = []
         }
 
-        let assets = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: selectionParamsHolder.mediaType)
+        let assets = MediasProvider.map(fetchResult: fetchResult, mediaSelectionType: mediaPickerParams.selectionParameters.mediaType)
         filterAndPublish(assets: assets)
     }
 }

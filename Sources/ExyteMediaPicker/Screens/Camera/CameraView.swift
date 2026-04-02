@@ -56,7 +56,7 @@ struct StandardConrolsCameraView: View {
     @ObservedObject var viewModel: MediaPickerViewModel
     let didTakePicture: () -> Void
     let didPressCancel: () -> Void
-    let selectionParamsHolder: SelectionParamsHolder
+    let selectionParameters: SelectionParameters
 
     @StateObject private var cameraViewModel = CameraViewModel()
 
@@ -113,7 +113,7 @@ struct StandardConrolsCameraView: View {
                             }
                         }
                         Spacer()
-                        if selectionParamsHolder.mediaType.allowsVideo {
+                        if selectionParameters.mediaType.allowsVideo {
                             photoVideoToggle
                         }
                         Spacer()
@@ -127,7 +127,7 @@ struct StandardConrolsCameraView: View {
                     .foregroundColor(theme.main.cameraText)
                     .padding(.horizontal, 12)
                 }
-                else if selectionParamsHolder.mediaType.allowsVideo {
+                else if selectionParameters.mediaType.allowsVideo {
                     photoVideoToggle
                         .padding(.bottom, 8)
                 }

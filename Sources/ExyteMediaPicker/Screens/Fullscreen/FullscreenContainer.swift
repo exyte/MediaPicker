@@ -17,7 +17,7 @@ struct FullscreenContainer: View {
     @Binding var selection: AssetMediaModel.ID?
     let animationID: String
     let assetMediaModels: [AssetMediaModel]
-    var selectionParamsHolder: SelectionParamsHolder
+    var selectionParameters: SelectionParameters
     var dismiss: ()->()
 
     private var selectedMediaModel: AssetMediaModel? {
@@ -113,7 +113,7 @@ struct FullscreenContainer: View {
             Spacer()
 
             if let selectedMediaModel = selectedMediaModel {
-                if selectionParamsHolder.selectionLimit == 1 {
+                if selectionParameters.selectionLimit == 1 {
                     Button("Select") {
                         AnchoredPopup.launchShrinkingAnimation(id: animationID)
                         selectionService.onSelect(assetMediaModel: selectedMediaModel)
@@ -121,7 +121,7 @@ struct FullscreenContainer: View {
                     }
                     .padding(.horizontal, 20)
                 } else {
-                    SelectionIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
+                    SelectionIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParameters: selectionParameters)
                         .padding(.horizontal, 20)
                         .onTapGesture {
                             selectionService.onSelect(assetMediaModel: selectedMediaModel) // for video selection, since tap on video is toggle play

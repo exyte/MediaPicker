@@ -25,7 +25,7 @@ final class AllPhotosProvider: BaseMediasProvider {
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
         let allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
-        let assets = MediasProvider.map(fetchResult: allPhotos, mediaSelectionType: selectionParamsHolder.mediaType)
+        let assets = MediasProvider.map(fetchResult: allPhotos, mediaSelectionType: mediaPickerParams.selectionParameters.mediaType)
         filterAndPublish(assets: assets)
     }
 }

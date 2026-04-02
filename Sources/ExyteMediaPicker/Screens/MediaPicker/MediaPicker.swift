@@ -47,14 +47,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @Binding private var albums: [Album]
     @Binding private var currentFullscreenMediaBinding: Media?
-
     private var pickerMode: Binding<MediaPickerMode>?
-    private var didPressCancelCamera: (() -> Void)?
-    private var orientationHandler: MediaPickerOrientationHandler = {_ in}
-    private var filterClosure: FilterClosure?
-    private var massFilterClosure: MassFilterClosure?
-    private var selectionParamsHolder = SelectionParamsHolder()
-    private var mediaPickerParamsHolder = MediaPickerParamsHolder()
+
+    var mediaPickerParams = MediaPickerCutomizationParameters()
 
     // MARK: - Inner values
 
@@ -116,10 +111,10 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 #endif
 
             selectionService.onChange = onChange
-            selectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
-            
+            selectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
+
             cameraSelectionService.onChange = onChange
-            cameraSelectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
+            cameraSelectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
 
             viewModel.shouldUpdatePickerMode = { mode in
                 pickerMode?.wrappedValue = mode
@@ -149,7 +144,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, selectionParamsHolder: selectionParamsHolder, mediaPickerParamsHolder: mediaPickerParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure) {
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, mediaPickerParams: mediaPickerParams) {
             // has media limit of 1, and it's been selected
             isPresented = false
         }
@@ -171,13 +166,13 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 cameraSelectionBuilder(
                     { viewModel.setPickerMode(.camera) }, // add more
                     { viewModel.onCancelCameraSelection(cameraSelectionService.hasSelected) }, // cancel
-                    CameraSelectionView(selectionParamsHolder: selectionParamsHolder)
+                    CameraSelectionView(selectionParameters: mediaPickerParams.selectionParameters)
                 )
             } else {
                 DefaultCameraSelectionContainer(
                     viewModel: viewModel,
                     showingPicker: $isPresented,
-                    selectionParamsHolder: selectionParamsHolder
+                    selectionParameters: mediaPickerParams.selectionParameters
                 )
             }
         }
@@ -209,7 +204,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                     cameraSelectionService.onSelect(media: URLMediaModel(url: url))
                     viewModel.pickedMediaUrl = nil
                 } didPressCancel: {
-                    if let didPressCancel = didPressCancelCamera {
+                    if let didPressCancel = mediaPickerParams.didPressCancelCamera {
                         didPressCancel()
                     } else {
                         viewModel.setPickerMode(.photos)
@@ -221,10 +216,10 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             }
         }
         .onAppear {
-            orientationHandler(.lock)
+            mediaPickerParams.orientationHandler(.lock)
         }
         .onDisappear {
-            orientationHandler(.unlock)
+            mediaPickerParams.orientationHandler(.unlock)
         }
     }
 
@@ -306,7 +301,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                 CustomCameraView<CameraViewContent>(viewModel: viewModel, didTakePicture: didTakePicture, didPressCancel: didPressCancel, cameraViewBuilder: cameraViewBuilder)
                     .ignoresSafeArea()
             } else {
-                StandardConrolsCameraView(viewModel: viewModel, didTakePicture: didTakePicture, didPressCancel: didPressCancel, selectionParamsHolder: selectionParamsHolder)
+                StandardConrolsCameraView(viewModel: viewModel, didTakePicture: didTakePicture, didPressCancel: didPressCancel, selectionParameters: selectionParameters)
                     .ignoresSafeArea()
             }
         }
@@ -317,83 +312,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     }
 }
 
-// MARK: - Customization
+// MARK: - Bindings customization
 
 public extension MediaPicker {
-
-    func liveCameraCell(_ style: LiveCameraCellStyle = .small) -> MediaPicker {
-        mediaPickerParamsHolder.liveCameraCell = style
-        return self
-    }
-
-    @available(*, deprecated, message: "use liveCameraCell instead")
-    func showLiveCameraCell(_ show: Bool = true) -> MediaPicker {
-        mediaPickerParamsHolder.liveCameraCell = show ? .small : .none
-        return self
-    }
-
-    func mediaSelectionType(_ type: MediaSelectionType) -> MediaPicker {
-        selectionParamsHolder.mediaType = type
-        return self
-    }
-
-    func mediaSelectionStyle(_ style: MediaSelectionStyle) -> MediaPicker {
-        selectionParamsHolder.selectionStyle = style
-        return self
-    }
-
-    func mediaSelectionLimit(_ limit: Int) -> MediaPicker {
-        selectionParamsHolder.selectionLimit = limit
-        return self
-    }
-
-    func showFullscreenPreview(_ show: Bool) -> MediaPicker {
-        selectionParamsHolder.showFullscreenPreview = show
-        return self
-    }
-
-    func setMediaPickerParameters(_ params: MediaPickerParamsHolder?) -> MediaPicker {
-        guard let params = params else {
-            return self
-        }
-        var mediaPicker = self
-        mediaPicker.mediaPickerParamsHolder = params
-        return mediaPicker
-    }
-    
-    func setSelectionParameters(_ params: SelectionParamsHolder?) -> MediaPicker {
-        guard let params = params else {
-            return self
-        }
-        var mediaPicker = self
-        mediaPicker.selectionParamsHolder = params
-        return mediaPicker
-    }
-
-    func applyFilter(_ filterClosure: @escaping FilterClosure) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.filterClosure = filterClosure
-        return mediaPicker
-    }
-
-    func applyFilter(_ filterClosure: @escaping MassFilterClosure) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.massFilterClosure = filterClosure
-        return mediaPicker
-    }
-
-    func didPressCancelCamera(_ didPressCancelCamera: @escaping ()->()) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.didPressCancelCamera = didPressCancelCamera
-        return mediaPicker
-    }
-
-    func orientationHandler(_ orientationHandler: @escaping MediaPickerOrientationHandler) -> MediaPicker {
-        var mediaPicker = self
-        mediaPicker.orientationHandler = orientationHandler
-        return mediaPicker
-    }
-
     func currentFullscreenMedia(_ currentFullscreenMedia: Binding<Media?>) -> MediaPicker {
         var mediaPicker = self
         mediaPicker._currentFullscreenMediaBinding = currentFullscreenMedia

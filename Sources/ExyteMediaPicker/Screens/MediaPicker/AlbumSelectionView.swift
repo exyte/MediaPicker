@@ -14,46 +14,37 @@ public struct AlbumSelectionView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    let selectionParamsHolder: SelectionParamsHolder
-    let mediaPickerParamsHolder: MediaPickerParamsHolder
-    let filterClosure: MediaPicker.FilterClosure?
-    let massFilterClosure: MediaPicker.MassFilterClosure?
+    var mediaPickerParams: MediaPickerCutomizationParameters
     var dismiss: ()->()
 
     public var body: some View {
         switch viewModel.internalPickerMode {
         case .photos:
             AlbumView(
-                viewModel: AllMediasProvider(selectionParamsHolder: selectionParamsHolder, filterClosure: filterClosure, massFilterClosure: massFilterClosure),
+                viewModel: AllMediasProvider(mediaPickerParams: mediaPickerParams),
                 showingCamera: $showingCamera,
                 currentFullscreenMedia: $currentFullscreenMedia,
-                selectionParamsHolder: selectionParamsHolder,
-                mediaPickerParamsHolder: mediaPickerParamsHolder,
+                displayMode: .allPhotos,
+                mediaPickerParams: mediaPickerParams,
                 dismiss: dismiss
             )
         case .albums:
             AlbumsView(
-                viewModel: AlbumsViewModel(
-                    albumsProvider: viewModel.defaultAlbumsProvider
-                ),
+                viewModel: AlbumsViewModel(albumsProvider: viewModel.defaultAlbumsProvider),
                 mediaPickerViewModel: viewModel,
-                showingCamera: $showingCamera,
-                selectionParamsHolder: selectionParamsHolder,
-                mediaPickerParamsHolder: mediaPickerParamsHolder,
-                filterClosure: filterClosure,
-                massFilterClosure: massFilterClosure
+                mediaPickerParams: mediaPickerParams
             )
             .onAppear {
-                viewModel.defaultAlbumsProvider.mediaSelectionType = selectionParamsHolder.mediaType
+                viewModel.defaultAlbumsProvider.mediaSelectionType = mediaPickerParams.selectionParameters.mediaType
             }
         case .album(let album):
             if let albumModel = viewModel.getAlbumModel(album) {
                 AlbumView(
-                    viewModel: AlbumMediasProvider(album: albumModel, selectionParamsHolder: SelectionParamsHolder(), filterClosure: filterClosure, massFilterClosure: massFilterClosure),
+                    viewModel: AlbumMediasProvider(album: albumModel, mediaPickerParams: mediaPickerParams),
                     showingCamera: $showingCamera,
                     currentFullscreenMedia: $currentFullscreenMedia,
-                    selectionParamsHolder: selectionParamsHolder,
-                    mediaPickerParamsHolder: MediaPickerParamsHolder(liveCameraCell: .none),
+                    displayMode: .albumPhotos,
+                    mediaPickerParams: mediaPickerParams,
                     dismiss: dismiss
                 )
                 .id(album.id)

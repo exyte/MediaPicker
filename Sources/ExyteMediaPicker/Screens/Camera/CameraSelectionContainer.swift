@@ -12,7 +12,7 @@ public struct CameraSelectionView: View {
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
     @State private var index: Int? = 0
 
-    var selectionParamsHolder: SelectionParamsHolder
+    var selectionParameters: SelectionParameters
 
     public var body: some View {
         GeometryReader { g in
@@ -45,12 +45,12 @@ public struct CameraSelectionView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .overlay(alignment: .topTrailing) {
-            if selectionParamsHolder.selectionLimit != 1, let index {
+            if selectionParameters.selectionLimit != 1, let index {
                 SelectionIndicatorView(
                     index: cameraSelectionService.selectedIndex(fromAddedIndex: index),
                     isFullscreen: true,
                     canSelect: true,
-                    selectionParamsHolder: selectionParamsHolder
+                    selectionParameters: selectionParameters
                 )
                 .padding(12)
                 .contentShape(Rectangle())
@@ -70,10 +70,10 @@ struct DefaultCameraSelectionContainer: View {
     @ObservedObject var viewModel: MediaPickerViewModel
 
     @Binding var showingPicker: Bool
-    var selectionParamsHolder: SelectionParamsHolder
+    var selectionParameters: SelectionParameters
 
     var body: some View {
-        CameraSelectionView(selectionParamsHolder: selectionParamsHolder)
+        CameraSelectionView(selectionParameters: selectionParameters)
             .background(theme.main.cameraSelectionBackground)
             .overlay(alignment: .topLeading) {
                 Button("Cancel") {
@@ -88,7 +88,7 @@ struct DefaultCameraSelectionContainer: View {
                         showingPicker = false
                     }
                     Spacer()
-                    if selectionParamsHolder.selectionLimit != 1 {
+                    if selectionParameters.selectionLimit != 1 {
                         Button {
                             viewModel.setPickerMode(.camera)
                         } label: {

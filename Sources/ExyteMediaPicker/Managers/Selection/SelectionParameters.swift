@@ -1,5 +1,5 @@
 //
-//  SelectionParamsHolder.swift
+//  SelectionParameters.swift
 //  
 //
 //  Created by Alisa Mylnikova on 05.05.2023.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final public class SelectionParamsHolder: ObservableObject {
+final public class SelectionParameters: ObservableObject {
 
     @Published public var mediaType: MediaSelectionType = .photoAndVideo
     @Published public var selectionStyle: MediaSelectionStyle = .checkmark
