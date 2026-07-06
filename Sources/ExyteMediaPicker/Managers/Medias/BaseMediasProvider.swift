@@ -23,67 +23,57 @@ class BaseMediasProvider: ObservableObject {
     }
 
     func filterAndPublish(assets: [AssetMediaModel]) {
-        isLoading = true
-        defer {
-            isLoading = false
-        }
+        cancellableTask?.cancel()
 
         if let filterClosure = mediaPickerParams.filterClosure {
+            isLoading = true
             startPublishing()
 
             cancellableTask = Task { [weak self] in
-                let serialQueue = DispatchQueue(label: "filterSerialQueue")
-                self?.privateAssetMediaModels = [AssetMediaModel]()
+                guard let self else { return }
+                privateAssetMediaModels = []
 
                 await withTaskGroup(of: AssetMediaModel?.self) { group in
                     for asset in assets {
                         group.addTask {
-                            if Task.isCancelled { return nil }
-
+                            guard !Task.isCancelled else { return nil }
                             let media = await Task.detached(priority: .userInitiated) {
-                                return await filterClosure(Media(source: asset))
+                                await filterClosure(Media(source: asset))
                             }.value
-
                             return media?.source as? AssetMediaModel
                         }
                     }
 
                     for await filteredMedia in group {
+                        if Task.isCancelled { break }
                         if let model = filteredMedia {
-                            serialQueue.sync {
-                                self?.privateAssetMediaModels.append(model)
-                            }
+                            self.privateAssetMediaModels.append(model)
                         }
                     }
                 }
 
-                self?.stopPublishing()
-                DispatchQueue.main.async {
-                    self?.assetMediaModels = self?.privateAssetMediaModels ?? []
-                }
+                stopPublishing()
+                assetMediaModels = privateAssetMediaModels
+                isLoading = false
             }
         } else if let massFilterClosure = mediaPickerParams.massFilterClosure {
+            isLoading = true
             cancellableTask = Task { [weak self] in
+                guard let self else { return }
                 let result = await massFilterClosure(assets.map { Media(source: $0) })
-                self?.assetMediaModels = result.compactMap { $0.source as? AssetMediaModel }
+                assetMediaModels = result.compactMap { $0.source as? AssetMediaModel }
+                isLoading = false
             }
-        }
-        else {
-            DispatchQueue.main.async { [weak self] in
-                self?.assetMediaModels = assets
-            }
+        } else {
+            assetMediaModels = assets
         }
     }
 
     func startPublishing() {
-        // Start a task that runs every second
         timerTask = Task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-
-                await MainActor.run {
-                    self.assetMediaModels = self.privateAssetMediaModels
-                }
+                assetMediaModels = privateAssetMediaModels
             }
         }
     }

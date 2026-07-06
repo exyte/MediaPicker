@@ -31,7 +31,7 @@ class MediaViewModel: ObservableObject {
             }
     }
     
-    func onStop() {
+    @MainActor func onStop() {
         if let requestID = requestID {
             PHCachingImageManager.default().cancelImageRequest(requestID)
         }

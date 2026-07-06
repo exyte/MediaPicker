@@ -29,21 +29,16 @@ final class FullscreenCellViewModel: ObservableObject {
     }
 
     func onStart() async {
-        guard image == nil || player == nil else { return }
-
         currentTask?.cancel()
         currentTask = Task {
             switch self.mediaModel.mediaType {
             case .image:
                 let data = try? await mediaModel.getData() // url is slow to load in UI, this way photos don't flicker when swiping
-                guard let data = data else { return }
-                let result = UIImage(data: data)
-                DispatchQueue.main.async {
-                    self.image = result
-                }
+                guard let data else { return }
+                image = UIImage(data: data)
             case .video:
                 let url = await mediaModel.getURL()
-                guard let url = url else { return }
+                guard let url else { return }
                 setupPlayer(url)
                 videoSize = await getVideoSize(url)
             case .none:
@@ -53,10 +48,14 @@ final class FullscreenCellViewModel: ObservableObject {
     }
 
     func setupPlayer(_ url: URL) {
-        DispatchQueue.main.async {
-            self.player = AVPlayer(url: url)
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(finishVideo), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        let avPlayer = AVPlayer(url: url)
+        player = avPlayer
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(finishVideo),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: avPlayer.currentItem
+        )
     }
 
     @objc func finishVideo() {
@@ -65,7 +64,9 @@ final class FullscreenCellViewModel: ObservableObject {
     }
 
     func onStop() {
+        currentTask?.cancel()
         currentTask = nil
+        NotificationCenter.default.removeObserver(self)
         image = nil
         player = nil
         isPlaying = false

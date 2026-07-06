@@ -12,10 +12,8 @@ import SwiftUI
 final class AllPhotosProvider: BaseMediasProvider {
 
     override func reload() {
-        PermissionsService.shared.requestPhotoLibraryPermission {
-            DispatchQueue.main.async { [weak self] in
-                self?.reloadInternal()
-            }
+        PermissionsService.shared.requestPhotoLibraryPermission { [weak self] in
+            self?.reloadInternal()
         }
     }
 

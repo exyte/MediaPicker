@@ -11,18 +11,12 @@ import SwiftUI
 final class AllMediasProvider: BaseMediasProvider {
 
     override func reload() {
-        PermissionsService.shared.requestPhotoLibraryPermission {
-            DispatchQueue.main.async { [weak self] in
-                self?.reloadInternal()
-            }
+        PermissionsService.shared.requestPhotoLibraryPermission { [weak self] in
+            self?.reloadInternal()
         }
     }
 
     func reloadInternal() {
-        isLoading = true
-        defer {
-            isLoading = false
-        }
         let allPhotosOptions = PHFetchOptions()
         allPhotosOptions.sortDescriptors = [
             NSSortDescriptor(key: "creationDate", ascending: false)
