@@ -15,6 +15,13 @@ struct AlbumView: View {
 
     enum DisplayMode { case allPhotos, albumPhotos }
 
+    private struct CellFramesKey: PreferenceKey {
+        static var defaultValue: [AssetMediaModel.ID: CGRect] { [:] }
+        static func reduce(value: inout [AssetMediaModel.ID: CGRect], nextValue: () -> [AssetMediaModel.ID: CGRect]) {
+            value.merge(nextValue()) { $1 }
+        }
+    }
+
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
 
@@ -30,6 +37,8 @@ struct AlbumView: View {
     var dismiss: ()->()
 
     @State private var fullscreenItem: AssetMediaModel.ID?
+    @State private var isDragSelecting = false
+    @State private var cellFrames: [AssetMediaModel.ID: CGRect] = [:]
 
     private var shouldShowLoadingCell: Bool {
         viewModel.isLoading && viewModel.assetMediaModels.count > 0
@@ -65,19 +74,41 @@ struct AlbumView: View {
                 } else {
                     mediasGrid
                 }
-                
+
                 Spacer()
             }
             .frame(maxWidth: .infinity)
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 0.4)
+                    .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .global))
+                    .onChanged { value in
+                        guard selectionService.mediaSelectionLimit != 1,
+                              case .second(true, let dragValue) = value,
+                              let location = dragValue?.location
+                        else { return }
+                        if !isDragSelecting {
+                            isDragSelecting = true
+                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        }
+                        selectCellIfNeeded(at: location)
+                    }
+                    .onEnded { _ in
+                        isDragSelecting = false
+                    }
+            )
         }
+        .scrollDisabled(isDragSelecting)
         .background(theme.main.pickerBackground)
+        .onPreferenceChange(CellFramesKey.self) { frames in
+            cellFrames = frames
+        }
         .onTapGesture {
             if keyboardHeightHelper.keyboardDisplayed {
                 dismissKeyboard()
             }
         }
     }
-    
+
     private func getLiveCameraCell() -> LiveCameraCellStyle {
         #if targetEnvironment(simulator)
         return .none
@@ -158,6 +189,14 @@ struct AlbumView: View {
         }
         .buttonStyle(MediaButtonStyle())
         .contentShape(Rectangle())
+        .background(
+            GeometryReader { geo in
+                Color.clear.preference(
+                    key: CellFramesKey.self,
+                    value: [assetMediaModel.id: geo.frame(in: .global)]
+                )
+            }
+        )
 
         if selectionService.mediaSelectionLimit == 1 {
             imageButton
@@ -166,6 +205,17 @@ struct AlbumView: View {
                 selectionService.onSelect(assetMediaModel: assetMediaModel)
             } content: {
                 imageButton
+            }
+        }
+    }
+
+    private func selectCellIfNeeded(at location: CGPoint) {
+        for (id, frame) in cellFrames {
+            if frame.contains(location),
+               let model = viewModel.assetMediaModels.first(where: { $0.id == id }),
+               selectionService.index(of: model) == nil {
+                selectionService.onSelect(assetMediaModel: model)
+                break
             }
         }
     }
