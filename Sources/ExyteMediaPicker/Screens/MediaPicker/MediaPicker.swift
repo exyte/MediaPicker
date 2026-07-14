@@ -48,6 +48,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @Binding private var albums: [Album]
     @Binding private var currentFullscreenMediaBinding: Media?
     private var pickerMode: Binding<MediaPickerMode>?
+    private var selectedMedia: Binding<[Media]>?
 
     var mediaPickerParams = MediaPickerCutomizationParameters()
 
@@ -110,7 +111,16 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             }
 #endif
 
-            selectionService.onChange = onChange
+            if let selectedMedia {
+                selectionService.onChange = { [onChange] media in
+                    onChange(media)
+                    selectedMedia.wrappedValue = media
+                }
+                let initialSelection = selectedMedia.wrappedValue.compactMap { $0.source as? AssetMediaModel }
+                selectionService.setInitialSelection(initialSelection)
+            } else {
+                selectionService.onChange = onChange
+            }
             selectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
 
             cameraSelectionService.onChange = onChange
@@ -330,6 +340,12 @@ public extension MediaPicker {
     func pickerMode(_ mode: Binding<MediaPickerMode>) -> MediaPicker {
         var mediaPicker = self
         mediaPicker.pickerMode = mode
+        return mediaPicker
+    }
+
+    func selectedMedia(_ binding: Binding<[Media]>) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker.selectedMedia = binding
         return mediaPicker
     }
 }

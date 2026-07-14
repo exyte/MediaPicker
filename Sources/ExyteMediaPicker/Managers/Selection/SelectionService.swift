@@ -58,6 +58,10 @@ final class SelectionService: ObservableObject {
         onChange?([])
     }
 
+    func setInitialSelection(_ models: [AssetMediaModel]) {
+        selected = models
+    }
+
     func updateSelection(with models: [AssetMediaModel]) {
         selected = selected.filter {
             models.contains($0)

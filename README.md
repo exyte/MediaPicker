@@ -179,7 +179,7 @@ If your app restricts screen rotation, you can skip this section.
 
 We recommend locking orientation for MediaPicker, because default rotation animations don't look good on the camera screen. At the moment SwiftUI doesn't provide a way of locking screen orientation, so the library has an initializer with an `orientationHandler` parameter - a closure that is called when you enter/leave the camera screen inside MediaPicker. In this closure you need to use AppDelegate to lock/unlock the rotation - see example project for implementation.
 
-### Available modifiers: managing albums  
+### Available modifiers - managing albums  
 `albums` - a list of user's albums (like in Photos app), if you want to display them differently than `showingDefaultHeader` does.           
 `pickerMode` - set this if you don't plan to use the default header. Available options are:     
     * .photos - displays the default photos grid      
@@ -190,6 +190,16 @@ We recommend locking orientation for MediaPicker, because default rotation anima
 (see the custom picker in the example project for implementation)
 
 <img src="https://raw.githubusercontent.com/exyte/media/master/MediaPicker/2.jpg" width="250"/>
+
+### Available modifiers - preserving selection
+`selectedMedia` - pass a `Binding<[Media]>` to let the picker own the selection state across multiple presentations. The binding is updated on every selection change (same as `onChange`), and any items already in it will appear pre-selected when the picker opens. You can also preset the selection before presenting the picker.
+
+```swift
+@State var selectedMedia: [Media] = []
+
+MediaPicker(isPresented: $isPresented, onChange: { _ in })
+    .selectedMedia($selectedMedia)
+```
 
 ### Available modifiers: theme  
 `mediaPickerTheme` - color settings. Example usage (see `MediaPickerTheme` for all available settings):    
