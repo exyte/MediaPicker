@@ -17,7 +17,7 @@ struct CustomizedMediaPicker: View {
 
     @State private var mediaPickerMode = MediaPickerMode.photos
     @State private var selectedAlbum: Album?
-    @State private var currentFullscreenMedia: Media?
+    @State private var fullscreenMedia: Media?
     @State private var showAlbumsDropDown: Bool = false
     @State private var videoIsBeingRecorded: Bool = false
 
@@ -86,7 +86,7 @@ struct CustomizedMediaPicker: View {
         .liveCameraCell(.prominant)
         .albums($albums)
         .pickerMode($mediaPickerMode)
-        .currentFullscreenMedia($currentFullscreenMedia)
+        .fullscreenMedia($fullscreenMedia)
         .orientationHandler {
             switch $0 {
             case .lock: appDelegate.lockOrientationToPortrait()

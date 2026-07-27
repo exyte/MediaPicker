@@ -8,27 +8,23 @@ import AnchoredPopup
 
 struct FullscreenContainer: View {
 
-    @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
 
+    @ObservedObject var selectionService: SelectionService
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
-    @Binding var currentFullscreenMedia: Media?
-    @Binding var selection: AssetMediaModel.ID?
-    let animationID: String
-    let assetMediaModels: [AssetMediaModel]
+    @Binding var fullscreenMedia: Media?
+    @Binding var fullscreenMediaModelID: AssetMediaModel.ID?
+
+    var animationID: String
+    var assetMediaModels: [AssetMediaModel]
     var selectionParameters: SelectionParameters
     var dismiss: ()->()
 
-    private var selectedMediaModel: AssetMediaModel? {
-        assetMediaModels.first { $0.id == selection }
-    }
+    @State private var currentPageID: AssetMediaModel.ID?
 
-    private var selectionServiceIndex: Int? {
-        guard let selectedMediaModel = selectedMediaModel else {
-            return nil
-        }
-        return selectionService.index(of: selectedMediaModel)
+    private var fullscreenMediaModel: AssetMediaModel? {
+        assetMediaModels.first { $0.id == fullscreenMediaModelID }
     }
 
     var body: some View {
@@ -36,6 +32,15 @@ struct FullscreenContainer: View {
             controlsOverlay
             GeometryReader { g in
                 contentView(g.size)
+                    .onTapGesture {
+                        if keyboardHeightHelper.keyboardDisplayed {
+                            dismissKeyboard()
+                        } else {
+                            if let fullscreenMediaModel, fullscreenMediaModel.mediaType == .image {
+                                selectionService.onSelect(assetMediaModel: fullscreenMediaModel)
+                            }
+                        }
+                    }
             }
         }
         .safeAreaPadding(.top, UIApplication.safeArea.top)
@@ -44,56 +49,43 @@ struct FullscreenContainer: View {
                 .ignoresSafeArea()
         }
         .onAppear {
-            if let selectedMediaModel {
-                currentFullscreenMedia = Media(source: selectedMediaModel)
+            currentPageID = fullscreenMediaModelID ?? ""
+            if let fullscreenMediaModel {
+                fullscreenMedia = Media(source: fullscreenMediaModel)
             }
         }
         .onDisappear {
-            currentFullscreenMedia = nil
+            fullscreenMedia = nil
         }
-        .onChange(of: selection) {
-            if let selectedMediaModel {
-                currentFullscreenMedia = Media(source: selectedMediaModel)
-            }
-        }
-        .onTapGesture {
-            if keyboardHeightHelper.keyboardDisplayed {
-                dismissKeyboard()
-            } else {
-                if let selectedMediaModel = selectedMediaModel, selectedMediaModel.mediaType == .image {
-                    selectionService.onSelect(assetMediaModel: selectedMediaModel)
-                }
+        .onChange(of: fullscreenMediaModelID) {
+            if let fullscreenMediaModel {
+                fullscreenMedia = Media(source: fullscreenMediaModel)
             }
         }
     }
 
     @ViewBuilder
     func contentView(_ size: CGSize) -> some View {
-        if #available(iOS 17.0, *) {
-            ScrollViewReader { scrollReader in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 0) {
-                        ForEach(assetMediaModels, id: \.id) { assetMediaModel in
-                            FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: assetMediaModel), size: size)
-                                .frame(width: size.width, height: size.height)
-                                .id(assetMediaModel.id)
-                        }
+        ScrollViewReader { scrollReader in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    ForEach(assetMediaModels, id: \.id) { assetMediaModel in
+                        FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: assetMediaModel))
+                            .frame(width: size.width, height: size.height)
+                            .id(assetMediaModel.id)
                     }
-                    .scrollTargetLayout()
                 }
-                .scrollTargetBehavior(.viewAligned)
-                .scrollPosition(id: $selection)
-                .onAppear {
-                    scrollReader.scrollTo(selection)
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $currentPageID)
+            .onChange(of: currentPageID) { _, newID in
+                if let newID {
+                    fullscreenMediaModelID = newID
                 }
             }
-        } else {
-            TabView(selection: $selection) {
-                ForEach(assetMediaModels, id: \.id) { assetMediaModel in
-                    FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: assetMediaModel), size: size)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .tag(assetMediaModel.id)
-                }
+            .onAppear {
+                scrollReader.scrollTo(currentPageID)
             }
         }
     }
@@ -106,26 +98,32 @@ struct FullscreenContainer: View {
                 .padding(20, 16)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    selection = nil
+                    fullscreenMediaModelID = nil
                     AnchoredPopup.launchShrinkingAnimation(id: animationID)
                 }
 
             Spacer()
 
-            if let selectedMediaModel = selectedMediaModel {
+            if let fullscreenMediaModel {
                 if selectionParameters.selectionLimit == 1 {
                     Button("Select") {
                         AnchoredPopup.launchShrinkingAnimation(id: animationID)
-                        selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                        selectionService.onSelect(assetMediaModel: fullscreenMediaModel)
                         dismiss()
                     }
                     .padding(.horizontal, 20)
                 } else {
-                    SelectionIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParameters: selectionParameters)
-                        .padding(.horizontal, 20)
-                        .onTapGesture {
-                            selectionService.onSelect(assetMediaModel: selectedMediaModel) // for video selection, since tap on video is toggle play
-                        }
+                    SelectionIndicatorView(
+                        index: selectionService.index(of: fullscreenMediaModel),
+                        canSelect: selectionService.canSelect(fullscreenMediaModel),
+                        isFullscreen: true,
+                        selectionParameters: selectionParameters
+                    )
+                    .padding(.horizontal, 20)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectionService.onSelect(assetMediaModel: fullscreenMediaModel) // for video selection, since tap on video is toggle play
+                    }
                 }
             }
         }

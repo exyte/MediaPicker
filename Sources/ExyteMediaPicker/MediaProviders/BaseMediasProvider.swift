@@ -14,6 +14,7 @@ class BaseMediasProvider: ObservableObject {
     private var privateAssetMediaModels: [AssetMediaModel] = []
 
     @Published var isLoading: Bool = false
+    @Published var hasLoaded: Bool = false
 
     private var timerTask: Task<Void, Never>?
     private var cancellableTask: Task<Void, Never>?

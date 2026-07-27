@@ -16,13 +16,18 @@ let package = Package(
         .package(
             url: "https://github.com/exyte/AnchoredPopup.git",
             from: "1.1.3"
+        ),
+        .package(
+            url: "https://github.com/exyte/ActivityIndicatorView.git",
+            from: "1.1.0"
         )
     ],
     targets: [
         .target(
             name: "ExyteMediaPicker",
             dependencies: [
-                .product(name: "AnchoredPopup", package: "AnchoredPopup")
+                .product(name: "AnchoredPopup", package: "AnchoredPopup"),
+                .product(name: "ActivityIndicatorView", package: "ActivityIndicatorView"),
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")

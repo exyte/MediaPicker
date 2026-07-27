@@ -15,6 +15,10 @@ final class CameraSelectionService: ObservableObject {
     @Published private(set) var added: [URLMediaModel] = []
     @Published private(set) var selected: [URLMediaModel] = []
 
+    var selectionIndices: [URLMediaModel.ID: Int] {
+        Dictionary(uniqueKeysWithValues: selected.enumerated().map { ($1.id, $0) })
+    }
+
     var hasSelected: Bool {
         !selected.isEmpty
     }

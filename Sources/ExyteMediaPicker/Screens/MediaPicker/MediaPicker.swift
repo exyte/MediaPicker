@@ -46,7 +46,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     // MARK: - Customization
 
     @Binding private var albums: [Album]
-    @Binding private var currentFullscreenMediaBinding: Media?
+    @Binding private var fullscreenMediaBinding: Media?
     private var pickerMode: Binding<MediaPickerMode>?
     private var selectedMedia: Binding<[Media]>?
 
@@ -61,12 +61,12 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     @StateObject private var cameraSelectionService = CameraSelectionService()
 
     @State private var readyToShowCamera = false
-    @State private var currentFullscreenMedia: Media?
+    @State private var fullscreenMedia: Media?
 
     @State private var internalPickerMode: MediaPickerMode = .photos // a hack for slow camera dismissal
 
     var isInFullscreen: Bool {
-        currentFullscreenMedia != nil
+        fullscreenMedia != nil
     }
 
     // MARK: - Object life cycle
@@ -79,7 +79,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
         self._isPresented = isPresented
         self._albums = .constant([])
-        self._currentFullscreenMediaBinding = .constant(nil)
+        self._fullscreenMediaBinding = .constant(nil)
 
         self.onChange = onChange
         self.albumSelectionBuilder = albumSelectionBuilder
@@ -102,34 +102,19 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .environmentObject(selectionService)
         .environmentObject(cameraSelectionService)
         .onAppear {
-            PermissionsService.shared.updatePhotoLibraryAuthorizationStatus()
-#if !targetEnvironment(simulator)
-            if mediaPickerParams.liveCameraStyle != .none {
-                PermissionsService.shared.requestCameraPermission()
-            } else {
-                PermissionsService.shared.updateCameraAuthorizationStatus()
-            }
-#endif
-
-            if let selectedMedia {
-                selectionService.onChange = { [onChange] media in
-                    onChange(media)
-                    selectedMedia.wrappedValue = media
-                }
-                let initialSelection = selectedMedia.wrappedValue.compactMap { $0.source as? AssetMediaModel }
-                selectionService.setInitialSelection(initialSelection)
-            } else {
-                selectionService.onChange = onChange
-            }
-            selectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
-
-            cameraSelectionService.onChange = onChange
-            cameraSelectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
-
-            viewModel.shouldUpdatePickerMode = { mode in
-                pickerMode?.wrappedValue = mode
-            }
+            initialSetup()
             viewModel.onStart()
+        }
+        .onChange(of: selectionService.selected) { _ , selectedMedia in
+            let selected: [Media] = selectedMedia.compactMap {
+                guard $0.mediaType != nil else {
+                    return nil
+                }
+                return Media(source: $0)
+            }
+
+            self.selectedMedia?.wrappedValue = selected
+            onChange(selected)
         }
         .onChange(of: viewModel.albums) { _ , albums in
             self.albums = albums.map { $0.toAlbum() }
@@ -142,19 +127,44 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         .onChange(of: viewModel.internalPickerMode) { _ , newValue in
             internalPickerMode = newValue
         }
-        .onChange(of: currentFullscreenMedia) { 
-            _currentFullscreenMediaBinding.wrappedValue = currentFullscreenMedia
+        .onChange(of: fullscreenMedia) { 
+            _fullscreenMediaBinding.wrappedValue = fullscreenMedia
         }
-        .onAppear {
-            if let mode = pickerMode?.wrappedValue {
-                viewModel.setPickerMode(mode)
-            }
+    }
+
+    func initialSetup() {
+        // permissions
+        PermissionsService.shared.updatePhotoLibraryAuthorizationStatus()
+#if !targetEnvironment(simulator)
+        if mediaPickerParams.liveCameraStyle != .none {
+            PermissionsService.shared.requestCameraPermission()
+        } else {
+            PermissionsService.shared.updateCameraAuthorizationStatus()
+        }
+#endif
+
+        // selection services
+        if let selectedMedia {
+            let initialSelection = selectedMedia.wrappedValue.compactMap { $0.source as? AssetMediaModel }
+            selectionService.setInitialSelection(initialSelection)
+        }
+        selectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
+
+        cameraSelectionService.onChange = onChange
+        cameraSelectionService.mediaSelectionLimit = mediaPickerParams.selectionParameters.selectionLimit
+
+        // picker mode
+        if let mode = pickerMode?.wrappedValue {
+            viewModel.setPickerMode(mode)
+        }
+        viewModel.shouldUpdatePickerMode = { mode in
+            pickerMode?.wrappedValue = mode
         }
     }
 
     @ViewBuilder
     var albumSelectionContainer: some View {
-        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), currentFullscreenMedia: $currentFullscreenMedia, mediaPickerParams: mediaPickerParams) {
+        let albumSelectionView = AlbumSelectionView(viewModel: viewModel, showingCamera: cameraBinding(), fullscreenMedia: $fullscreenMedia, mediaPickerParams: mediaPickerParams) {
             // has media limit of 1, and it's been selected
             isPresented = false
         }
@@ -237,7 +247,6 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
         Button("Delete All") {
             cameraSelectionService.removeAll()
             viewModel.setPickerMode(.photos)
-            onChange(selectionService.mapToMedia())
         }
     }
 
@@ -270,7 +279,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             Spacer()
 
             Button("Done") {
-                if selectionService.selected.isEmpty, let current = currentFullscreenMedia {
+                if selectionService.selected.isEmpty, let current = fullscreenMedia {
                     onChange([current])
                 }
                 isPresented = false
@@ -325,9 +334,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 // MARK: - Bindings customization
 
 public extension MediaPicker {
-    func currentFullscreenMedia(_ currentFullscreenMedia: Binding<Media?>) -> MediaPicker {
+    func fullscreenMedia(_ fullscreenMedia: Binding<Media?>) -> MediaPicker {
         var mediaPicker = self
-        mediaPicker._currentFullscreenMediaBinding = currentFullscreenMedia
+        mediaPicker._fullscreenMediaBinding = fullscreenMedia
         return mediaPicker
     }
 

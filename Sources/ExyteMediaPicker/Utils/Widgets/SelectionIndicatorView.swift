@@ -6,13 +6,11 @@ import SwiftUI
 
 struct SelectionIndicatorView: View {
 
-    @EnvironmentObject private var selectionService: SelectionService
-
     @Environment(\.mediaPickerTheme) var theme
 
     var index: Int?
-    var isFullscreen: Bool
     var canSelect: Bool
+    var isFullscreen: Bool
     var selectionParameters: SelectionParameters
 
     var size: CGFloat { isFullscreen ? 26 : 24 }

@@ -13,8 +13,6 @@ struct FullscreenCell: View {
     @StateObject var viewModel: FullscreenCellViewModel
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
 
-    var size: CGSize
-
     var body: some View {
         Group {
             if let image = viewModel.image {

@@ -9,9 +9,14 @@ import Photos
 final class SelectionService: ObservableObject {
 
     var mediaSelectionLimit: Int?
-    var onChange: MediaPickerCompletionClosure? = nil
 
-    @Published private(set) var selected: [AssetMediaModel] = []
+    @Published private(set) var selected: [AssetMediaModel] = [] {
+        didSet {
+            selectionIndices = Dictionary(uniqueKeysWithValues: selected.enumerated().map { ($1.id, $0) })
+        }
+    }
+    
+    @Published private(set) var selectionIndices: [AssetMediaModel.ID: Int] = [:]
 
     var canSendSelected: Bool {
         !selected.isEmpty
@@ -24,38 +29,28 @@ final class SelectionService: ObservableObject {
         return true
     }
 
-    func canSelect(assetMediaModel: AssetMediaModel) -> Bool {
+    func canSelect(_ assetMediaModel: AssetMediaModel) -> Bool {
         fitsSelectionLimit || selected.contains(assetMediaModel)
+    }
+
+    func selectionIndex(_ assetMediaModel: AssetMediaModel) -> Int? {
+        selectionIndices[assetMediaModel.id]
     }
 
     func onSelect(assetMediaModel: AssetMediaModel) {
         if let index = selected.firstIndex(of: assetMediaModel) {
             selected.remove(at: index)
-        } else {
-            if fitsSelectionLimit {
-                selected.append(assetMediaModel)
-            }
+        } else if fitsSelectionLimit {
+            selected.append(assetMediaModel)
         }
-        onChange?(mapToMedia())
     }
 
     func index(of assetMediaModel: AssetMediaModel) -> Int? {
         selected.firstIndex(of: assetMediaModel)
     }
 
-    func mapToMedia() -> [Media] {
-        selected
-            .compactMap {
-                guard $0.mediaType != nil else {
-                    return nil
-                }
-                return Media(source: $0)
-            }
-    }
-
     func removeAll() {
         selected.removeAll()
-        onChange?([])
     }
 
     func setInitialSelection(_ models: [AssetMediaModel]) {

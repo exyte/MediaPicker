@@ -22,7 +22,7 @@ public struct CameraSelectionView: View {
                     LazyHStack(spacing: 0) {
                         ForEach(0..<cameraSelectionService.added.count, id: \.self) { index in
                             if let mediaModel = cameraSelectionService.added[safe: index] {
-                                FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel), size: size)
+                                FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel))
                                     .frame(width: size.width, height: size.height)
                                     .id(index)
                             }
@@ -35,7 +35,7 @@ public struct CameraSelectionView: View {
             } else {
                 TabView(selection: $index) {
                     ForEach(cameraSelectionService.added.enumerated().map({ $0 }), id: \.offset) { (index, mediaModel) in
-                        FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel), size: size)
+                        FullscreenCell(viewModel: FullscreenCellViewModel(mediaModel: mediaModel))
                             .tag(index)
                             .frame(maxHeight: .infinity)
                             .padding(.vertical)
@@ -48,8 +48,8 @@ public struct CameraSelectionView: View {
             if selectionParameters.selectionLimit != 1, let index {
                 SelectionIndicatorView(
                     index: cameraSelectionService.selectedIndex(fromAddedIndex: index),
-                    isFullscreen: true,
                     canSelect: true,
+                    isFullscreen: true,
                     selectionParameters: selectionParameters
                 )
                 .padding(12)

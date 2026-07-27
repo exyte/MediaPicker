@@ -12,7 +12,7 @@ public struct AlbumSelectionView: View {
     @ObservedObject var viewModel: MediaPickerViewModel
 
     @Binding var showingCamera: Bool
-    @Binding var currentFullscreenMedia: Media?
+    @Binding var fullscreenMedia: Media?
 
     var mediaPickerParams: MediaPickerCutomizationParameters
     var dismiss: ()->()
@@ -23,7 +23,7 @@ public struct AlbumSelectionView: View {
             AlbumView(
                 viewModel: AllMediasProvider(mediaPickerParams: mediaPickerParams),
                 showingCamera: $showingCamera,
-                currentFullscreenMedia: $currentFullscreenMedia,
+                fullscreenMedia: $fullscreenMedia,
                 displayMode: .allPhotos,
                 mediaPickerParams: mediaPickerParams,
                 dismiss: dismiss
@@ -42,7 +42,7 @@ public struct AlbumSelectionView: View {
                 AlbumView(
                     viewModel: AlbumMediasProvider(album: albumModel, mediaPickerParams: mediaPickerParams),
                     showingCamera: $showingCamera,
-                    currentFullscreenMedia: $currentFullscreenMedia,
+                    fullscreenMedia: $fullscreenMedia,
                     displayMode: .albumPhotos,
                     mediaPickerParams: mediaPickerParams,
                     dismiss: dismiss

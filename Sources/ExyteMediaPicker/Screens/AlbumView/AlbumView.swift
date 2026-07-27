@@ -30,13 +30,13 @@ struct AlbumView: View {
 
     @StateObject var viewModel: BaseMediasProvider
     @Binding var showingCamera: Bool
-    @Binding var currentFullscreenMedia: Media?
+    @Binding var fullscreenMedia: Media?
 
     var displayMode: DisplayMode
     var mediaPickerParams: MediaPickerCutomizationParameters
     var dismiss: ()->()
 
-    @State private var fullscreenItem: AssetMediaModel.ID?
+    @State private var fullscreenMediaModelID: AssetMediaModel.ID?
     @State private var isDragSelecting = false
     @State private var cellFrames: [AssetMediaModel.ID: CGRect] = [:]
 
@@ -158,9 +158,8 @@ struct AlbumView: View {
                 if selectionService.mediaSelectionLimit == 1 {
                     dismiss()
                 }
-            }
-            else if fullscreenItem == nil {
-                fullscreenItem = assetMediaModel.id
+            } else if fullscreenMediaModelID == nil {
+                fullscreenMediaModelID = assetMediaModel.id
             }
         } label: {
             let id = "fullscreen_photo_\(index)"
@@ -168,21 +167,22 @@ struct AlbumView: View {
                 .applyIf(mediaPickerParams.selectionParameters.showFullscreenPreview) {
                     $0.useAsPopupAnchor(id: id) {
                         FullscreenContainer(
-                            currentFullscreenMedia: $currentFullscreenMedia,
-                            selection: $fullscreenItem,
+                            selectionService: selectionService,
+                            fullscreenMedia: $fullscreenMedia,
+                            fullscreenMediaModelID: $fullscreenMediaModelID,
                             animationID: id,
                             assetMediaModels: viewModel.assetMediaModels,
                             selectionParameters: mediaPickerParams.selectionParameters,
                             dismiss: dismiss
                         )
-                        .environmentObject(selectionService)
                     } customize: {
-                        $0.closeOnTap(false)
+                        $0.displayMode(.sheet)
+                            .closeOnTap(false)
                             .animation(.easeIn(duration: 0.2))
                     }
                     .simultaneousGesture(
                         TapGesture().onEnded {
-                            fullscreenItem = assetMediaModel.id
+                            fullscreenMediaModelID = assetMediaModel.id
                         }
                     )
                 }
@@ -201,11 +201,21 @@ struct AlbumView: View {
         if selectionService.mediaSelectionLimit == 1 {
             imageButton
         } else {
-            SelectableView(selected: selectionService.index(of: assetMediaModel), isFullscreen: false, canSelect: selectionService.canSelect(assetMediaModel: assetMediaModel), selectionParameters: mediaPickerParams.selectionParameters) {
-                selectionService.onSelect(assetMediaModel: assetMediaModel)
-            } content: {
-                imageButton
-            }
+            imageButton
+                .overlay(alignment: .topTrailing) {
+                    SelectionIndicatorView(
+                        index: selectionService.selectionIndex(assetMediaModel),
+                        canSelect: selectionService.canSelect(assetMediaModel),
+                        isFullscreen: false,
+                        selectionParameters: mediaPickerParams.selectionParameters
+                    )
+                    .padding([.bottom, .leading], 10) // extend tappable area where possible
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectionService.onSelect(assetMediaModel: assetMediaModel)
+                    }
+                    .padding(2)
+                }
         }
     }
 
