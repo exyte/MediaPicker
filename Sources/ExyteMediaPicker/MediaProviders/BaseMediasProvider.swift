@@ -8,13 +8,19 @@ import SwiftUI
 
 @MainActor
 class BaseMediasProvider: ObservableObject {
+
+    enum LoadingState {
+        case loading
+        case empty
+        case content(isLoadingMore: Bool)
+    }
+
     var mediaPickerParams: MediaPickerCutomizationParameters
 
     @Published var assetMediaModels = [AssetMediaModel]()
-    private var privateAssetMediaModels: [AssetMediaModel] = []
+    @Published var loadingState: LoadingState = .loading
 
-    @Published var isLoading: Bool = false
-    @Published var hasLoaded: Bool = false
+    private var privateAssetMediaModels: [AssetMediaModel] = []
 
     private var timerTask: Task<Void, Never>?
     private var cancellableTask: Task<Void, Never>?
@@ -27,7 +33,7 @@ class BaseMediasProvider: ObservableObject {
         cancellableTask?.cancel()
 
         if let filterClosure = mediaPickerParams.filterClosure {
-            isLoading = true
+            loadingState = .loading
             startPublishing()
 
             cancellableTask = Task { [weak self] in
@@ -55,18 +61,19 @@ class BaseMediasProvider: ObservableObject {
 
                 stopPublishing()
                 assetMediaModels = privateAssetMediaModels
-                isLoading = false
+                loadingState = assetMediaModels.isEmpty ? .empty : .content(isLoadingMore: false)
             }
         } else if let massFilterClosure = mediaPickerParams.massFilterClosure {
-            isLoading = true
+            loadingState = .loading
             cancellableTask = Task { [weak self] in
                 guard let self else { return }
                 let result = await massFilterClosure(assets.map { Media(source: $0) })
                 assetMediaModels = result.compactMap { $0.source as? AssetMediaModel }
-                isLoading = false
+                loadingState = assetMediaModels.isEmpty ? .empty : .content(isLoadingMore: false)
             }
         } else {
             assetMediaModels = assets
+            loadingState = assets.isEmpty ? .empty : .content(isLoadingMore: false)
         }
     }
 
@@ -75,6 +82,9 @@ class BaseMediasProvider: ObservableObject {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 assetMediaModels = privateAssetMediaModels
+                if !privateAssetMediaModels.isEmpty {
+                    loadingState = .content(isLoadingMore: true)
+                }
             }
         }
     }

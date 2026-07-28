@@ -40,10 +40,6 @@ struct AlbumView: View {
     @State private var isDragSelecting = false
     @State private var cellFrames: [AssetMediaModel.ID: CGRect] = [:]
 
-    private var shouldShowLoadingCell: Bool {
-        viewModel.isLoading && viewModel.assetMediaModels.count > 0
-    }
-
     var body: some View {
         content
             .onAppear {
@@ -64,14 +60,15 @@ struct AlbumView: View {
                     PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
                 }
 
-                if viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
-                    ProgressView()
-                        .padding()
-                } else if !viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
+                switch viewModel.loadingState {
+                case .loading:
+                    ActivityIndicator()
+                        .foregroundStyle(theme.selection.cellSelectedBackground)
+                case .empty:
                     Text("Empty data")
                         .font(.title3)
                         .foregroundColor(theme.main.pickerText)
-                } else {
+                case .content:
                     mediasGrid
                 }
 
@@ -113,7 +110,7 @@ struct AlbumView: View {
         #if targetEnvironment(simulator)
         return .none
         #else
-        return if permissionsService.cameraPermissionStatus != .authorized {
+        return if permissionsService.cameraPermissionStatus == .unavailable {
             .none
         } else {
             mediaPickerParams.liveCameraStyle
@@ -123,18 +120,20 @@ struct AlbumView: View {
 
     var mediasGrid: some View {
         let liveCameraCell = getLiveCameraCell()
-        return MediasGrid(viewModel.assetMediaModels, liveCameraCell: liveCameraCell) {
+        return MediasGrid(data: viewModel.assetMediaModels, liveCameraCellStyle: liveCameraCell) {
 #if !targetEnvironment(simulator)
-            if liveCameraCell != .none && permissionsService.cameraPermissionStatus == .authorized {
+            if permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {
                     showingCamera = true
                 }
+            } else {
+                Color.clear.aspectRatio(1, contentMode: .fit)
             }
 #endif
         } content: { assetMediaModel, index, cellSize in
             cellView(assetMediaModel, index, cellSize)
         } loadingCell: {
-            if shouldShowLoadingCell {
+            if case .content(let isLoadingMore) = viewModel.loadingState, isLoadingMore {
                 ZStack {
                     Color.white.opacity(0.5)
                     ProgressView()

@@ -9,7 +9,7 @@ public struct MediasGrid<Element, Camera, Content, LoadingCell>: View
 where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
 
     public let data: [Element]
-    public let liveCameraCell: LiveCameraCellStyle
+    public let liveCameraCellStyle: LiveCameraCellStyle
     public let camera: () -> Camera
     public let content: (Element, _ index: Int, _ size: CGFloat) -> Content
     public let loadingCell: () -> LoadingCell
@@ -22,7 +22,7 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
                 @ViewBuilder content: @escaping (Element, Int, CGFloat) -> Content,
                 @ViewBuilder loadingCell: @escaping () -> LoadingCell) {
         self.data = data
-        self.liveCameraCell = liveCameraCell
+        self.liveCameraCellStyle = liveCameraCell
         self.camera = camera
         self.content = content
         self.loadingCell = loadingCell
@@ -34,7 +34,7 @@ where Element: Identifiable, Camera: View, Content: View, LoadingCell: View {
         )
         let spacing = theme.cellStyle.rowSpacing
         
-        switch liveCameraCell {
+        switch liveCameraCellStyle {
         case .prominant:
             let columnCount = columns.count
             let indexedData = Array(data.enumerated())

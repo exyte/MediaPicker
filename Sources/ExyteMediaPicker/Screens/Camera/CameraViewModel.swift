@@ -88,6 +88,16 @@ final actor CameraViewModel: NSObject, ObservableObject {
     func startVideoCapture() async {
         setVideoTorchMode(await flashEnabled ? .on : .off)
 
+        let hasAudioInput = captureSession.inputs.contains { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.audio) == true }
+        if !hasAudioInput,
+           let audioDevice = selectAudioCaptureDevice(),
+           let audioInput = try? AVCaptureDeviceInput(device: audioDevice),
+           captureSession.canAddInput(audioInput) {
+            captureSession.beginConfiguration()
+            captureSession.addInput(audioInput)
+            captureSession.commitConfiguration()
+        }
+
         let videoUrl = FileManager.getTempUrl()
         videoOutput.startRecording(to: videoUrl, recordingDelegate: self)
     }
@@ -174,14 +184,6 @@ final actor CameraViewModel: NSObject, ObservableObject {
         guard let captureDeviceInput = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         guard session.canAddInput(captureDeviceInput) else { return }
         session.addInput(captureDeviceInput)
-
-        let hasAudioInput = session.inputs.contains { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.audio) == true }
-        if !hasAudioInput {
-            guard let captureAudioDevice = selectAudioCaptureDevice() else { return }
-            guard let captureAudioDeviceInput = try? AVCaptureDeviceInput(device: captureAudioDevice) else { return }
-            guard session.canAddInput(captureAudioDeviceInput) else { return }
-            session.addInput(captureAudioDeviceInput)
-        }
 
         let defaultZoom = CGFloat(truncating: captureDevice.virtualDeviceSwitchOverVideoZoomFactors.first ?? minScale as NSNumber)
 

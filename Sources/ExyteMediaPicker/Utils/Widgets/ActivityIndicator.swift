@@ -16,7 +16,6 @@ struct ActivityIndicator: View {
                 .cornerRadius(8)
             
             ActivityIndicatorView(isVisible: .constant(true), type: .flickeringDots())
-                .foregroundColor(.gray)
                 .frame(width: 50, height: 50)
         }
     }
