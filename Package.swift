@@ -19,7 +19,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/exyte/ActivityIndicatorView.git",
-            from: "1.1.0"
+            from: "2.0.1"
         )
     ],
     targets: [
