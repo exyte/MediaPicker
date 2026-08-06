@@ -120,7 +120,7 @@ struct AlbumView: View {
 
     var mediasGrid: some View {
         let liveCameraCell = getLiveCameraCell()
-        return MediasGrid(data: viewModel.assetMediaModels, liveCameraCellStyle: liveCameraCell) {
+        return MediasGrid(viewModel.assetMediaModels, liveCameraCell: liveCameraCell) {
 #if !targetEnvironment(simulator)
             if permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {
