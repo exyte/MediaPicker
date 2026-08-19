@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 func calculateColumnWidth(spacing: CGFloat) -> (CGFloat, [GridItem]) {
-    let gridWidth = UIScreen.main.bounds.width
+    let gridWidth = UIApplication.shared.keyWindow?.bounds.width ?? UIScreen.main.bounds.width
     let wholeCount = 3.0
     let noSpaces = gridWidth - spacing * (wholeCount - 1)
     let columnWidth = noSpaces / wholeCount

@@ -274,7 +274,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
                     .tag(1)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .frame(maxWidth: UIScreen.main.bounds.width / 2)
+            .frame(maxWidth: (UIApplication.shared.keyWindow?.bounds.width ?? UIScreen.main.bounds.width) / 2)
 
             Spacer()
 
