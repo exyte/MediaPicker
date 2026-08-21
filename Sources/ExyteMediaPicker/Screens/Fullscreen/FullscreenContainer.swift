@@ -28,8 +28,7 @@ struct FullscreenContainer: View {
     }
 
     var body: some View {
-        VStack {
-            controlsOverlay
+        NavigationStack {
             GeometryReader { g in
                 contentView(g.size)
                     .onTapGesture {
@@ -42,12 +41,20 @@ struct FullscreenContainer: View {
                         }
                     }
             }
+            .ignoresSafeArea()
+            .toolbar {
+                backToolbarItem
+                if let fullscreenMediaModel {
+                    selectToolbarItem(fullscreenMediaModel)
+                }
+            }
+            .toolbarBackground(.clear, for: .navigationBar)
+            .background {
+                theme.main.fullscreenPhotoBackground
+                    .ignoresSafeArea()
+            }
         }
-        .safeAreaPadding(.top, UIApplication.safeArea.top)
-        .background {
-            theme.main.fullscreenPhotoBackground
-                .ignoresSafeArea()
-        }
+        .tint(theme.selection.fullscreenSelectedBackground)
         .onAppear {
             currentPageID = fullscreenMediaModelID ?? ""
             if let fullscreenMediaModel {
@@ -60,6 +67,43 @@ struct FullscreenContainer: View {
         .onChange(of: fullscreenMediaModelID) {
             if let fullscreenMediaModel {
                 fullscreenMedia = Media(source: fullscreenMediaModel)
+            }
+        }
+    }
+
+    var backToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Image(systemName: "xmark")
+                .resizable()
+                .frame(width: 20, height: 20)
+                .foregroundStyle(theme.selection.fullscreenSelectedBackground)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    fullscreenMediaModelID = nil
+                    AnchoredPopup.launchShrinkingAnimation(id: animationID)
+                }
+        }
+    }
+
+    func selectToolbarItem(_ fullscreenMediaModel: AssetMediaModel) -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            if selectionParameters.selectionLimit == 1 {
+                Button("Select") {
+                    AnchoredPopup.launchShrinkingAnimation(id: animationID)
+                    selectionService.onSelect(assetMediaModel: fullscreenMediaModel)
+                    dismiss()
+                }
+            } else {
+                SelectionIndicatorView(
+                    index: selectionService.index(of: fullscreenMediaModel),
+                    canSelect: selectionService.canSelect(fullscreenMediaModel),
+                    isFullscreen: true,
+                    selectionParameters: selectionParameters
+                )
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    selectionService.onSelect(assetMediaModel: fullscreenMediaModel)
+                }
             }
         }
     }
@@ -90,43 +134,4 @@ struct FullscreenContainer: View {
         }
     }
 
-    var controlsOverlay: some View {
-        HStack {
-            Image(systemName: "xmark")
-                .resizable()
-                .frame(width: 20, height: 20)
-                .padding(20, 16)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    fullscreenMediaModelID = nil
-                    AnchoredPopup.launchShrinkingAnimation(id: animationID)
-                }
-
-            Spacer()
-
-            if let fullscreenMediaModel {
-                if selectionParameters.selectionLimit == 1 {
-                    Button("Select") {
-                        AnchoredPopup.launchShrinkingAnimation(id: animationID)
-                        selectionService.onSelect(assetMediaModel: fullscreenMediaModel)
-                        dismiss()
-                    }
-                    .padding(.horizontal, 20)
-                } else {
-                    SelectionIndicatorView(
-                        index: selectionService.index(of: fullscreenMediaModel),
-                        canSelect: selectionService.canSelect(fullscreenMediaModel),
-                        isFullscreen: true,
-                        selectionParameters: selectionParameters
-                    )
-                    .padding(.horizontal, 20)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selectionService.onSelect(assetMediaModel: fullscreenMediaModel) // for video selection, since tap on video is toggle play
-                    }
-                }
-            }
-        }
-        .foregroundStyle(theme.selection.fullscreenSelectedBackground)
-    }
 }
