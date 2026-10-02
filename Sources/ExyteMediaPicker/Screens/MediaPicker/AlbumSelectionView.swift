@@ -67,6 +67,6 @@ public struct ModeSwitcher: View {
                 .tag(1)
         }
         .pickerStyle(SegmentedPickerStyle())
-        .frame(maxWidth: (UIApplication.shared.keyWindow?.bounds.width ?? UIScreen.main.bounds.width) / 2)
+        .containerRelativeFrame(.horizontal) { width, _ in width / 2 }
     }
 }

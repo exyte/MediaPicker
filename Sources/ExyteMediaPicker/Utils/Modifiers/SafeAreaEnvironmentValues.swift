@@ -1,34 +1,29 @@
 //
 //  SafeAreaEnvironmentValues.swift
-//  
+//
 //
 //  Created by Alexandra Afonasova on 18.10.2022.
 //
 
-import UIKit
 import SwiftUI
 
-extension UIApplication {
-    var keyWindow: UIWindow? {
-        connectedScenes
-            .compactMap {
-                $0 as? UIWindowScene
-            }
-            .flatMap {
-                $0.windows
-            }
-            .first {
-                $0.isKeyWindow
-            }
-    }
-
-    static var safeArea: EdgeInsets {
-        UIApplication.shared.keyWindow?.safeAreaInsets.swiftUiInsets ?? EdgeInsets()
-    }
+struct MediaPickerSafeAreaInsetsKey: EnvironmentKey {
+    static let defaultValue: EdgeInsets = EdgeInsets()
 }
 
-private extension UIEdgeInsets {
-    var swiftUiInsets: EdgeInsets {
-        EdgeInsets(top: top, leading: left, bottom: bottom, trailing: right)
+struct MediaPickerContentWidthKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 0
+}
+
+extension EnvironmentValues {
+    var mediaPickerSafeAreaInsets: EdgeInsets {
+        get { self[MediaPickerSafeAreaInsetsKey.self] }
+        set { self[MediaPickerSafeAreaInsetsKey.self] = newValue }
+    }
+
+    /// Width available inside the safe area, measured once at the `MediaPicker` root.
+    var mediaPickerContentWidth: CGFloat {
+        get { self[MediaPickerContentWidthKey.self] }
+        set { self[MediaPickerContentWidthKey.self] = newValue }
     }
 }

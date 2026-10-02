@@ -8,6 +8,7 @@ struct AlbumsView: View {
 
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
+    @Environment(\.mediaPickerContentWidth) private var gridWidth
 
     @StateObject var viewModel: AlbumsViewModel
     @ObservedObject var mediaPickerViewModel: MediaPickerViewModel
@@ -16,14 +17,14 @@ struct AlbumsView: View {
     var mediaPickerParams: MediaPickerCutomizationParameters
 
     @State private var showingLoadingCell = false
-    
+
     private var cellPadding: EdgeInsets {
         EdgeInsets(top: 2, leading: 2, bottom: 8, trailing: 2)
     }
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
                 if viewModel.isLoading {
@@ -34,19 +35,23 @@ struct AlbumsView: View {
                         .font(.title3)
                         .foregroundColor(theme.main.pickerText)
                 } else {
-                    let (columnWidth, columns) = calculateColumnWidth(spacing: 0)
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(viewModel.albums) { album in
-                            AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
-                                .padding(cellPadding)
-                                .onTapGesture {
-                                    mediaPickerViewModel.setPickerMode(.album(album.toAlbum()))
-                                }
+                    let (columnWidth, columns) = calculateColumnWidth(availableWidth: gridWidth, spacing: 0)
+                    if columnWidth > 0 {
+                        LazyVGrid(columns: columns, spacing: 0) {
+                            ForEach(viewModel.albums) { album in
+                                AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
+                                    .padding(cellPadding)
+                                    .onTapGesture {
+                                        mediaPickerViewModel.setPickerMode(.album(album.toAlbum()))
+                                    }
+                            }
                         }
+                        .frame(width: gridWidth, alignment: .leading)
                     }
                 }
                 Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear {
             viewModel.onStart()

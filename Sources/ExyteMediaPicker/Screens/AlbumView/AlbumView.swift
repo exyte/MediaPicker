@@ -24,6 +24,7 @@ struct AlbumView: View {
 
     @EnvironmentObject private var selectionService: SelectionService
     @Environment(\.mediaPickerTheme) private var theme
+    @Environment(\.mediaPickerContentWidth) private var gridWidth
 
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper.shared
     @ObservedObject var permissionsService = PermissionsService.shared
@@ -53,7 +54,7 @@ struct AlbumView: View {
     @ViewBuilder
     var content: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
                 if mediaPickerParams.liveCameraStyle != .none, displayMode == .allPhotos {
@@ -74,7 +75,7 @@ struct AlbumView: View {
 
                 Spacer()
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .simultaneousGesture(
                 LongPressGesture(minimumDuration: 0.4)
                     .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .global))
@@ -120,7 +121,7 @@ struct AlbumView: View {
 
     var mediasGrid: some View {
         let liveCameraCell = getLiveCameraCell()
-        return MediasGrid(viewModel.assetMediaModels, liveCameraCell: liveCameraCell) {
+        return MediasGrid(viewModel.assetMediaModels, liveCameraCell: liveCameraCell, availableWidth: gridWidth) {
 #if !targetEnvironment(simulator)
             if permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {

@@ -88,15 +88,20 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
     }
 
     public var body: some View {
-        Group {
-            switch internalPickerMode { // please don't use viewModel.internalPickerMode here - it slows down camera dismissal
-                case .photos, .albums, .album(_):
-                    albumSelectionContainer
-                case .camera:
-                    cameraContainer
-                case .cameraSelection:
-                    cameraSelectionContainer
-                }
+        GeometryReader { proxy in
+            Group {
+                switch internalPickerMode { // please don't use viewModel.internalPickerMode here - it slows down camera dismissal
+                    case .photos, .albums, .album(_):
+                        albumSelectionContainer
+                    case .camera:
+                        cameraContainer
+                    case .cameraSelection:
+                        cameraSelectionContainer
+                    }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .environment(\.mediaPickerSafeAreaInsets, proxy.safeAreaInsets)
+            .environment(\.mediaPickerContentWidth, proxy.size.width)
         }
         .background(theme.main.pickerBackground.ignoresSafeArea())
         .environmentObject(selectionService)
@@ -260,21 +265,7 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
 
             Spacer()
 
-            Picker("", selection:
-                    Binding(
-                        get: { viewModel.internalPickerMode == .albums ? 1 : 0 },
-                        set: { value in
-                            viewModel.setPickerMode(value == 0 ? .photos : .albums)
-                        }
-                    )
-            ) {
-                Text("Photos")
-                    .tag(0)
-                Text("Albums")
-                    .tag(1)
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .frame(maxWidth: (UIApplication.shared.keyWindow?.bounds.width ?? UIScreen.main.bounds.width) / 2)
+            ModeSwitcher(selection: modeBinding())
 
             Spacer()
 
